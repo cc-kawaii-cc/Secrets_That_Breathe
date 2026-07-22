@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 public class PoliceConversationSequence : MonoBehaviour
 {
     [Header("Police NPC")]
@@ -11,6 +12,9 @@ public class PoliceConversationSequence : MonoBehaviour
     [Header("Dialogue")]
     public string[] speakerNames;
     [TextArea(3, 5)] public string[] dialogLines;
+
+    [Header("จบบทสนทนาแล้วให้ทำอะไรต่อ (เช่น ปลดล็อกรถ)")]
+    public UnityEvent onConversationEnd;
 
     private bool _started;
     private Vector3 _originalPos;
@@ -59,6 +63,7 @@ public class PoliceConversationSequence : MonoBehaviour
 
         CinematicCamera.Instance.EndOverride();
         yield return ReturnPolice();
+        onConversationEnd?.Invoke();
         enabled = false;
     }
 
