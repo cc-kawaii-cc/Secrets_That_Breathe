@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 public class PlayerManager : MonoBehaviour
 {
     public static PlayerManager Instance { get; private set; }
@@ -27,6 +28,37 @@ public class PlayerManager : MonoBehaviour
 
     private void Start()
     {
+        GameEvents.PlayerReady(playerRoot);
+    }
+
+    private void OnEnable()  => SceneManager.sceneLoaded += OnSceneLoaded;
+    private void OnDisable() => SceneManager.sceneLoaded -= OnSceneLoaded;
+
+    /// <summary>
+    /// ตอนข้าม scene: player ของ scene เก่าถูกทำลายไปพร้อม scene
+    /// ต้องหา player ตัวใหม่ของ scene นี้มา bind แทน ไม่งั้นคุมตัวละครไม่ได้
+    /// (ถ้าเล่น scene เดี่ยวๆ playerRoot ยังไม่ตาย — ข้ามทันที ไม่กระทบของเดิม)
+    /// </summary>
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (Instance != this) return; // กันตัว duplicate ที่กำลังจะถูกทำลาย
+        if (!persistAcrossScenes) return;
+        if (playerRoot != null) return;
+
+        var newMovement = FindFirstObjectByType<PlayerMovement>();
+        if (newMovement == null)
+        {
+            Debug.LogWarning("[PlayerManager] ไม่พบ player ใน scene ใหม่ — คุมตัวละครไม่ได้");
+            return;
+        }
+
+        playerRoot = newMovement.gameObject;
+        playerBody = null; playerCamera = null; movement = null;
+        mouseLook = null; controller = null; flashlight = null;
+        AutoBindIfNeeded();
+
+        // คืนสถานะการคุมตามกฎกลางของ GameManager
+        SetControl(GameManager.Instance != null && GameManager.Instance.IsState(GameState.Exploration));
         GameEvents.PlayerReady(playerRoot);
     }
     

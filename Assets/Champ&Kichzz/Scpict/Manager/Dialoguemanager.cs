@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using TMPro;
 public class DialogueManager : MonoBehaviour
 {
@@ -30,8 +31,38 @@ public class DialogueManager : MonoBehaviour
         if (dialogPanel) dialogPanel.SetActive(false);
     }
 
-    private void OnEnable()  => advanceAction?.action.Enable();
-    private void OnDisable() => advanceAction?.action.Disable();
+    private void OnEnable()
+    {
+        advanceAction?.action.Enable();
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        advanceAction?.action.Disable();
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    // ตอนข้าม scene: panel/text ของ scene เก่าถูกทำลาย — หาชุดใหม่ใต้ Canvas ของ player ใหม่
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (Instance != this) return;
+        if (dialogPanel != null) return;
+
+        var newPlayer = FindFirstObjectByType<PlayerMovement>();
+        if (newPlayer == null) return;
+        Transform panel = newPlayer.transform.Find("Canvas/PoliceDialogPanel");
+        if (panel != null)
+        {
+            dialogPanel = panel.gameObject;
+            Transform n = panel.Find("NameText");
+            Transform d = panel.Find("DialogText");
+            nameText = n ? n.GetComponent<TextMeshProUGUI>() : null;
+            dialogText = d ? d.GetComponent<TextMeshProUGUI>() : null;
+            IsTalking = false;
+            dialogPanel.SetActive(false); // ซ่อนเหมือนตอน Awake ปกติ
+        }
+    }
     
     public void StartDialogue(string[] speakerNames, string[] dialogLines, Action onComplete = null)
     {

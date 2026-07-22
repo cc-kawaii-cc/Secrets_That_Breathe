@@ -32,11 +32,26 @@ public class GameManager : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private bool logStateChanges = true;
 
+    // ธงบอกว่า scene ที่กำลังโหลดมาจาก LoadScene() ของเรา — พอโหลดเสร็จให้ปลดล็อกกลับ Exploration
+    private bool _resumeExploreAfterLoad;
+
     private void Awake()
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+    }
+
+    private void OnEnable()  => SceneManager.sceneLoaded += OnSceneLoaded;
+    private void OnDisable() => SceneManager.sceneLoaded -= OnSceneLoaded;
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (Instance != this) return; // กันตัว duplicate ที่กำลังจะถูกทำลายมาแย่งทำงาน
+        if (!_resumeExploreAfterLoad) return;
+        _resumeExploreAfterLoad = false;
+        // scene ใหม่พร้อมแล้ว (PlayerManager จะ rebind player ใน event เดียวกันนี้) — คืนการควบคุม
+        SetState(GameState.Exploration);
     }
 
     private void Start()
@@ -85,6 +100,7 @@ public class GameManager : MonoBehaviour
     public void LoadScene(string sceneName)
     {
         SetState(GameState.Cutscene); // ระหว่างโหลดไม่ให้ขยับ
+        _resumeExploreAfterLoad = true; // โหลดเสร็จค่อยปลดล็อกใน OnSceneLoaded
         SceneManager.LoadScene(sceneName);
     }
 }

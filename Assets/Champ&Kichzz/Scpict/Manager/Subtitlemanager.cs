@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 public class SubtitleManager : MonoBehaviour
 {
@@ -17,6 +18,26 @@ public class SubtitleManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
         if (subtitleText) subtitleText.gameObject.SetActive(false);
+    }
+
+    private void OnEnable()  => SceneManager.sceneLoaded += OnSceneLoaded;
+    private void OnDisable() => SceneManager.sceneLoaded -= OnSceneLoaded;
+
+    // ตอนข้าม scene: subtitleText ของ scene เก่าถูกทำลาย — หาตัวใหม่ใต้ Canvas ของ player ใหม่
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (Instance != this) return;
+        if (subtitleText != null) return;
+
+        routine = null; // coroutine เก่าตายไปพร้อม text เดิมแล้ว
+        var newPlayer = FindFirstObjectByType<PlayerMovement>();
+        if (newPlayer == null) return;
+        Transform t = newPlayer.transform.Find("Canvas/SubtitleText");
+        if (t != null)
+        {
+            subtitleText = t.GetComponent<TextMeshProUGUI>();
+            subtitleText.gameObject.SetActive(false); // ซ่อนเหมือนตอน Awake ปกติ
+        }
     }
 
     public void Show(string line, float? duration = null)
