@@ -517,7 +517,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!108 &675390528
 Light:
   m_ObjectHideFlags: 0
@@ -867,6 +867,18 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 9018249871969862651, guid: 2d3a85ecde41a8246a79669975912b74, type: 3}
+      propertyPath: beamColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9018249871969862651, guid: 2d3a85ecde41a8246a79669975912b74, type: 3}
+      propertyPath: beamColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9018249871969862651, guid: 2d3a85ecde41a8246a79669975912b74, type: 3}
+      propertyPath: beamColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9018249871969862651, guid: 2d3a85ecde41a8246a79669975912b74, type: 3}
       propertyPath: useDualBeam
       value: 0
       objectReference: {fileID: 0}
@@ -889,6 +901,14 @@ PrefabInstance:
     - target: {fileID: 9018249871969862651, guid: 2d3a85ecde41a8246a79669975912b74, type: 3}
       propertyPath: loweredHeight
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9018249871969862651, guid: 2d3a85ecde41a8246a79669975912b74, type: 3}
+      propertyPath: mainBeamCookie
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 9018249871969862651, guid: 2d3a85ecde41a8246a79669975912b74, type: 3}
+      propertyPath: colorTemperature
+      value: 4000
       objectReference: {fileID: 0}
     - target: {fileID: 9018249871969862651, guid: 2d3a85ecde41a8246a79669975912b74, type: 3}
       propertyPath: horizontalOffset
