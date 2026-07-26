@@ -11,6 +11,86 @@ Shader "TENKOKU/moonsphere_shader" {
  _dispStrength ("Displace Amount", Range(0.0,3.0)) = 1.0
  _GlowColor ("Glow Color", Color) = (0.5,0.5,0.5,0.5)
  }
+
+ // URP compatibility pass. The original surface-shader SubShader below remains
+ // available when this asset is opened in the Built-in Render Pipeline.
+ SubShader
+ {
+  Tags { "RenderPipeline"="UniversalPipeline" "Queue"="Transparent-9" "RenderType"="Transparent" }
+
+  Pass
+  {
+   Name "TenkokuMoonURP"
+   Tags { "LightMode"="SRPDefaultUnlit" }
+   Blend SrcAlpha OneMinusSrcAlpha
+   Cull Back
+   ZWrite Off
+
+   HLSLPROGRAM
+   #pragma target 3.0
+   #pragma vertex TenkokuMoonVert
+   #pragma fragment TenkokuMoonFrag
+
+   #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+
+   TEXTURE2D(_MainTex);
+   SAMPLER(sampler_MainTex);
+
+   float4 _MainTex_ST;
+   half4 _PrimaryTint;
+   half4 _Color;
+   half4 _AmbientTint;
+   half4 _GlowColor;
+   half4 Tenkoku_MoonLightColor;
+   half4 Tenkoku_MoonHorizColor;
+   float4 Tenkoku_Vec_SunFwd;
+   half4 _Tenkoku_overcastColor;
+   half _Tenkoku_NightBright;
+   half _Tenkoku_Ambient;
+   half Tenkoku_MoonHFac;
+   half _overBright;
+
+   struct TenkokuMoonAttributes
+   {
+    float4 positionOS : POSITION;
+    float3 normalOS : NORMAL;
+    float2 uv : TEXCOORD0;
+   };
+
+   struct TenkokuMoonVaryings
+   {
+    float4 positionCS : SV_POSITION;
+    float3 normalWS : TEXCOORD0;
+    float2 uv : TEXCOORD1;
+   };
+
+   TenkokuMoonVaryings TenkokuMoonVert(TenkokuMoonAttributes input)
+   {
+    TenkokuMoonVaryings output;
+    output.positionCS = TransformObjectToHClip(input.positionOS.xyz);
+    output.normalWS = TransformObjectToWorldNormal(input.normalOS);
+    output.uv = TRANSFORM_TEX(input.uv, _MainTex);
+    return output;
+   }
+
+   half4 TenkokuMoonFrag(TenkokuMoonVaryings input) : SV_Target
+   {
+    half4 moonTexture = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, input.uv);
+    half3 normalWS = normalize(input.normalWS);
+    half3 sunDirection = normalize(Tenkoku_Vec_SunFwd.xyz);
+    half phase = saturate(dot(normalWS, sunDirection) * 1.5h + 0.15h);
+    half3 horizonTint = lerp(half3(1, 1, 1), Tenkoku_MoonHorizColor.rgb, Tenkoku_MoonHorizColor.a);
+    half3 lightTint = max(Tenkoku_MoonLightColor.rgb, half3(0.25h, 0.25h, 0.25h));
+    half3 color = moonTexture.rgb * _PrimaryTint.rgb * _Color.rgb * lightTint;
+    color *= lerp(horizonTint, half3(1, 1, 1), saturate(max(Tenkoku_MoonHFac, _Tenkoku_Ambient)));
+    color = lerp(_GlowColor.rgb * moonTexture.rgb, color, phase);
+    color *= max(_overBright, 1.0h) * max(_Tenkoku_NightBright, 0.1h);
+    half alpha = moonTexture.a * saturate(1.0h - (_Tenkoku_overcastColor.a * 1.5h));
+    return half4(color, alpha);
+   }
+   ENDHLSL
+  }
+ }
  
  SubShader 
  {

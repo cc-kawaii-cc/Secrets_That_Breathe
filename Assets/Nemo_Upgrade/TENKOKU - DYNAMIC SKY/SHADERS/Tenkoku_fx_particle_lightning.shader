@@ -8,6 +8,70 @@ Properties {
 	_LightningFac ("LightningFactor", Range(0.0,1.0)) = 1.0
 }
 
+SubShader {
+	Tags {
+		"RenderPipeline"="UniversalPipeline"
+		"Queue"="Overlay"
+		"IgnoreProjector"="True"
+		"RenderType"="Transparent"
+	}
+
+	Pass {
+		Name "TenkokuLightningURP"
+		Tags { "LightMode"="UniversalForward" }
+		Blend One One
+		Cull Off
+		ZWrite Off
+
+		HLSLPROGRAM
+		#pragma target 3.0
+		#pragma vertex TenkokuLightningVert
+		#pragma fragment TenkokuLightningFrag
+
+		#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+
+		TEXTURE2D(_MainTex);
+		SAMPLER(sampler_MainTex);
+		float4 _MainTex_ST;
+		half4 _TintColor;
+		half _LightFac;
+		half _LightningFac;
+		half Tenkoku_LightningIntensity;
+		half Tenkoku_LightningLightIntensity;
+
+		struct TenkokuLightningAttributes {
+			float4 positionOS : POSITION;
+			half4 color : COLOR;
+			float2 uv : TEXCOORD0;
+		};
+
+		struct TenkokuLightningVaryings {
+			float4 positionCS : SV_POSITION;
+			half4 color : COLOR;
+			float2 uv : TEXCOORD0;
+		};
+
+		TenkokuLightningVaryings TenkokuLightningVert(TenkokuLightningAttributes input) {
+			TenkokuLightningVaryings output;
+			output.positionCS = TransformObjectToHClip(input.positionOS.xyz);
+			output.color = input.color;
+			output.uv = TRANSFORM_TEX(input.uv, _MainTex);
+			return output;
+		}
+
+		half4 TenkokuLightningFrag(TenkokuLightningVaryings input) : SV_Target {
+			half4 textureColor = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, input.uv);
+			half4 color = input.color * _TintColor * textureColor;
+			half lightning = max(Tenkoku_LightningLightIntensity, Tenkoku_LightningIntensity);
+			lightning *= max(_LightningFac, 0.01h);
+			color.rgb *= _TintColor.rgb * lightning * lerp(0.5h, 10.0h, textureColor.b);
+			color.a = saturate(textureColor.a * lightning);
+			return color;
+		}
+		ENDHLSL
+	}
+}
+
 Category {
 	//Tags { "Queue"="Geometry+1" "IgnoreProjector"="True" "RenderType"="Opaque" }
 	//Tags { "Queue"="Overlay" "IgnoreProjector"="True" "RenderType"="Transparent" }

@@ -1,4 +1,4 @@
-﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
 // Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObject2ClipPos(*)'
 
@@ -29,6 +29,106 @@ Shader "TENKOKU/cloud_plane" {
 		_BlendTex ("Blend", 2D) = "white" {}
 
 	}
+
+	// Simplified URP cloud compositor. It preserves Tenkoku's runtime weather,
+	// wind, tint and coverage properties while the original multi-pass surface
+	// shader remains below for Built-in Render Pipeline projects.
+	SubShader {
+		Tags { "RenderPipeline"="UniversalPipeline" "Queue"="Transparent-20" "RenderType"="Transparent" }
+
+		Pass {
+			Name "TenkokuCloudPlaneURP"
+			Tags { "LightMode"="SRPDefaultUnlit" }
+			Blend SrcAlpha OneMinusSrcAlpha
+			Cull Off
+			ZWrite Off
+
+			HLSLPROGRAM
+			#pragma target 3.0
+			#pragma vertex TenkokuCloudVert
+			#pragma fragment TenkokuCloudFrag
+
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+
+			TEXTURE2D(_MainTex);
+			SAMPLER(sampler_MainTex);
+			TEXTURE2D(_CloudTexB);
+			SAMPLER(sampler_CloudTexB);
+			TEXTURE2D(_BlendTex);
+			SAMPLER(sampler_BlendTex);
+
+			float4 _MainTex_ST;
+			float4 _CloudTexB_ST;
+			float4 _BlendTex_ST;
+			float4 windCoords;
+			float4 _cloudSpd;
+			half4 _colTint;
+			half4 _colCloudS;
+			half4 _colCloudC;
+			half4 _colCloud;
+			half4 _colCloudO;
+			half4 _TenkokuCloudColor;
+			half4 _TenkokuCloudHighlightColor;
+			half4 _TenkokuCloudAmbientColor;
+			half4 _Tenkoku_overcastColor;
+			half _amtCloudS;
+			half _amtCloudC;
+			half _amtCloudM;
+			half _amtCloudO;
+			half _sizeCloud;
+			half _clpCloud;
+			half _brightMult;
+
+			struct TenkokuCloudAttributes {
+				float4 positionOS : POSITION;
+				float2 uv : TEXCOORD0;
+			};
+
+			struct TenkokuCloudVaryings {
+				float4 positionCS : SV_POSITION;
+				float2 uvMain : TEXCOORD0;
+				float2 uvCloudB : TEXCOORD1;
+				float2 uvBlend : TEXCOORD2;
+			};
+
+			TenkokuCloudVaryings TenkokuCloudVert(TenkokuCloudAttributes input) {
+				TenkokuCloudVaryings output;
+				output.positionCS = TransformObjectToHClip(input.positionOS.xyz);
+				output.uvMain = TRANSFORM_TEX(input.uv, _MainTex);
+				output.uvCloudB = TRANSFORM_TEX(input.uv, _CloudTexB);
+				output.uvBlend = TRANSFORM_TEX(input.uv, _BlendTex);
+				return output;
+			}
+
+			half4 TenkokuCloudFrag(TenkokuCloudVaryings input) : SV_Target {
+				float2 wind = windCoords.xy;
+				half4 layerA = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, input.uvMain + wind * 0.10);
+				half4 layerB = SAMPLE_TEXTURE2D(_CloudTexB, sampler_CloudTexB, input.uvCloudB + wind * 0.16);
+				half edge = SAMPLE_TEXTURE2D(_BlendTex, sampler_BlendTex, input.uvBlend).r;
+
+				half stratus = layerA.b * saturate(_amtCloudS);
+				half cirrus = layerA.g * saturate(_amtCloudC);
+				half cumulus = layerB.r * saturate(max(_amtCloudM, _sizeCloud));
+				half overcast = layerA.r * saturate(max(_amtCloudO, _Tenkoku_overcastColor.a));
+				half density = saturate(max(max(stratus, cirrus), max(cumulus, overcast)));
+				density = saturate((density - _clpCloud * 0.25h) * 1.35h) * edge;
+
+				half weight = max(stratus + cirrus + cumulus + overcast, 0.001h);
+				half3 layerColor =
+					(_colCloudS.rgb * stratus +
+					 _colCloudC.rgb * cirrus +
+					 _colCloud.rgb * cumulus +
+					 _colCloudO.rgb * overcast) / weight;
+				half3 dynamicTint = max(_TenkokuCloudColor.rgb, _TenkokuCloudAmbientColor.rgb);
+				half3 color = layerColor * _colTint.rgb * max(dynamicTint, half3(0.25h, 0.25h, 0.25h));
+				color = lerp(color, max(_TenkokuCloudHighlightColor.rgb, color), cumulus * 0.35h);
+				color *= max(_brightMult, 0.1h);
+				return half4(color, density * _colTint.a);
+			}
+			ENDHLSL
+		}
+	}
+
 	SubShader {
 
 

@@ -1,4 +1,4 @@
-﻿Shader "TENKOKU/aurora_plane" {
+Shader "TENKOKU/aurora_plane" {
 	Properties {
 
 		_Height ("Height", float) = 1.0
@@ -21,6 +21,99 @@
 		_DistortTex ("Normal Distortion)", 2D) = "white" {}
 		_BlendTex ("Blend", 2D) = "white" {}
 	}
+
+	// URP compatibility pass. Tenkoku's animation and intensity globals are
+	// retained, while the original layered surface shader remains below.
+	SubShader {
+		Tags { "RenderPipeline"="UniversalPipeline" "Queue"="Transparent-15" "RenderType"="Transparent" }
+
+		Pass {
+			Name "TenkokuAuroraPlaneURP"
+			Tags { "LightMode"="SRPDefaultUnlit" }
+			Blend One One
+			Cull Off
+			ZWrite Off
+
+			HLSLPROGRAM
+			#pragma target 3.0
+			#pragma vertex TenkokuAuroraVert
+			#pragma fragment TenkokuAuroraFrag
+
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+
+			TEXTURE2D(_MainTex);
+			SAMPLER(sampler_MainTex);
+			TEXTURE2D(_DistortTex);
+			SAMPLER(sampler_DistortTex);
+			TEXTURE2D(_BlendTex);
+			SAMPLER(sampler_BlendTex);
+
+			float4 _MainTex_ST;
+			float4 _DistortTex_ST;
+			float4 _BlendTex_ST;
+			half4 _aurTint1a;
+			half4 _aurTint1b;
+			half4 _aurTint2a;
+			half4 _aurTint2b;
+			half4 _aurTint3a;
+			half4 _aurTint3b;
+			half _aurSpeed;
+			half _aurLatSpeed;
+			half _aurDir;
+			half _distAmt;
+			half _overallAlpha;
+			half _Tenkoku_AuroraAmt;
+			half _Tenkoku_AuroraSpd;
+
+			struct TenkokuAuroraAttributes {
+				float4 positionOS : POSITION;
+				float2 uv : TEXCOORD0;
+			};
+
+			struct TenkokuAuroraVaryings {
+				float4 positionCS : SV_POSITION;
+				float2 uvMain : TEXCOORD0;
+				float2 uvDistort : TEXCOORD1;
+				float2 uvBlend : TEXCOORD2;
+			};
+
+			TenkokuAuroraVaryings TenkokuAuroraVert(TenkokuAuroraAttributes input) {
+				TenkokuAuroraVaryings output;
+				output.positionCS = TransformObjectToHClip(input.positionOS.xyz);
+				output.uvMain = TRANSFORM_TEX(input.uv, _MainTex);
+				output.uvDistort = TRANSFORM_TEX(input.uv, _DistortTex);
+				output.uvBlend = TRANSFORM_TEX(input.uv, _BlendTex);
+				return output;
+			}
+
+			half4 TenkokuAuroraFrag(TenkokuAuroraVaryings input) : SV_Target {
+				half speed = max(_Tenkoku_AuroraSpd, 0.01h);
+				half2 distortionSample = SAMPLE_TEXTURE2D(
+					_DistortTex,
+					sampler_DistortTex,
+					input.uvDistort + _Time.y * half2(0.01h, 0.002h)).rg * 2.0h - 1.0h;
+				half2 motion = half2(-_aurLatSpeed, _aurDir * _aurSpeed) * (_Time.y * 0.05h * speed);
+				half4 aurora = SAMPLE_TEXTURE2D(
+					_MainTex,
+					sampler_MainTex,
+					input.uvMain + motion + distortionSample * _distAmt);
+				half4 blend = SAMPLE_TEXTURE2D(_BlendTex, sampler_BlendTex, input.uvBlend);
+				half morph = SAMPLE_TEXTURE2D(
+					_BlendTex,
+					sampler_BlendTex,
+					input.uvBlend * 0.25h + half2(0, _Time.y * 0.05h)).a;
+
+				half3 tintA = lerp(_aurTint1a.rgb, _aurTint2a.rgb, aurora.r);
+				half3 tintB = lerp(_aurTint3b.rgb, _aurTint3a.rgb, morph);
+				half3 color = lerp(tintA, tintB, aurora.b);
+				half alpha = max(max(aurora.r, aurora.g), aurora.b);
+				alpha *= blend.r * _overallAlpha * _Tenkoku_AuroraAmt;
+				return half4(color * alpha, alpha);
+			}
+			ENDHLSL
+		}
+	}
+
 	SubShader {
 
 
