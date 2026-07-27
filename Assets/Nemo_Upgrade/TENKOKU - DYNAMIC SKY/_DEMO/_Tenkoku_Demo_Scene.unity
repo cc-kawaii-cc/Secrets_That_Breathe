@@ -93,8 +93,8 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
-  m_LightingSettings: {fileID: 4890085278179872738, guid: 43aa9de7c121bca44adfd63bc91fa632, type: 2}
+  m_LightingDataAsset: {fileID: 112000000, guid: 3dbef0ef0a181264b8192750f8e44670, type: 2}
+  m_LightingSettings: {fileID: 4890085278179872738, guid: f4078d0b2a8d7524c8e0a1f9426644eb, type: 2}
 --- !u!196 &5
 NavMeshSettings:
   serializedVersion: 2
@@ -7159,6 +7159,7 @@ GameObject:
   m_Component:
   - component: {fileID: 373721610}
   - component: {fileID: 373721609}
+  - component: {fileID: 373721611}
   m_Layer: 0
   m_Name: LIGHT_World
   m_TagString: Untagged
@@ -7173,11 +7174,11 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 373721608}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 12
   m_Type: 1
-  m_Color: {r: 1, g: 1, b: 0.99607843, a: 1}
-  m_Intensity: 1.36
+  m_Color: {r: 0, g: 0, b: 0, a: 0.006073597}
+  m_Intensity: 0.001
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -7239,13 +7240,42 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 373721608}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.24894187, y: -0.39735532, z: 0.11291977, w: 0.87600565}
+  m_LocalRotation: {x: -0.102085054, y: 0.74866205, z: 0.118636735, w: 0.6442121}
   m_LocalPosition: {x: -13.70872, y: 9.276348, z: -11.36977}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1627134770}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &373721611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 373721608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_CustomShadowLayers: 0
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
+  m_RenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_ShadowRenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_Version: 4
+  m_LightLayerMask: 1
+  m_ShadowLayerMask: 1
+  m_RenderingLayers: 1
+  m_ShadowRenderingLayers: 1
 --- !u!1 &386776793
 GameObject:
   m_ObjectHideFlags: 0
@@ -7292,6 +7322,7 @@ GameObject:
   m_Component:
   - component: {fileID: 387331528}
   - component: {fileID: 387331527}
+  - component: {fileID: 387331529}
   m_Layer: 0
   m_Name: LIGHT_NightSky
   m_TagString: Untagged
@@ -7306,11 +7337,11 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 387331526}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 12
   m_Type: 1
   m_Color: {r: 0.25, g: 0.33, b: 0.36, a: 1}
-  m_Intensity: 0
+  m_Intensity: 1.0550882
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -7372,13 +7403,42 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 387331526}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.12665686, y: -0.8482482, z: -0.23484963, w: -0.45746997}
+  m_LocalRotation: {x: -0.048953388, y: 0.66472507, z: -0.043725796, w: -0.74419904}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1627134770}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &387331529
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 387331526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_CustomShadowLayers: 0
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
+  m_RenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_ShadowRenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_Version: 4
+  m_LightLayerMask: 1
+  m_ShadowLayerMask: 1
+  m_RenderingLayers: 1
+  m_ShadowRenderingLayers: 1
 --- !u!1 &404536086
 GameObject:
   m_ObjectHideFlags: 0
@@ -7707,7 +7767,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 481879850}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.42393604, y: 0.83863014, z: -0.30523643, w: 0.15430006}
+  m_LocalRotation: {x: -0.70259845, y: 0.6240013, z: -0.22711785, w: -0.25572494}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 250, y: 250, z: 250}
   m_ConstrainProportionsScale: 0
@@ -7943,8 +8003,8 @@ MonoBehaviour:
   volTurb1: 0
   volTurb2: -0.5
   volRain: -0
-  volAmbDay: 1
-  volAmbNight: -0.0010912562
+  volAmbDay: 0.010250568
+  volAmbNight: 0.10049246
   enableSounds: 1
   enableTimeAdjust: 1
 --- !u!4 &497615773
@@ -8089,6 +8149,7 @@ GameObject:
   - component: {fileID: 542200256}
   - component: {fileID: 542200254}
   - component: {fileID: 542200255}
+  - component: {fileID: 542200258}
   m_Layer: 0
   m_Name: Tenkoku_SkyFog
   m_TagString: Untagged
@@ -8103,7 +8164,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 542200253}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 53e9364c3fb86b342bdda5a90a5f5a9a, type: 3}
   m_Name: 
@@ -8125,7 +8186,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraType: 0
-  renderTexDiff: {fileID: 1238000485}
+  renderTexDiff: {fileID: 1868560127}
 --- !u!20 &542200256
 Camera:
   m_ObjectHideFlags: 0
@@ -8136,7 +8197,7 @@ Camera:
   m_Enabled: 0
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.39735296, g: 0.46529415, b: 0.5229412, a: 0.6}
+  m_BackGroundColor: {r: 0.09424139, g: 0.10865315, b: 0.12718257, a: 0.6}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -8192,6 +8253,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1684094503}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &542200258
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 542200253}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalCameraData
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_TaaSettings:
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
+  m_Version: 2
 --- !u!1 &555727641
 GameObject:
   m_ObjectHideFlags: 0
@@ -24750,43 +24855,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 962150304}
   m_CullTransparentMesh: 0
---- !u!84 &970292443
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 6
-  m_Width: 128
-  m_Height: 128
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthStencilFormat: 92
-  m_ColorFormat: 48
-  m_MipMap: 1
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_UseDynamicScaleExplicit: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_EnableRandomWrite: 0
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 0
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
 --- !u!1 &989654144
 GameObject:
   m_ObjectHideFlags: 0
@@ -24811,7 +24879,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 989654144}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.7070096, y: -0.011723761, z: -0.7070096, w: -0.011723735}
+  m_LocalRotation: {x: -0.7070096, y: -0.01172371, z: -0.7070097, w: -0.011723739}
   m_LocalPosition: {x: 0.5529245, y: 0, z: 0}
   m_LocalScale: {x: 1.1074, y: 1.10745, z: 1.10745}
   m_ConstrainProportionsScale: 0
@@ -25028,7 +25096,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1049117152}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.92328215, y: 0.25562373, z: -0.27632198, w: -0.07650366}
+  m_LocalRotation: {x: 0.056196675, y: -0.0036966228, z: 0.9962598, w: -0.06553407}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 250, y: 250, z: 250}
   m_ConstrainProportionsScale: 0
@@ -50098,7 +50166,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1183261425}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.3384569, y: -0.096182115, z: 0.9004021, w: -0.25587478}
+  m_LocalRotation: {x: 0.9849107, y: 0.15607385, z: -0.07385723, w: -0.011703784}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 250, y: 250, z: 250}
   m_ConstrainProportionsScale: 0
@@ -50473,43 +50541,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1232773642}
   m_CullTransparentMesh: 0
---- !u!84 &1238000485
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 6
-  m_Width: 128
-  m_Height: 128
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthStencilFormat: 92
-  m_ColorFormat: 48
-  m_MipMap: 1
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_UseDynamicScaleExplicit: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_EnableRandomWrite: 0
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 0
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
 --- !u!1 &1247994859
 GameObject:
   m_ObjectHideFlags: 0
@@ -50900,6 +50931,7 @@ GameObject:
   - component: {fileID: 1290045143}
   - component: {fileID: 1290045142}
   - component: {fileID: 1290045146}
+  - component: {fileID: 1290045147}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -50948,7 +50980,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.39735296, g: 0.46529415, b: 0.5229412, a: 0.6}
+  m_BackGroundColor: {r: 0.09424139, g: 0.10865315, b: 0.12718257, a: 0.6}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -51012,6 +51044,50 @@ MonoBehaviour:
   heatScale: 2
   heatDistance: 0.01
   fogShader: {fileID: 0}
+--- !u!114 &1290045147
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1290045140}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalCameraData
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_TaaSettings:
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
+  m_Version: 2
 --- !u!1 &1290371585
 GameObject:
   m_ObjectHideFlags: 0
@@ -51394,7 +51470,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraType: 1
-  renderTexDiff: {fileID: 970292443}
+  renderTexDiff: {fileID: 1584743069}
 --- !u!20 &1341923166
 Camera:
   m_ObjectHideFlags: 0
@@ -51539,7 +51615,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.01657987, y: 0, z: 0, w: 0.99986255}
   m_LocalPosition: {x: -0.51, y: 0, z: 0}
-  m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
+  m_LocalScale: {x: 0.015, y: 0.015, z: 0.015}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 989654145}
@@ -57679,6 +57755,43 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!84 &1584743069
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 6
+  m_Width: 128
+  m_Height: 128
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 94
+  m_ColorFormat: 48
+  m_MipMap: 1
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_UseDynamicScaleExplicit: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_EnableRandomWrite: 0
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
 --- !u!1 &1598875349
 GameObject:
   m_ObjectHideFlags: 0
@@ -58373,7 +58486,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tenkokuVersionNumber: 1.2.2
   useAutoFX: 1
-  systemTime: 34200
+  systemTime: 70200
   enableAutoAdvance: 1
   mainCamera: {fileID: 1290045141}
   manualCamera: {fileID: 0}
@@ -58765,28 +58878,28 @@ MonoBehaviour:
   galaxyCubeTex: {fileID: 0}
   useCamera: {fileID: 1290045141}
   useCameraCam: {fileID: 1290045145}
-  moonLightAmt: 0.96262217
-  moonPhase: 0.5186889
-  ambientCol: {r: 1, g: 1, b: 1, a: 1}
-  colorSun: {r: 1, g: 1, b: 0.99607843, a: 1}
-  colorMoon: {r: 0.4392157, g: 0.5921569, b: 0.69803923, a: 1}
-  colorSkyBase: {r: 0.6054902, g: 0.7090196, b: 0.7968628, a: 0.8}
-  colorSkyBaseLow: {r: 0.75686276, g: 0.8862745, b: 0.99607843, a: 1}
-  colorHorizon: {r: 0.7023461, g: 0.9705814, b: 1.1905882, a: 1.2}
-  colorHorizonLow: {r: 0.7023461, g: 0.9705814, b: 1.1905882, a: 1.2}
-  colorSkyAmbient: {r: 1, g: 1, b: 1, a: 1}
-  colorClouds: {r: 1, g: 1, b: 1, a: 1}
-  colorHighlightClouds: {r: 1, g: 1, b: 1, a: 1}
+  moonLightAmt: 0.98851335
+  moonPhase: 0.49425668
+  ambientCol: {r: 0.006073597, g: 0.006073597, b: 0.006073597, a: 1}
+  colorSun: {r: 0, g: 0, b: 0, a: 1}
+  colorMoon: {r: 0.4901961, g: 0.627451, b: 0.7254902, a: 1}
+  colorSkyBase: {r: 0.14360592, g: 0.16556671, b: 0.193802, a: 0.8}
+  colorSkyBaseLow: {r: 0.17950739, g: 0.20695838, b: 0.2422525, a: 1}
+  colorHorizon: {r: 0.117647074, g: 0.29176474, b: 0.36235297, a: 1.2}
+  colorHorizonLow: {r: 0.117647074, g: 0.29176474, b: 0.36235297, a: 1.2}
+  colorSkyAmbient: {r: 0.006073597, g: 0.006073597, b: 0.006073597, a: 1}
+  colorClouds: {r: 0, g: 0, b: 0, a: 1}
+  colorHighlightClouds: {r: 0, g: 0, b: 0, a: 1}
   colorSkyboxGround: {r: 0.1102941, g: 0.08836951, b: 0.06487888, a: 1}
   colorSkyboxMie: {r: 1, g: 1, b: 1, a: 1}
-  displayTime: '[ 10:30:00 AM] [ 3/6/2015 ad]'
+  displayTime: '[ 20:30:00 PM] [ 3/6/2015 ad]'
   autoTimeSync: 0
   autoDateSync: 0
   autoTime: 1
   timeCompression: 1
   currentSecond: 0
   currentMinute: 30
-  currentHour: 10
+  currentHour: 20
   currentDay: 6
   currentMonth: 3
   currentYear: 2015
@@ -58817,15 +58930,15 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  setHour: 10
+  setHour: 20
   useSecond: 0
   useMinute: 0
-  displayHour: 10
-  useHour: 10
+  displayHour: 8
+  useHour: 20
   useDay: 0
   useMonth: 0
   useYear: 0
-  hourMode: AM
+  hourMode: PM
   moonSecond: 0
   moonMinute: 0
   moonHour: 24
@@ -58841,16 +58954,16 @@ MonoBehaviour:
   leapYear: 0
   monthFac: 31
   moonTime: {x: 0, y: 0, z: 0}
-  setDay: 34200
+  setDay: 70200
   setStar: 0.9583333
   setMoon: 82800
   setMonth: 82800
-  setYear: 64.4375
-  dayValue: 0.39583334
-  starValue: 0.39320776
-  moonValue: 0.3635299
+  setYear: 64.854164
+  dayValue: 0.8125
+  starValue: 0.8098744
+  moonValue: 0.78019655
   monthValue: 0.032452226
-  yearValue: 0.17654109
+  yearValue: 0.17768264
   countSecond: 0
   countMinute: 0
   countSecondStar: 0
@@ -59117,7 +59230,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  randSeed: 162825281
+  randSeed: 51535828
   isDoingTransition: 0
   minimumHeight: 0
 --- !u!114 &1684094502
@@ -59136,19 +59249,19 @@ MonoBehaviour:
   tzOffset: 0
   yamt: 0
   eclipticoffset: 0
-  day: 5544.396
+  day: 5544.8125
   y: 2015
   m: 3
   D: 6
-  UT: 9.5
-  LT: 20.420334
+  UT: 19.5
+  LT: 30.447712
   local_latitude: 40
   local_longitude: 0
   Epoch: 2000
   iteration: 1000
   moonPos: -1
-  azimuth: 303.12308
-  altitude: -30.951311
+  azimuth: 96.25681
+  altitude: 7.526863
   moonApogee: 1
   ecl: 23.437325
 --- !u!4 &1684094503
@@ -70315,6 +70428,43 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1868144757}
   m_CullTransparentMesh: 0
+--- !u!84 &1868560127
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 6
+  m_Width: 128
+  m_Height: 128
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 94
+  m_ColorFormat: 48
+  m_MipMap: 1
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_UseDynamicScaleExplicit: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_EnableRandomWrite: 0
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
 --- !u!1 &1870359266
 GameObject:
   m_ObjectHideFlags: 0
@@ -75709,6 +75859,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1923154243}
   - component: {fileID: 1923154242}
+  - component: {fileID: 1923154244}
   m_Layer: 0
   m_Name: LIGHT_NightFill
   m_TagString: Untagged
@@ -75723,11 +75874,11 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1923154241}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 12
   m_Type: 1
   m_Color: {r: 0.3118512, g: 0.38451552, b: 0.41176468, a: 1}
-  m_Intensity: 0
+  m_Intensity: 0.402
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -75796,6 +75947,35 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1627134770}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1923154244
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1923154241}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_CustomShadowLayers: 0
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
+  m_RenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_ShadowRenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_Version: 4
+  m_LightLayerMask: 1
+  m_ShadowLayerMask: 1
+  m_RenderingLayers: 1
+  m_ShadowRenderingLayers: 1
 --- !u!1 &1924332561
 GameObject:
   m_ObjectHideFlags: 0

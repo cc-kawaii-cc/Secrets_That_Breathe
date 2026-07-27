@@ -1,32 +1,45 @@
-﻿using System;
+using System;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Tenkoku.Effects
 {
     //[ExecuteInEditMode]
-    [RequireComponent (typeof(Camera))]
+    [RequireComponent(typeof(Camera))]
     public class TenkokuPostFX : MonoBehaviour
-	{
+    {
+        //PUBLIC VARIABLES
+        public Shader useShader;
 
-	//PUBLIC VARIABLES
-	public Shader useShader;
+        //PRIVATE VARIABLES
+        private Material useMat;
 
-	//PRIVATE VARIABLES
-	private Material useMat;
-	//private Camera CamInfo;
-		
-		
-	void Start () {
-		//setup material
-		useMat = new Material(useShader);
+        void Start()
+        {
+            if (GraphicsSettings.currentRenderPipeline != null)
+            {
+                enabled = false;
+                return;
+            }
 
-	}
+            if (useShader == null || !useShader.isSupported)
+            {
+                enabled = false;
+                return;
+            }
 
+            useMat = new Material(useShader);
+        }
 
-	void OnRenderImage (RenderTexture source, RenderTexture destination){
-		Graphics.Blit(source,destination,useMat);
-	}
+        void OnRenderImage(RenderTexture source, RenderTexture destination)
+        {
+            if (useMat == null)
+            {
+                Graphics.Blit(source, destination);
+                return;
+            }
 
-
-}
+            Graphics.Blit(source, destination, useMat);
+        }
+    }
 }

@@ -6,11 +6,11 @@
 // For more info please see original implementation here: https://github.com/playdeadgames/temporal
 
 using UnityEngine;
+using UnityEngine.Rendering;
 
 [RequireComponent(typeof(Camera))]
 [RequireComponent(typeof(Tenkoku_VelocityBuffer))]
-[AddComponentMenu ("Image Effects/Tenkoku/Tenkoku Temporal Aliasing")]
-
+[AddComponentMenu("Image Effects/Tenkoku/Tenkoku Temporal Aliasing")]
 public class Tenkoku_TemporalReprojection : Tenkoku_TemporalEffectBase
 {
     private static RenderBuffer[] mrt = new RenderBuffer[2];
@@ -22,7 +22,7 @@ public class Tenkoku_TemporalReprojection : Tenkoku_TemporalEffectBase
     private int reprojectionIndex = 0;
 
     [Range(0f, 1f)] public float feedbackMin = 0.88f;
-    [Range(0f, 1f)] public float feedbackMax = 0.9f; //old default 0.97
+    [Range(0f, 1f)] public float feedbackMax = 0.9f;
 
     private Camera _camera;
     private Tenkoku_VelocityBuffer _velocity;
@@ -32,16 +32,21 @@ public class Tenkoku_TemporalReprojection : Tenkoku_TemporalEffectBase
         _camera = GetComponent<Camera>();
         _velocity = GetComponent<Tenkoku_VelocityBuffer>();
         reprojectionShader = Shader.Find("Hidden/Tenkoku_TemporalReprojection");
+
+        if (GraphicsSettings.currentRenderPipeline != null)
+        {
+            enabled = false;
+        }
     }
 
     void Resolve(RenderTexture source, RenderTexture destination)
     {
         EnsureMaterial(ref reprojectionMaterial, reprojectionShader);
 
-        if (_camera.orthographic || _camera.depthTextureMode == DepthTextureMode.None || reprojectionMaterial == null)
+        if (_camera == null || _velocity == null || _camera.orthographic || _camera.depthTextureMode == DepthTextureMode.None || reprojectionMaterial == null)
         {
             Graphics.Blit(source, destination);
-            if (_camera.depthTextureMode == DepthTextureMode.None)
+            if (_camera != null && _camera.depthTextureMode == DepthTextureMode.None)
                 _camera.depthTextureMode = DepthTextureMode.Depth;
             return;
         }
@@ -57,8 +62,6 @@ public class Tenkoku_TemporalReprojection : Tenkoku_TemporalEffectBase
         EnsureRenderTarget(ref reprojectionBuffer[0], bufferW, bufferH, RenderTextureFormat.ARGB32, FilterMode.Bilinear);
         EnsureRenderTarget(ref reprojectionBuffer[1], bufferW, bufferH, RenderTextureFormat.ARGB32, FilterMode.Bilinear);
 
-
-        //Tenkoku - Calculate Projection
         Matrix4x4 cameraP;
 
         float oExtentY = Mathf.Tan(0.5f * Mathf.Deg2Rad * _camera.fieldOfView);
@@ -71,7 +74,6 @@ public class Tenkoku_TemporalReprojection : Tenkoku_TemporalEffectBase
         float ym = (0f - oExtentY) * cn;
         float yp = (0f + oExtentY) * cn;
 
-        //Tenkoku Calculate Matrix
         float x = (2.0f * cn) / (xp - xm);
         float y = (2.0f * cn) / (yp - ym);
         float a = (xp + xm) / (xp - xm);
@@ -88,14 +90,12 @@ public class Tenkoku_TemporalReprojection : Tenkoku_TemporalEffectBase
 
         cameraP = m;
 
-
-        //Set Camera Data
         Matrix4x4 cameraVP = cameraP * _camera.worldToCameraMatrix;
 
         float oneExtentY = Mathf.Tan(0.5f * Mathf.Deg2Rad * _camera.fieldOfView);
         float oneExtentX = oneExtentY * _camera.aspect;
 
-        if (reprojectionIndex == -1)// bootstrap
+        if (reprojectionIndex == -1)
         {
             reprojectionIndex = 0;
             reprojectionMatrix[reprojectionIndex] = cameraVP;
@@ -114,34 +114,35 @@ public class Tenkoku_TemporalReprojection : Tenkoku_TemporalEffectBase
         reprojectionMaterial.SetFloat("_FeedbackMin", feedbackMin);
         reprojectionMaterial.SetFloat("_FeedbackMax", feedbackMax);
 
-        // reproject frame n-1 into output + history buffer
-        {
-            mrt[0] = reprojectionBuffer[indexWrite].colorBuffer;
-            mrt[1] = destination.colorBuffer;
+        mrt[0] = reprojectionBuffer[indexWrite].colorBuffer;
+        mrt[1] = destination.colorBuffer;
 
-            Graphics.SetRenderTarget(mrt, source.depthBuffer);
-            reprojectionMaterial.SetPass(0);
+        Graphics.SetRenderTarget(mrt, source.depthBuffer);
+        reprojectionMaterial.SetPass(0);
 
-            FullScreenQuad();
+        FullScreenQuad();
 
-            reprojectionMatrix[indexWrite] = cameraVP;
-            reprojectionIndex = indexWrite;
-        }
+        reprojectionMatrix[indexWrite] = cameraVP;
+        reprojectionIndex = indexWrite;
     }
 
     void OnRenderImage(RenderTexture source, RenderTexture destination)
     {
-        if (destination != null)// resolve without additional blit when not end of chain
+        if (GraphicsSettings.currentRenderPipeline != null)
+        {
+            Graphics.Blit(source, destination);
+            return;
+        }
+
+        if (destination != null)
         {
             Resolve(source, destination);
         }
         else
         {
             RenderTexture internalDestination = RenderTexture.GetTemporary(source.width, source.height, 0, RenderTextureFormat.ARGB32);
-            {
-                Resolve(source, internalDestination);
-                Graphics.Blit(internalDestination, destination);
-            }
+            Resolve(source, internalDestination);
+            Graphics.Blit(internalDestination, destination);
             RenderTexture.ReleaseTemporary(internalDestination);
         }
     }

@@ -83,8 +83,8 @@ namespace Tenkoku.Core
 
 		//log objects
 		//tenkokuModule = GameObject.Find("Tenkoku DynamicSky").GetComponent<Tenkoku.Core.TenkokuModule>() as Tenkoku.Core.TenkokuModule;
-		tenkokuModule = (Tenkoku.Core.TenkokuModule) FindObjectOfType(typeof(Tenkoku.Core.TenkokuModule));
-		tenkokuLib = (Tenkoku.Core.TenkokuLib) FindObjectOfType(typeof(Tenkoku.Core.TenkokuLib));
+		tenkokuModule = UnityEngine.Object.FindFirstObjectByType<Tenkoku.Core.TenkokuModule>();
+		tenkokuLib = UnityEngine.Object.FindFirstObjectByType<Tenkoku.Core.TenkokuLib>();
 
 		lightningLight = tenkokuLib.lightningLight;
 		lightningTrans = tenkokuLib.lightningTrans;

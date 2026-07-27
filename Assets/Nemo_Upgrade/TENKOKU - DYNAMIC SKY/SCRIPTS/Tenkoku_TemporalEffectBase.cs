@@ -1,16 +1,20 @@
-// Copyright (c) <2015> <Playdead>
-// This file is subject to the MIT License as seen in the root of this folder structure (LICENSE.TXT)
-// AUTHOR: Lasse Jon Fuglsang Pedersen <lasse@playdead.com>
-
-// TENKOKU NOTE: This has been modified from PlayDead's original public implementation.
-// For more info please see original implementation here: https://github.com/playdeadgames/temporal
-
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public abstract class Tenkoku_TemporalEffectBase : MonoBehaviour
 {
+    protected bool IsSupportedRenderPipeline()
+    {
+        return GraphicsSettings.currentRenderPipeline == null;
+    }
+
     public void EnsureMaterial(ref Material material, Shader shader)
     {
+        if (!IsSupportedRenderPipeline())
+        {
+            return;
+        }
+
         if (shader != null)
         {
             if (material == null || material.shader != shader)
@@ -26,6 +30,11 @@ public abstract class Tenkoku_TemporalEffectBase : MonoBehaviour
 
     public void EnsureKeyword(Material material, string name, bool enabled)
     {
+        if (material == null)
+        {
+            return;
+        }
+
         if (enabled != material.IsKeywordEnabled(name))
         {
             if (enabled)
@@ -57,16 +66,16 @@ public abstract class Tenkoku_TemporalEffectBase : MonoBehaviour
 
         GL.Begin(GL.QUADS);
         GL.MultiTexCoord2(0, 0.0f, 0.0f);
-        GL.Vertex3(0.0f, 0.0f, 0.0f); // BL
+        GL.Vertex3(0.0f, 0.0f, 0.0f);
 
         GL.MultiTexCoord2(0, 1.0f, 0.0f);
-        GL.Vertex3(1.0f, 0.0f, 0.0f); // BR
+        GL.Vertex3(1.0f, 0.0f, 0.0f);
 
         GL.MultiTexCoord2(0, 1.0f, 1.0f);
-        GL.Vertex3(1.0f, 1.0f, 0.0f); // TR
+        GL.Vertex3(1.0f, 1.0f, 0.0f);
 
         GL.MultiTexCoord2(0, 0.0f, 1.0f);
-        GL.Vertex3(0.0f, 1.0f, 0.0f); // TL
+        GL.Vertex3(0.0f, 1.0f, 0.0f);
 
         GL.End();
         GL.PopMatrix();

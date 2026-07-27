@@ -1,117 +1,75 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+Shader "TENKOKU/planet_shader"
+{
+    Properties
+    {
+        _TintColor ("Tint Color", Color) = (0.5,0.5,0.5,0.5)
+        _MainTex ("Particle Texture", 2D) = "white" {}
+        _InvFade ("Soft Particles Factor", Range(0.01,3.0)) = 1.0
+    }
 
-Shader "TENKOKU/planet_shader" {
-Properties {
-	_TintColor ("Tint Color", Color) = (0.5,0.5,0.5,0.5)
-	_MainTex ("Particle Texture", 2D) = "white" {}
-	_InvFade ("Soft Particles Factor", Range(0.01,3.0)) = 1.0
-}
+    SubShader
+    {
+        Tags
+        {
+            "RenderPipeline"="UniversalPipeline"
+            "Queue"="Transparent"
+            "RenderType"="Transparent"
+        }
+        Blend SrcAlpha One
+        Cull Off
+        ZWrite Off
 
-Category {
-	//Tags { "Queue"="Overlay+8" }
-	//Tags {"Queue"="Background-5"}
-Tags {"Queue"="Background+1603"}
-	//Blend SrcAlpha OneMinusSrcAlpha
-	AlphaTest Greater .03
-	
-	//Blend OneMinusDstColor SrcAlpha
-	
-	//Blend SrcAlpha OneMinusSrcAlpha // Alpha blending
-	Blend SrcAlpha One
-	//Blend One One
-	//Blend One One // Additive
-	//Blend OneMinusDstColor One // Soft Additive
-	//Blend DstColor Zero // Multiplicative
-	
-	//BlendOp Sub
-    //Blend SrcAlpha One
-	
-	//BlendOp Max
+        Pass
+        {
+            Name "Forward"
+            Tags { "LightMode"="UniversalForward" }
 
-	//ColorMask B
-	
-	Cull Back Lighting On Fog {Mode Off}
-	
-	//ZTest Less 
-	//ZTest Greater
-	ZWrite Off
-	Offset 1,960500
+            HLSLPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
 
-	
-	Stencil {
-		Ref 2
-		Comp Greater
-		Pass Replace 
-		Fail Keep
-		ZFail Replace
-	}
-	
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
-	SubShader {
-		Pass {
-		
-			CGPROGRAM
-			#pragma vertex vert
-			#pragma fragment frag
-			#pragma fragmentoption ARB_precision_hint_fastest nofog
-			//#pragma multi_compile_particles
+            struct Attributes
+            {
+                float4 positionOS : POSITION;
+                float4 color : COLOR;
+                float2 uv : TEXCOORD0;
+            };
 
-			#include "UnityCG.cginc"
+            struct Varyings
+            {
+                float4 positionHCS : SV_POSITION;
+                half4 color : COLOR;
+                float2 uv : TEXCOORD0;
+            };
 
-			sampler2D _MainTex;
-			float4 _TintColor;
-			
-			struct appdata_t {
-				float4 vertex : POSITION;
-				float4 color : COLOR;
-				float2 texcoord : TEXCOORD0;
-			};
+            TEXTURE2D(_MainTex);
+            SAMPLER(sampler_MainTex);
 
-			struct v2f {
-				float4 vertex : SV_POSITION;
-				float4 color : COLOR;
-				float2 texcoord : TEXCOORD0;
-				//#ifdef SOFTPARTICLES_ON
-				//float4 projPos : TEXCOORD1;
-				//#endif
-			};
-			
-			float4 _MainTex_ST;
+            CBUFFER_START(UnityPerMaterial)
+                float4 _MainTex_ST;
+                float4 _TintColor;
+                float _InvFade;
+            CBUFFER_END
 
-			v2f vert (appdata_t v)
-			{
-				v2f o;
-				o.vertex = UnityObjectToClipPos(v.vertex);
-				//#ifdef SOFTPARTICLES_ON
-				//o.projPos = ComputeScreenPos (o.vertex);
-				//COMPUTE_EYEDEPTH(o.projPos.z);
-				//#endif
-				o.color = v.color;
-				o.texcoord = TRANSFORM_TEX(v.texcoord,_MainTex);
-				return o;
-			}
+            Varyings vert(Attributes input)
+            {
+                Varyings output;
+                output.positionHCS = TransformObjectToHClip(input.positionOS.xyz);
+                output.color = input.color * _TintColor;
+                output.uv = TRANSFORM_TEX(input.uv, _MainTex);
+                return output;
+            }
 
-			sampler2D _CameraDepthTexture;
-			float _InvFade;
-			
-			half4 frag (v2f i) : SV_Target
-			{
-				
-				//#ifdef SOFTPARTICLES_ON
-				//float sceneZ = LinearEyeDepth (tex2Dproj(_CameraDepthTexture, UNITY_PROJ_COORD(i.projPos)).r);
-				//float partZ = i.projPos.x;
-				//float fade = saturate (sceneZ);
-				//i.color.a = saturate(fade*0.1);
-				//#endif
-				
-				i.color *= 3.0 * _TintColor * tex2D(_MainTex, i.texcoord);
-
-				return i.color;
-				
-			}
-			ENDCG 
-		}
-	} 	
-	
-}
+            half4 frag(Varyings input) : SV_Target
+            {
+                half4 tex = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, input.uv);
+                half4 color = tex * input.color * 3.0;
+                color.a *= saturate(_TintColor.a + 0.1);
+                return color;
+            }
+            ENDHLSL
+        }
+    }
 }

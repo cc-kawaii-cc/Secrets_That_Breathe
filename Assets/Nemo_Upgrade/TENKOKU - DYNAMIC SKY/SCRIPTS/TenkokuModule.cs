@@ -837,8 +837,8 @@ bool totalEclipse = false;
 	void LoadObjects() {
 
 		//GET TENKOKU OBJECTS
-		calcComponent = (Tenkoku.Core.TenkokuCalculations) FindObjectOfType(typeof(Tenkoku.Core.TenkokuCalculations));
-		libComponent = (Tenkoku.Core.TenkokuLib) FindObjectOfType(typeof(Tenkoku.Core.TenkokuLib));
+		calcComponent = UnityEngine.Object.FindFirstObjectByType<Tenkoku.Core.TenkokuCalculations>();
+		libComponent = UnityEngine.Object.FindFirstObjectByType<Tenkoku.Core.TenkokuLib>();
 
 		//SET DEFAULT CURVE PROPERTIES
 		#if UNITY_5_4_OR_NEWER
@@ -978,37 +978,56 @@ bool totalEclipse = false;
 		// -------------------------------
 		// --   SET SKY POSITIONING   ---
 		// -------------------------------
-		if (Application.isPlaying){
+		Vector3 trackingPosition = Vector3.zero;
+		bool hasTrackingCamera = false;
 
-			// track positioning
-			if (useCamera != null){
-				libComponent.skyObject.position = useCamera.position;
+		#if UNITY_EDITOR
+			// While authoring a scene, the visible sky dome must follow the
+			// Scene View camera. Following MainCamera here leaves the editor
+			// camera outside the dome and makes aurora/cloud effects look like
+			// small objects floating at the prefab's saved world position.
+			if (!Application.isPlaying && SceneView.lastActiveSceneView != null && SceneView.lastActiveSceneView.camera != null){
+				trackingPosition = SceneView.lastActiveSceneView.camera.transform.position;
+				hasTrackingCamera = true;
+			}
+		#endif
+
+		// During play, or when no Scene View is available, follow the camera
+		// selected in Tenkoku's Configuration section.
+		if (!hasTrackingCamera && useCamera != null){
+			trackingPosition = useCamera.position;
+			hasTrackingCamera = true;
+		}
+
+		if (hasTrackingCamera && libComponent != null && libComponent.skyObject != null){
+			// SkySphere is the shared parent of sun, moon, stars, clouds,
+			// weather effects and the aurora, so this fixes every sky effect.
+			libComponent.skyObject.position = trackingPosition;
 			
-				//sky sizing based on camera
-				if (useCameraCam != null){
-				//if (currClipDistance != useCameraCam.farClipPlane){
-					currClipDistance = useCameraCam.farClipPlane;
+			//sky sizing based on the actual gameplay camera
+			if (useCameraCam != null){
+			//if (currClipDistance != useCameraCam.farClipPlane){
+				currClipDistance = useCameraCam.farClipPlane;
 
-					setSkyUseSize = (currClipDistance/20.0f)*1.9f;
-					setScale.x = setSkyUseSize;
-					setScale.y = setSkyUseSize;
-					setScale.z = setSkyUseSize;
+				setSkyUseSize = (currClipDistance/20.0f)*1.9f;
+				setScale.x = setSkyUseSize;
+				setScale.y = setSkyUseSize;
+				setScale.z = setSkyUseSize;
 
-					setScale2.x = setSkyUseSize * 0.76f;
-					setScale2.y = setSkyUseSize * 0.76f;
-					setScale2.z = setSkyUseSize * 0.76f;
+				setScale2.x = setSkyUseSize * 0.76f;
+				setScale2.y = setSkyUseSize * 0.76f;
+				setScale2.z = setSkyUseSize * 0.76f;
 
-					libComponent.sunSphereObject.localScale = setScale2;
-					libComponent.moonSphereObject.localScale = setScale2;
-					libComponent.starfieldObject.localScale = setScale;
-					libComponent.starRenderSystem.starDistance = currClipDistance;
-					libComponent.starRenderSystem.setSize = libComponent.starRenderSystem.baseSize * (currClipDistance/800f);
-					libComponent.starGalaxyObject.localScale = galaxyScale;
+				libComponent.sunSphereObject.localScale = setScale2;
+				libComponent.moonSphereObject.localScale = setScale2;
+				libComponent.starfieldObject.localScale = setScale;
+				libComponent.starRenderSystem.starDistance = currClipDistance;
+				libComponent.starRenderSystem.setSize = libComponent.starRenderSystem.baseSize * (currClipDistance/800f);
+				libComponent.starGalaxyObject.localScale = galaxyScale;
 
-					Shader.SetGlobalVector("_TenkokuCameraPos", useCamera.position);
+				Shader.SetGlobalVector("_TenkokuCameraPos", trackingPosition);
 
-				//}
-				}
+			//}
 			}
 		}
 	}
@@ -1235,9 +1254,7 @@ bool totalEclipse = false;
 	    // -----------------------------
 		// --   TRACK CAMERA   ---
 		// -----------------------------
-		if (Application.isPlaying){
-			UpdatePositions();
-		}
+		UpdatePositions();
 
 
 		//SYNC TIME TO SYSTEM
@@ -2690,9 +2707,7 @@ bool totalEclipse = false;
 
 		
 		if (!auroraIsVisible || auroraLatitude > Mathf.Abs(setLatitude)){
-			if (Application.isPlaying){
-				libComponent.renderObjectAurora.enabled = false;
-			}
+			libComponent.renderObjectAurora.enabled = false;
 		} else {
 
 			//if (useLegacyClouds){

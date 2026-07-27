@@ -46,7 +46,7 @@ namespace Tenkoku.Demo
 
 		//get main object
 		//tenkokuObject = GameObject.Find("Tenkoku DynamicSky").GetComponent<Tenkoku.Core.TenkokuModule>() as Tenkoku.Core.TenkokuModule;
-		tenkokuObject = (Tenkoku.Core.TenkokuModule) FindObjectOfType(typeof(Tenkoku.Core.TenkokuModule));
+		tenkokuObject = UnityEngine.Object.FindFirstObjectByType<Tenkoku.Core.TenkokuModule>();
 		
 		uiCanvasScale = this.transform.GetComponent<UnityEngine.UI.CanvasScaler>() as UnityEngine.UI.CanvasScaler;
 

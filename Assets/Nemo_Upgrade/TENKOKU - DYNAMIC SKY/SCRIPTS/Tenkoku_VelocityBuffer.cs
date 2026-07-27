@@ -7,6 +7,7 @@
 
 using System;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 [RequireComponent(typeof(Camera))]
 public class Tenkoku_VelocityBuffer : Tenkoku_TemporalEffectBase
@@ -46,14 +47,15 @@ public class Tenkoku_VelocityBuffer : Tenkoku_TemporalEffectBase
 
     private Camera _camera;
 
-
-
-
-
     void Awake()
     {
         _camera = GetComponent<Camera>();
         velocityShader = Shader.Find("Hidden/Tenkoku_VelocityBuffer");
+
+        if (GraphicsSettings.currentRenderPipeline != null)
+        {
+            enabled = false;
+        }
     }
 
     void Start()
@@ -63,11 +65,16 @@ public class Tenkoku_VelocityBuffer : Tenkoku_TemporalEffectBase
 
     void OnPostRender()
     {
+        if (GraphicsSettings.currentRenderPipeline != null)
+        {
+            return;
+        }
+
         EnsureMaterial(ref velocityMaterial, velocityShader);
 
-        if (_camera.orthographic || _camera.depthTextureMode == DepthTextureMode.None || velocityMaterial == null)
+        if (_camera == null || _camera.orthographic || _camera.depthTextureMode == DepthTextureMode.None || velocityMaterial == null)
         {
-            if (_camera.depthTextureMode == DepthTextureMode.None)
+            if (_camera != null && _camera.depthTextureMode == DepthTextureMode.None)
                 _camera.depthTextureMode = DepthTextureMode.Depth;
             return;
         }
@@ -100,15 +107,14 @@ public class Tenkoku_VelocityBuffer : Tenkoku_TemporalEffectBase
             const int kTileMax = 3;
             const int kNeighborMax = 4;
 
-            //Tenkoku - Calculate corners
             Vector4 corners = Vector4.zero;
-            if (_camera != null){
+            if (_camera != null)
+            {
                 float oneExtentY = Mathf.Tan(0.5f * Mathf.Deg2Rad * _camera.fieldOfView);
                 float oneExtentX = oneExtentY * _camera.aspect;
                 corners = new Vector4(oneExtentX, oneExtentY, 0f, 0f);
             }
             velocityMaterial.SetVector("_Corner", corners);
-
 
             velocityMaterial.SetMatrix("_CurrV", cameraV);
             velocityMaterial.SetMatrix("_CurrVP", cameraVP);
@@ -116,8 +122,6 @@ public class Tenkoku_VelocityBuffer : Tenkoku_TemporalEffectBase
             velocityMaterial.SetPass(kPrepass);
             FullScreenQuad();
 
-
-            // 3 + 4: tilemax + neighbormax
             if (neighborMaxGen)
             {
                 int tileSize = 1;
@@ -134,7 +138,6 @@ public class Tenkoku_VelocityBuffer : Tenkoku_TemporalEffectBase
 
                 EnsureRenderTarget(ref velocityNeighborMax, neighborMaxW, neighborMaxH, velocityFormat, FilterMode.Bilinear, 0);
 
-                // tilemax
                 RenderTexture tileMax = RenderTexture.GetTemporary(neighborMaxW, neighborMaxH, 0, velocityFormat);
                 RenderTexture.active = tileMax;
                 {
@@ -144,7 +147,6 @@ public class Tenkoku_VelocityBuffer : Tenkoku_TemporalEffectBase
                     FullScreenQuad();
                 }
 
-                // neighbormax
                 RenderTexture.active = velocityNeighborMax;
                 {
                     velocityMaterial.SetTexture("_VelocityTex", tileMax);
@@ -165,12 +167,4 @@ public class Tenkoku_VelocityBuffer : Tenkoku_TemporalEffectBase
 
         velocityViewMatrix = cameraV;
     }
-
-
-
-
-
-
-
-
 }
