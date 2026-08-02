@@ -54,7 +54,6 @@ namespace SecretsThatBreathe.LevelTools
         const string P_GASCAN = "Assets/Champ&Kichzz/Street Assets/Prefabs/SA_GasCan_01.prefab";
         const string P_BARRIER = "Assets/Champ&Kichzz/Street Assets/Prefabs/SA_TrafficBarrier_01.prefab";
 
-        static readonly Dictionary<string, Material> _mat = new Dictionary<string, Material>();
         static Transform _root;
 
         public enum Mood { Day, Evening }
@@ -113,7 +112,7 @@ namespace SecretsThatBreathe.LevelTools
         // ───────────────────────── material library ─────────────────────────
         static void BuildMaterialLibrary()
         {
-            _mat.Clear();
+            LevelKit.UseLibrary(MatFolder, "M_G_");
 
             Mat("Asphalt", new Color(0.115f, 0.117f, 0.125f), 0f, 0.14f);
             Mat("AsphaltRoad", new Color(0.145f, 0.148f, 0.158f), 0f, 0.22f);
@@ -159,237 +158,41 @@ namespace SecretsThatBreathe.LevelTools
             MatEmissive("SignFace", new Color(0.88f, 0.88f, 0.88f), new Color(1f, 0.97f, 0.90f) * 1.4f);
         }
 
-        static Material Mat(string key, Color c, float metallic, float smooth)
-        {
-            var m = LoadOrCreate(key);
-            m.SetColor("_BaseColor", c);
-            m.SetColor("_Color", c);
-            m.SetFloat("_Metallic", metallic);
-            m.SetFloat("_Smoothness", smooth);
-            EditorUtility.SetDirty(m);
-            _mat[key] = m;
-            return m;
-        }
+        // ── thin wrappers over LevelKit so every builder shares one implementation ──
+        static Material Mat(string key, Color c, float metallic, float smooth) { return LevelKit.Mat(key, c, metallic, smooth); }
+        static Material MatTransparent(string key, Color c, float smooth) { return LevelKit.MatTransparent(key, c, smooth); }
+        static Material MatEmissive(string key, Color baseColor, Color emission) { return LevelKit.MatEmissive(key, baseColor, emission); }
+        public static Material M(string key) { return LevelKit.M(key); }
 
-        static Material MatTransparent(string key, Color c, float smooth)
-        {
-            var m = Mat(key, c, 0f, smooth);
-            m.SetFloat("_Surface", 1f);
-            m.SetFloat("_Blend", 0f);
-            m.SetFloat("_SrcBlend", (float)BlendMode.SrcAlpha);
-            m.SetFloat("_DstBlend", (float)BlendMode.OneMinusSrcAlpha);
-            m.SetFloat("_ZWrite", 0f);
-            m.SetFloat("_AlphaClip", 0f);
-            m.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
-            m.DisableKeyword("_ALPHATEST_ON");
-            m.SetShaderPassEnabled("ShadowCaster", false);
-            m.renderQueue = (int)RenderQueue.Transparent;
-            EditorUtility.SetDirty(m);
-            return m;
-        }
-
-        static Material MatEmissive(string key, Color baseColor, Color emission)
-        {
-            var m = Mat(key, baseColor, 0f, 0.5f);
-            m.EnableKeyword("_EMISSION");
-            m.SetColor("_EmissionColor", emission);
-            m.globalIlluminationFlags = MaterialGlobalIlluminationFlags.RealtimeEmissive;
-            EditorUtility.SetDirty(m);
-            return m;
-        }
-
-        static Material LoadOrCreate(string key)
-        {
-            string path = MatFolder + "/M_G_" + key + ".mat";
-            var m = AssetDatabase.LoadAssetAtPath<Material>(path);
-            if (m == null)
-            {
-                var sh = Shader.Find("Universal Render Pipeline/Lit");
-                if (sh == null) sh = Shader.Find("Standard");
-                m = new Material(sh);
-                AssetDatabase.CreateAsset(m, path);
-            }
-            return m;
-        }
-
-        public static Material M(string key)
-        {
-            Material m;
-            if (_mat.TryGetValue(key, out m) && m != null) return m;
-            m = AssetDatabase.LoadAssetAtPath<Material>(MatFolder + "/M_G_" + key + ".mat");
-            if (m != null) _mat[key] = m;
-            return m;
-        }
-
-        // ───────────────────────── primitive helpers ─────────────────────────
-        public static Transform Group(string name, Transform parent)
-        {
-            var g = new GameObject(name);
-            g.transform.SetParent(parent == null ? _root : parent, false);
-            return g.transform;
-        }
+        public static Transform Group(string name, Transform parent) { return LevelKit.Group(name, parent == null ? _root : parent); }
 
         public static GameObject Box(string name, Transform parent, Vector3 centre, Vector3 size, string mat,
                                      Vector3 euler = default(Vector3), bool collider = true, bool markStatic = true)
-        {
-            var g = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            g.name = name;
-            g.transform.SetParent(parent, false);
-            g.transform.localPosition = centre;
-            g.transform.localEulerAngles = euler;
-            g.transform.localScale = size;
-            Paint(g, mat);
-            if (!collider) StripCollider(g);
-            if (markStatic) g.isStatic = true;
-            return g;
-        }
+        { return LevelKit.Box(name, parent, centre, size, mat, euler, collider, markStatic); }
 
-        /// <summary>Cylinder with real diameter/height (Unity cylinder is 1 wide, 2 tall).</summary>
         public static GameObject Cyl(string name, Transform parent, Vector3 centre, float diameter, float height,
                                      string mat, Vector3 euler = default(Vector3), bool collider = false, bool markStatic = true)
-        {
-            var g = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            g.name = name;
-            g.transform.SetParent(parent, false);
-            g.transform.localPosition = centre;
-            g.transform.localEulerAngles = euler;
-            g.transform.localScale = new Vector3(diameter, height * 0.5f, diameter);
-            Paint(g, mat);
-            StripCollider(g);
-            if (collider)
-            {
-                var bc = g.AddComponent<BoxCollider>();
-                bc.size = new Vector3(1f, 2f, 1f);
-            }
-            if (markStatic) g.isStatic = true;
-            return g;
-        }
+        { return LevelKit.Cyl(name, parent, centre, diameter, height, mat, euler, collider, markStatic); }
 
-        public static GameObject Sphere(string name, Transform parent, Vector3 centre, float diameter, string mat,
-                                        bool markStatic = true)
-        {
-            var g = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            g.name = name;
-            g.transform.SetParent(parent, false);
-            g.transform.localPosition = centre;
-            g.transform.localScale = Vector3.one * diameter;
-            Paint(g, mat);
-            StripCollider(g);
-            if (markStatic) g.isStatic = true;
-            return g;
-        }
+        public static GameObject Sphere(string name, Transform parent, Vector3 centre, float diameter, string mat, bool markStatic = true)
+        { return LevelKit.Sphere(name, parent, centre, diameter, mat, markStatic); }
 
-        /// <summary>Flat quad used for floor markings / decals. Lies in the XZ plane by default.</summary>
         public static GameObject Decal(string name, Transform parent, Vector3 centre, Vector2 size, string mat, float yaw = 0f)
-        {
-            var g = GameObject.CreatePrimitive(PrimitiveType.Quad);
-            g.name = name;
-            g.transform.SetParent(parent, false);
-            g.transform.localPosition = centre;
-            g.transform.localEulerAngles = new Vector3(-90f, yaw, 0f);
-            g.transform.localScale = new Vector3(size.x, size.y, 1f);
-            Paint(g, mat);
-            StripCollider(g);
-            g.isStatic = true;
-            return g;
-        }
+        { return LevelKit.Decal(name, parent, centre, size, mat, yaw); }
 
-        public static void Paint(GameObject g, string mat)
-        {
-            var m = M(mat);
-            if (m == null) return;
-            var r = g.GetComponent<Renderer>();
-            if (r != null) r.sharedMaterial = m;
-        }
-
-        public static void StripCollider(GameObject g)
-        {
-            var c = g.GetComponent<Collider>();
-            if (c != null) Object.DestroyImmediate(c);
-        }
+        public static void Paint(GameObject g, string mat) { LevelKit.Paint(g, mat); }
+        public static void StripCollider(GameObject g) { LevelKit.StripCollider(g); }
 
         public static GameObject Marker(string name, Transform parent, Vector3 pos, float yaw = 0f)
-        {
-            var g = new GameObject(name);
-            g.transform.SetParent(parent, false);
-            g.transform.localPosition = pos;
-            g.transform.localEulerAngles = new Vector3(0f, yaw, 0f);
-            return g;
-        }
+        { return LevelKit.Marker(name, parent, pos, yaw); }
 
-        /// <summary>Text sign built with TextMeshPro, auto fitted into a box of the given size.</summary>
         public static GameObject Sign(string name, Transform parent, Vector3 pos, Vector2 boxSize, string text,
                                       Color colour, float yaw = 180f, bool bold = true)
-        {
-            var g = new GameObject(name);
-            g.transform.SetParent(parent, false);
-            var tmp = g.AddComponent<TMPro.TextMeshPro>();
-            if (tmp.font == null)
-            {
-                var f = AssetDatabase.LoadAssetAtPath<TMPro.TMP_FontAsset>("Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset");
-                if (f != null) tmp.font = f;
-            }
-            var rt = g.GetComponent<RectTransform>();
-            if (rt != null) rt.sizeDelta = boxSize;
-            tmp.text = text;
-            tmp.color = colour;
-            tmp.alignment = TMPro.TextAlignmentOptions.Center;
-            tmp.enableAutoSizing = true;
-            tmp.fontSizeMin = 0.5f;
-            tmp.fontSizeMax = 300f;
-            tmp.fontStyle = bold ? TMPro.FontStyles.Bold : TMPro.FontStyles.Normal;
-            tmp.characterSpacing = 4f;
-            g.transform.localPosition = pos;
-            // TMP 3D text is readable from its -Z side, so a "facing" yaw needs the extra half turn
-            g.transform.localEulerAngles = new Vector3(0f, yaw + 180f, 0f);
-            g.isStatic = true;
-            return g;
-        }
+        { return LevelKit.Sign(name, parent, pos, boxSize, text, colour, yaw, bold); }
 
-        /// <summary>Instantiates a project prefab/fbx, drops it on the ground and optionally rescales it to a target height.</summary>
         public static GameObject Place(string assetPath, Transform parent, Vector3 pos, float yaw = 0f,
-                                       float targetHeight = 0f, float pitch = 0f, bool centreXZ = true)
-        {
-            var src = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-            if (src == null)
-            {
-                Debug.LogWarning("[Ch2Garage] missing asset: " + assetPath);
-                return null;
-            }
-            var go = (GameObject)PrefabUtility.InstantiatePrefab(src);
-            if (go == null) return null;
-            go.transform.SetParent(parent, false);
-            go.transform.localPosition = Vector3.zero;
-            go.transform.localEulerAngles = new Vector3(pitch, yaw, 0f);
-
-            Bounds b;
-            if (!TryBounds(go, out b)) { go.transform.localPosition = pos; return go; }
-
-            if (targetHeight > 0f && b.size.y > 0.0001f)
-            {
-                float k = targetHeight / b.size.y;
-                go.transform.localScale = go.transform.localScale * k;
-                TryBounds(go, out b);
-            }
-
-            // world-space bounds -> parent space, so nested/rotated groups still line up
-            Vector3 cW = b.center;
-            Vector3 baseW = new Vector3(b.center.x, b.min.y, b.center.z);
-            Vector3 cL = parent != null ? parent.InverseTransformPoint(cW) : cW;
-            Vector3 baseL = parent != null ? parent.InverseTransformPoint(baseW) : baseW;
-            go.transform.localPosition += new Vector3(pos.x - cL.x, pos.y - baseL.y, pos.z - cL.z);
-            return go;
-        }
-
-        static bool TryBounds(GameObject go, out Bounds b)
-        {
-            b = new Bounds(go.transform.position, Vector3.zero);
-            var rs = go.GetComponentsInChildren<Renderer>(true);
-            if (rs.Length == 0) return false;
-            b = rs[0].bounds;
-            for (int i = 1; i < rs.Length; i++) b.Encapsulate(rs[i].bounds);
-            return true;
-        }
+                                       float targetHeight = 0f, float pitch = 0f)
+        { return LevelKit.Place(assetPath, parent, pos, yaw, targetHeight, pitch); }
 
         // ───────────────────────── lighting & atmosphere ─────────────────────────
         static void BuildLighting()
