@@ -23,16 +23,24 @@ public class SubtitleManager : MonoBehaviour
     private void OnEnable()  => SceneManager.sceneLoaded += OnSceneLoaded;
     private void OnDisable() => SceneManager.sceneLoaded -= OnSceneLoaded;
 
-    // ตอนข้าม scene: subtitleText ของ scene เก่าถูกทำลาย — หาตัวใหม่ใต้ Canvas ของ player ใหม่
+    // ตอนข้าม scene: subtitleText ของ scene เก่าถูกทำลาย — หาตัวใหม่ใต้ player ใหม่
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (Instance != this) return;
         if (subtitleText != null) return;
-
         routine = null; // coroutine เก่าตายไปพร้อม text เดิมแล้ว
+        BindUI();
+    }
+
+    /// <summary>
+    /// ผูก SubtitleText เข้ากับ player ปัจจุบัน (เรียก lazy ได้ตอนจะใช้งาน)
+    /// กันกรณี sceneLoaded ไม่ยิง (กด Play ที่ scene เริ่มต้นตรง ๆ) — ค้นแบบ recursive
+    /// </summary>
+    private void BindUI()
+    {
         var newPlayer = FindFirstObjectByType<PlayerMovement>();
         if (newPlayer == null) return;
-        Transform t = newPlayer.transform.Find("Canvas/SubtitleText");
+        Transform t = FindDeep(newPlayer.transform, "SubtitleText");
         if (t != null)
         {
             subtitleText = t.GetComponent<TextMeshProUGUI>();
@@ -40,11 +48,24 @@ public class SubtitleManager : MonoBehaviour
         }
     }
 
+    // ค้นหาลูก (รวมตัวที่ inactive) ตามชื่อแบบลึกทุกชั้น
+    private static Transform FindDeep(Transform root, string name)
+    {
+        if (root.name == name) return root;
+        for (int i = 0; i < root.childCount; i++)
+        {
+            Transform found = FindDeep(root.GetChild(i), name);
+            if (found != null) return found;
+        }
+        return null;
+    }
+
     public void Show(string line, float? duration = null)
         => Show(new[] { line }, duration);
-    
+
     public void Show(string[] lines, float? perLine = null)
     {
+        if (subtitleText == null) BindUI(); // lazy rebind
         if (subtitleText == null || lines == null || lines.Length == 0) return;
         if (routine != null) StopCoroutine(routine);
         routine = StartCoroutine(ShowRoutine(lines, perLine ?? defaultDuration));

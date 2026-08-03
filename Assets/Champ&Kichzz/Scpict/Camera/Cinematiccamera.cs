@@ -61,6 +61,29 @@ public class CinematicCamera : MonoBehaviour
         }
     }
     
+    /// <summary>
+    /// ให้กล้องมองตาม target แบบต่อเนื่องทุกเฟรม จนกว่า stopWhen จะเป็น true
+    /// (ใช้ตอนผู้ร้ายเดินผ่าน — กล้องหันตามจนตัวละครเดินพ้นไป)
+    /// turnSpeed สูง = หันตามไว, ต่ำ = ตามหน่วง ๆ นุ่มนวล
+    /// </summary>
+    public IEnumerator FollowTarget(Transform target, System.Func<bool> stopWhen,
+                                    Vector3 worldOffset = default, float turnSpeed = 6f)
+    {
+        if (Cam == null || target == null) yield break;
+        BeginOverride();
+
+        while (stopWhen == null || !stopWhen())
+        {
+            if (target == null) yield break;
+            Vector3 dir = (target.position + worldOffset) - Cam.transform.position;
+            if (dir.sqrMagnitude > 0.0001f)
+                Cam.transform.rotation = Quaternion.Slerp(
+                    Cam.transform.rotation, Quaternion.LookRotation(dir),
+                    turnSpeed * Time.deltaTime);
+            yield return null;
+        }
+    }
+
     public IEnumerator TurnBodyAndLookAt(Transform body, Transform target,
                                          float duration, Vector3 camWorldOffset = default)
     {
