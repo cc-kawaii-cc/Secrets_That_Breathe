@@ -4055,7 +4055,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: b7d9d05ab98a7484fac892b24f9960ff, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4097,7 +4097,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 8.4, y: 0.016683817, z: 2.900587}
-  m_LocalScale: {x: 7.796334, y: 1, z: 3.6144567}
+  m_LocalScale: {x: 10, y: 1, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -6992,71 +6992,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7827016899579423236, guid: 57994f23dc2090b4fa7074060e300c03, type: 3}
   m_PrefabInstance: {fileID: 217400174}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &1814282921
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 583548435631501981, guid: efd4281ada801d5459be44999f591c85, type: 3}
-      propertyPath: m_Name
-      value: concrete floor (1)
-      objectReference: {fileID: 0}
-    - target: {fileID: 8712927779251646708, guid: efd4281ada801d5459be44999f591c85, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 7.796334
-      objectReference: {fileID: 0}
-    - target: {fileID: 8712927779251646708, guid: efd4281ada801d5459be44999f591c85, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 3.6144567
-      objectReference: {fileID: 0}
-    - target: {fileID: 8712927779251646708, guid: efd4281ada801d5459be44999f591c85, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 8.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 8712927779251646708, guid: efd4281ada801d5459be44999f591c85, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.016683817
-      objectReference: {fileID: 0}
-    - target: {fileID: 8712927779251646708, guid: efd4281ada801d5459be44999f591c85, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 43.79
-      objectReference: {fileID: 0}
-    - target: {fileID: 8712927779251646708, guid: efd4281ada801d5459be44999f591c85, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8712927779251646708, guid: efd4281ada801d5459be44999f591c85, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8712927779251646708, guid: efd4281ada801d5459be44999f591c85, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8712927779251646708, guid: efd4281ada801d5459be44999f591c85, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8712927779251646708, guid: efd4281ada801d5459be44999f591c85, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8712927779251646708, guid: efd4281ada801d5459be44999f591c85, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8712927779251646708, guid: efd4281ada801d5459be44999f591c85, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: efd4281ada801d5459be44999f591c85, type: 3}
 --- !u!1001 &1831877655
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8361,7 +8296,6 @@ SceneRoots:
   - {fileID: 654173868}
   - {fileID: 1180510661}
   - {fileID: 1808985336}
-  - {fileID: 1814282921}
   - {fileID: 798127816}
   - {fileID: 370671954}
   - {fileID: 486468527}
