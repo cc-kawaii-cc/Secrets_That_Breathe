@@ -15,15 +15,15 @@ namespace SecretsThatBreathe.LevelTools
         //   back  x -6.1..-1.2 : parts racking      x -1.5..2.5 : rear shutter
         static void BuildWorkshopProps()
         {
-            var g = Group("INT_Workshop", _root);
+            var g = Group("INT_Workshop", _dress);
 
             // ── service bays ─────────────────────────────────────────────
             TwoPostLift(g, "Lift_Bay1", new Vector3(-2.6f, FLR, -1.6f), true);
             TwoPostLift(g, "Lift_Bay2", new Vector3(1.4f, FLR, -1.6f), false);
 
             ToolChest(g, "ToolChest_Bay1", new Vector3(-4.6f, FLR, -2.6f), 90f);
-            ToolChest(g, "ToolChest_Bay2", new Vector3(3.35f, FLR, -2.6f), -90f);
-            ToolChest(g, "ToolChest_Wall", new Vector3(-8.2f, FLR, -6.3f), 0f);
+            ToolChest(g, "ToolChest_Bay2", new Vector3(3.35f, FLR, -4.8f), -90f);   // clear of the reception doorway
+            ToolChest(g, "ToolChest_Wall", new Vector3(X0 + 1.8f, FLR, -6.3f), 0f);
 
             FloorJack(g, "FloorJack_1", new Vector3(-0.2f, FLR, -4.6f), 15f);
             FloorJack(g, "FloorJack_2", new Vector3(2.6f, FLR, -4.2f), -60f);
@@ -36,10 +36,10 @@ namespace SecretsThatBreathe.LevelTools
             OilPan(g, "OilPan_2", new Vector3(1.9f, FLR, -3.9f));
 
             // ── left wall: workbench run ─────────────────────────────────
-            WorkBench(g, "Bench_Main", -9.62f, -0.4f, 3.4f);
-            BenchGrinder(g, "Grinder", new Vector3(-9.55f, 0.95f, 2.9f));
-            Vise(g, "Vise", new Vector3(-9.5f, 0.95f, 0.0f));
-            PegBoard(g, "PegBoard", -9.93f, -0.2f, 3.2f);
+            WorkBench(g, "Bench_Main", X0 + 0.38f, -0.4f, 3.0f);   // stops short of the side exit
+            BenchGrinder(g, "Grinder", new Vector3(X0 + 0.45f, 0.95f, 2.9f));
+            Vise(g, "Vise", new Vector3(X0 + 0.5f, 0.95f, 0.0f));
+            PegBoard(g, "PegBoard", X0 + 0.07f, -0.2f, 3.2f);
 
             // ── the two zones this chapter is really about ───────────────
             BuildInspectionZone(g);
@@ -55,14 +55,14 @@ namespace SecretsThatBreathe.LevelTools
                     new Vector3(0.55f, 0.44f, 0.45f), "Cardboard", new Vector3(0f, i * 13f, 0f), false);
 
             // ── services corner (front left) ─────────────────────────────
-            Compressor(g, "Compressor", new Vector3(-9.1f, FLR, -6.1f));
+            Compressor(g, "Compressor", new Vector3(X0 + 0.9f, FLR, -6.1f));
             PartsWasher(g, "PartsWasher", new Vector3(-6.9f, FLR, -6.4f));
             WasteOilTank(g, "WasteOil", new Vector3(-4.9f, FLR, -6.45f));
-            Place(P_DRUM, g, new Vector3(-9.2f, FLR, -5.2f), 12f);
-            Place(P_DRUM, g, new Vector3(-9.2f, FLR, -4.5f), -40f);
-            Drum(g, "Drum_Oil_A", new Vector3(-8.45f, FLR, -5.2f), "Yellow");
-            Drum(g, "Drum_Oil_B", new Vector3(-8.45f, FLR, -4.5f), "SteelDark");
-            Place(P_GASCAN, g, new Vector3(-7.6f, FLR, -6.3f), 30f, 0f, -90f);
+            Place(P_DRUM, g, new Vector3(X0 + 0.8f, FLR, -5.2f), 12f);
+            Place(P_DRUM, g, new Vector3(X0 + 0.8f, FLR, -4.5f), -40f);
+            Drum(g, "Drum_Oil_A", new Vector3(X0 + 1.55f, FLR, -5.2f), "Yellow");
+            Drum(g, "Drum_Oil_B", new Vector3(X0 + 1.55f, FLR, -4.5f), "SteelDark");
+            Place(P_GASCAN, g, new Vector3(-7.6f, FLR, -6.3f), 30f);
 
             // ── back / centre floor equipment ────────────────────────────
             EngineHoist(g, "EngineHoist", new Vector3(-6.9f, FLR, -0.2f), 22f);
@@ -73,8 +73,8 @@ namespace SecretsThatBreathe.LevelTools
             Pallet(g, "Pallet_2", new Vector3(1.0f, FLR, 1.8f), -25f);
             Bin(g, "Bin_Waste", new Vector3(-4.2f, FLR, -6.3f), "SteelDark");
             Bin(g, "Bin_Recycle", new Vector3(-3.4f, FLR, -6.3f), "SafetyGreen");
-            Place(P_CONE, g, new Vector3(-0.9f, FLR, -6.2f), 0f, 0f, -90f);
-            Place(P_CONE, g, new Vector3(3.35f, FLR, -6.2f), 0f, 0f, -90f);
+            Place(P_CONE, g, new Vector3(-0.9f, FLR, -6.2f), 0f);
+            Place(P_CONE, g, new Vector3(3.35f, FLR, -6.2f), 0f);
 
             FireExtinguisher(g, "Ext_1", new Vector3(X0 + 0.42f, FLR, 3.7f), 90f);
             FireExtinguisher(g, "Ext_2", new Vector3(PARTX - 0.22f, FLR, 0.6f), -90f);
@@ -460,7 +460,7 @@ namespace SecretsThatBreathe.LevelTools
         // Rear-left corner of the shop, deliberately the cleanest, brightest and most
         // enclosed spot in the building – this is the room the whole chapter plays in.
 
-        public static readonly Vector3 INSPECT_TABLE = new Vector3(-7.6f, FLR, 5.5f);
+        public static readonly Vector3 INSPECT_TABLE = new Vector3(-7.6f + WSHIFT, FLR, 5.5f);
         const float BACKWALL_FACE = Z1 - WT * 0.5f - 0.08f;   // inside face of the rear wall
 
         static void BuildInspectionZone(Transform parent)
@@ -469,10 +469,10 @@ namespace SecretsThatBreathe.LevelTools
 
             // clean-zone floor paint, so the area reads as "not a normal service bay"
             float fy = FLR + 0.007f;
-            Box("Zone_L", g, new Vector3(-9.75f, fy, 5.2f), new Vector3(0.1f, 0.012f, 3.3f), "LineWhite", default(Vector3), false);
-            Box("Zone_R", g, new Vector3(-5.3f, fy, 5.2f), new Vector3(0.1f, 0.012f, 3.3f), "LineWhite", default(Vector3), false);
-            Box("Zone_F", g, new Vector3(-7.5f, fy, 3.55f), new Vector3(4.5f, 0.012f, 0.1f), "LineWhite", default(Vector3), false);
-            Box("Zone_Mat", g, new Vector3(-7.5f, fy - 0.002f, 5.2f), new Vector3(4.3f, 0.01f, 3.2f), "ConcreteDark", default(Vector3), false);
+            Box("Zone_L", g, new Vector3(-9.75f + WSHIFT, fy, 5.2f), new Vector3(0.1f, 0.012f, 3.3f), "LineWhite", default(Vector3), false);
+            Box("Zone_R", g, new Vector3(-5.3f + WSHIFT, fy, 5.2f), new Vector3(0.1f, 0.012f, 3.3f), "LineWhite", default(Vector3), false);
+            Box("Zone_F", g, new Vector3(-7.5f + WSHIFT, fy, 3.55f), new Vector3(4.5f, 0.012f, 0.1f), "LineWhite", default(Vector3), false);
+            Box("Zone_Mat", g, new Vector3(-7.5f + WSHIFT, fy - 0.002f, 5.2f), new Vector3(4.3f, 0.01f, 3.2f), "ConcreteDark", default(Vector3), false);
 
             // stainless inspection bench, long axis along X so both of them face the boards
             var t = Group("InspectionBench", g);
@@ -490,12 +490,13 @@ namespace SecretsThatBreathe.LevelTools
             MagnifierLamp(t, new Vector3(-1.0f, 0.93f, 0.38f));
 
             // rolling stools – Kem on one side, his friend on the other
-            Stool(g, "Stool_Kem", new Vector3(-8.4f, FLR, 4.5f));
-            Stool(g, "Stool_Friend", new Vector3(-6.7f, FLR, 4.6f));
+            Stool(g, "Stool_Kem", new Vector3(-8.4f + WSHIFT, FLR, 4.5f));
+            Stool(g, "Stool_Friend", new Vector3(-6.7f + WSHIFT, FLR, 4.6f));
 
             // laptop / parts database cart
             var c = Group("DatabaseCart", g);
-            c.localPosition = new Vector3(-9.4f, FLR, 4.2f);
+            // moved off the left wall: it used to sit right in the personnel door opening
+            c.localPosition = new Vector3(-8.5f + WSHIFT, FLR, 3.9f);
             Box("Frame", c, new Vector3(0f, 0.45f, 0f), new Vector3(0.6f, 0.06f, 1.0f), "SteelDark", default(Vector3), false);
             Box("Top", c, new Vector3(0f, 0.92f, 0f), new Vector3(0.66f, 0.05f, 1.1f), "SteelDark");
             for (int i = 0; i < 4; i++)
@@ -511,12 +512,12 @@ namespace SecretsThatBreathe.LevelTools
             Marker("INTERACT_PartsDatabase", c, new Vector3(0.6f, 0f, 0f));
 
             // the two reference boards, mounted on the rear wall right behind the bench
-            InvestigationBoard(g, new Vector3(-8.6f, 1.85f, BACKWALL_FACE));
-            PaintChipBoard(g, new Vector3(-6.4f, 1.75f, BACKWALL_FACE));
+            InvestigationBoard(g, new Vector3(-8.6f + WSHIFT, 1.85f, BACKWALL_FACE));
+            PaintChipBoard(g, new Vector3(-6.4f + WSHIFT, 1.75f, BACKWALL_FACE));
 
             // catalogue shelf + printer, the friend's reference library (against the left wall)
             var sh = Group("CatalogueShelf", g);
-            sh.localPosition = new Vector3(-9.6f, FLR, 6.1f);
+            sh.localPosition = new Vector3(-9.6f + WSHIFT, FLR, 6.1f);
             Box("Body", sh, new Vector3(0f, 0.9f, 0f), new Vector3(0.42f, 1.8f, 1.5f), "SteelDark");
             for (int i = 0; i < 4; i++)
             {
@@ -530,13 +531,13 @@ namespace SecretsThatBreathe.LevelTools
             Marker("INTERACT_Records_Printout", sh, new Vector3(0.6f, 1.9f, 0f));
 
             // dedicated task lighting over the bench (named Insp_* so the mood switch boosts them)
-            TaskLight(g, "Insp_Light_A", new Vector3(-8.5f, 3.3f, 5.4f), true);
-            TaskLight(g, "Insp_Light_B", new Vector3(-6.7f, 3.3f, 5.4f), false);
-            WorkLight(g, "Insp_StandLight", new Vector3(-5.7f, FLR, 4.2f));
+            TaskLight(g, "Insp_Light_A", new Vector3(-8.5f + WSHIFT, 3.3f, 5.4f), true);
+            TaskLight(g, "Insp_Light_B", new Vector3(-6.7f + WSHIFT, 3.3f, 5.4f), false);
+            WorkLight(g, "Insp_StandLight", new Vector3(-5.7f + WSHIFT, FLR, 4.2f));
 
-            Marker("NAV_InspectionZone", g, new Vector3(-7.6f, FLR, 4.4f));
-            Marker("STAND_Kem", g, new Vector3(-8.4f, FLR, 4.5f));
-            Marker("STAND_Friend", g, new Vector3(-6.7f, FLR, 4.6f));
+            Marker("NAV_InspectionZone", g, new Vector3(-7.6f + WSHIFT, FLR, 4.4f));
+            Marker("STAND_Kem", g, new Vector3(-8.4f + WSHIFT, FLR, 4.5f));
+            Marker("STAND_Friend", g, new Vector3(-6.7f + WSHIFT, FLR, 4.6f));
         }
 
         /// <summary>What Kem carries in from chapter 1, laid out for examination.</summary>
@@ -670,14 +671,14 @@ namespace SecretsThatBreathe.LevelTools
         {
             var g = Group("ZONE_Hangout", parent);
 
-            Box("Rug", g, new Vector3(-8.2f, FLR + 0.008f, -2.7f), new Vector3(2.8f, 0.012f, 3.2f), "Fabric", default(Vector3), false);
+            Box("Rug", g, new Vector3(-8.2f + WSHIFT, FLR + 0.008f, -2.7f), new Vector3(2.8f, 0.012f, 3.2f), "Fabric", default(Vector3), false);
 
-            Sofa(g, "Sofa_Old", new Vector3(-9.25f, FLR, -2.7f), 90f);
-            Box("Sofa_Cushion", g, new Vector3(-9.05f, FLR + 0.52f, -3.3f), new Vector3(0.5f, 0.14f, 0.5f), "ToolRed", new Vector3(0f, 12f, 0f), false);
+            Sofa(g, "Sofa_Old", new Vector3(-9.25f + WSHIFT, FLR, -2.7f), 90f);
+            Box("Sofa_Cushion", g, new Vector3(-9.05f + WSHIFT, FLR + 0.52f, -3.3f), new Vector3(0.5f, 0.14f, 0.5f), "ToolRed", new Vector3(0f, 12f, 0f), false);
 
             // low table with the usual garage clutter
             var t = Group("LowTable", g);
-            t.localPosition = new Vector3(-7.9f, FLR, -2.7f);
+            t.localPosition = new Vector3(-7.9f + WSHIFT, FLR, -2.7f);
             Box("Top", t, new Vector3(0f, 0.44f, 0f), new Vector3(0.7f, 0.04f, 1.2f), "Wood");
             for (int i = 0; i < 4; i++)
                 Box("Leg_" + i, t, new Vector3(i < 2 ? -0.3f : 0.3f, 0.22f, i % 2 == 0 ? -0.5f : 0.5f), new Vector3(0.05f, 0.44f, 0.05f), "SteelDark", default(Vector3), false);
@@ -688,7 +689,7 @@ namespace SecretsThatBreathe.LevelTools
 
             // fridge, fan, radio – the character of the place
             var f = Group("MiniFridge", g);
-            f.localPosition = new Vector3(-9.4f, FLR, -0.9f);
+            f.localPosition = new Vector3(-9.4f + WSHIFT, FLR, -0.9f);
             Box("Body", f, new Vector3(0f, 0.45f, 0f), new Vector3(0.55f, 0.9f, 0.55f), "OffWhite");
             Box("Door", f, new Vector3(0.29f, 0.45f, 0f), new Vector3(0.04f, 0.86f, 0.52f), "White", default(Vector3), false);
             Box("Handle", f, new Vector3(0.33f, 0.45f, -0.2f), new Vector3(0.03f, 0.3f, 0.03f), "Alu", default(Vector3), false);
@@ -697,7 +698,7 @@ namespace SecretsThatBreathe.LevelTools
             Marker("INTERACT_Fridge", f, new Vector3(0.6f, 0f, 0f));
 
             var fan = Group("StandFan", g);
-            fan.localPosition = new Vector3(-6.9f, FLR, -4.0f);
+            fan.localPosition = new Vector3(-6.9f + WSHIFT, FLR, -4.0f);
             Box("Base", fan, new Vector3(0f, 0.03f, 0f), new Vector3(0.42f, 0.06f, 0.42f), "SteelDark", default(Vector3), false);
             Cyl("Pole", fan, new Vector3(0f, 0.6f, 0f), 0.05f, 1.2f, "OffWhite");
             Cyl("Cage", fan, new Vector3(0f, 1.28f, 0.06f), 0.5f, 0.14f, "Alu", new Vector3(90f, 0f, 0f));
@@ -711,8 +712,8 @@ namespace SecretsThatBreathe.LevelTools
                 Box("Trophy_" + i, g, new Vector3(X0 + 0.35f, 1.5f, -5.4f + i * 0.3f), new Vector3(0.14f, 0.3f + (i % 2) * 0.1f, 0.14f), "Copper", default(Vector3), false);
             Box("TrophyShelf", g, new Vector3(X0 + 0.4f, 1.32f, -5.1f), new Vector3(0.34f, 0.04f, 1.6f), "Wood", default(Vector3), false);
 
-            Marker("NAV_Hangout", g, new Vector3(-8.2f, FLR, -2.7f));
-            Marker("SIT_Sofa", g, new Vector3(-9.0f, FLR + 0.45f, -2.7f));
+            Marker("NAV_Hangout", g, new Vector3(-8.2f + WSHIFT, FLR, -2.7f));
+            Marker("SIT_Sofa", g, new Vector3(-9.0f + WSHIFT, FLR + 0.45f, -2.7f));
         }
     }
 }

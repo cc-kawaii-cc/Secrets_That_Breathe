@@ -10,7 +10,7 @@ namespace SecretsThatBreathe.LevelTools
     /// Call UseLibrary() first so materials land in the right folder for the level being built.
     /// All geometry is authored in metres at 1:1 scale.
     /// </summary>
-    public static class LevelKit
+    public static partial class LevelKit
     {
         static string _folder = "Assets/Materials";
         static string _prefix = "M_";
@@ -228,8 +228,63 @@ namespace SecretsThatBreathe.LevelTools
         /// <summary>Capsule stand-in for a person, at roughly human proportions.</summary>
         public static GameObject PlaceHuman(string assetPath, Transform parent, Vector3 pos, float yaw)
         {
-            return Place(assetPath, parent, pos, yaw, 0f, 0f, new Vector3(0.5f, 0.9f, 0.5f));
+            // the NPC prefab is a default capsule (1 wide, 2 tall), so this lands on
+            // Nav.HumanHeight with shoulders about half a metre across
+            return Place(assetPath, parent, pos, yaw, 0f, 0f, new Vector3(0.5f, Nav.PlayerScale, 0.5f));
         }
+
+        /// <summary>
+        /// Drops the player in standing the same height as the NPCs around them.
+        ///
+        /// player.prefab carries a 1.5 stretch on its Y axis, which scales its CharacterController
+        /// to 3 m tall. Every other chapter shares that prefab, so the fix belongs on the instance:
+        /// the whole rig is rescaled uniformly, which keeps the camera, ground check and flashlight
+        /// at the right height relative to the body instead of shearing them.
+        /// </summary>
+        public static GameObject PlacePlayer(string assetPath, Transform parent, Vector3 pos, float yaw = 0f)
+        {
+            var src = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
+            if (src == null)
+            {
+                Debug.LogWarning("[LevelKit] missing player prefab: " + assetPath);
+                return null;
+            }
+
+            // Place multiplies the prefab scale, so divide it out first: whatever the prefab was
+            // saved with, the instance ends up at a uniform Nav.PlayerScale on all three axes.
+            Vector3 a = src.transform.localScale;
+            Vector3 fix = new Vector3(
+                Nav.PlayerScale / Mathf.Max(0.0001f, a.x),
+                Nav.PlayerScale / Mathf.Max(0.0001f, a.y),
+                Nav.PlayerScale / Mathf.Max(0.0001f, a.z));
+
+            var go = Place(assetPath, parent, pos, yaw, 0f, 0f, fix);
+            if (go == null) return null;
+            go.name = "player";
+
+            // The player has no MeshRenderer (nobody renders their own body in first person), so
+            // the renderer-bounds grounding in Place cannot see it and leaves the origin - which
+            // is the capsule centre - sitting on the floor, burying the player to the waist.
+            // Stand them on the floor using the controller instead.
+            var cc = go.GetComponent<CharacterController>();
+            if (cc != null)
+            {
+                float sy = Mathf.Abs(go.transform.lossyScale.y);
+                var lp = go.transform.localPosition;
+                lp.y = pos.y + (cc.height * 0.5f - cc.center.y) * sy + 0.02f;
+                go.transform.localPosition = lp;
+            }
+            return go;
+        }
+
+        /// <summary>Every prefab dropped in by <see cref="Place"/> during the current build.</summary>
+        static readonly List<GameObject> _placed = new List<GameObject>();
+
+        /// <summary>Call at the top of a build so the placed-prop list only covers this level.</summary>
+        public static void ResetPlaced() { _placed.Clear(); }
+
+        /// <summary>Read-only view of the prefabs this build has placed.</summary>
+        public static List<GameObject> Placed { get { return _placed; } }
 
         /// <summary>Instantiates a project prefab/fbx, drops it on the ground and optionally rescales it.</summary>
         public static GameObject Place(string assetPath, Transform parent, Vector3 pos, float yaw = 0f,
@@ -245,9 +300,13 @@ namespace SecretsThatBreathe.LevelTools
             if (go == null) return null;
             go.transform.SetParent(parent, false);
             go.transform.localPosition = Vector3.zero;
-            go.transform.localEulerAngles = new Vector3(pitch, yaw, 0f);
+            // Keep the rotation the prefab was authored with and layer yaw/pitch on top of it.
+            // Several street props carry a -90 X correction for their Z-up source model, and
+            // overwriting it outright used to lay oil drums and gas cans on their side.
+            go.transform.localRotation = Quaternion.Euler(pitch, yaw, 0f) * src.transform.rotation;
             if (scale != default(Vector3))
                 go.transform.localScale = Vector3.Scale(go.transform.localScale, scale);
+            _placed.Add(go);
 
             Bounds b;
             if (!TryBounds(go, out b)) { go.transform.localPosition = pos; return go; }

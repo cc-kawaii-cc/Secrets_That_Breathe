@@ -7,23 +7,27 @@ namespace SecretsThatBreathe.LevelTools
     public static partial class Ch2GarageBuilder
     {
         public const float OFF_BACK_Z = 2.0f;      // office block rear wall
+        /// <summary>Centre of the reception doorway in the workshop/office partition.</summary>
+        public const float RECEP_DOOR_Z = -2.1f;
+        /// <summary>Centre of the mezzanine stair opening in the office rear wall.</summary>
+        public const float STAIR_OPENING_X = 5.85f;
         public const float OFF_L_X = PARTX;        // 3.8
         public const float OFF_R_X = X1 + WT * 0.5f;
         const float PT = 0.15f;                    // partition thickness
 
         static void BuildInteriorStructure()
         {
-            var g = Group("INT_Structure", _root);
+            var g = Group("INT_Structure", _struct);
 
             BuildPartition(g);
             BuildMezzanine(g);
-            BuildStairs(g);
-            BuildRearShutter(g);
-            BuildInteriorDoors(g);
+            BuildStairs(_circ);
+            BuildRearShutter(_circ);
+            BuildInteriorDoors(_circ);
             BuildRoofStructure(g);
-            BuildInteriorLighting(g);
-            BuildFloorGraphics(g);
-            BuildServices(g);
+            BuildInteriorLighting(_light);
+            BuildFloorGraphics(_dress);
+            BuildServices(_dress);
         }
 
         // ── partition between workshop and office block (x = 3.8) ──
@@ -33,29 +37,39 @@ namespace SecretsThatBreathe.LevelTools
             float zA = Z0 - WT * 0.5f;    // -7.125
             float zB = OFF_BACK_Z;        //  2.0
 
-            // ground level, door opening z -2.6 .. -1.6
-            Box("Lower_A", g, new Vector3(PARTX, 1.575f, (zA + -2.6f) * 0.5f), new Vector3(PT, 3.15f, -2.6f - zA), "OffWhite");
-            Box("Lower_B", g, new Vector3(PARTX, 1.575f, (-1.6f + zB) * 0.5f), new Vector3(PT, 3.15f, zB + 1.6f), "OffWhite");
-            Box("Lower_Header", g, new Vector3(PARTX, 2.625f, -2.1f), new Vector3(PT, 1.05f, 1.0f), "OffWhite");
+            // ground level: the reception doorway, sized from the player capsule
+            float dA = RECEP_DOOR_Z - LevelKit.Nav.DoorClear * 0.5f;
+            float dB = RECEP_DOOR_Z + LevelKit.Nav.DoorClear * 0.5f;
+            Box("Lower_A", g, new Vector3(PARTX, 1.575f, (zA + dA) * 0.5f), new Vector3(PT, 3.15f, dA - zA), "OffWhite");
+            Box("Lower_B", g, new Vector3(PARTX, 1.575f, (dB + zB) * 0.5f), new Vector3(PT, 3.15f, zB - dB), "OffWhite");
+            Box("Lower_Header", g, new Vector3(PARTX, (LevelKit.Nav.DoorHeight + 3.15f) * 0.5f, RECEP_DOOR_Z),
+                new Vector3(PT, 3.15f - LevelKit.Nav.DoorHeight, LevelKit.Nav.DoorClear), "OffWhite");
 
-            // upper level: glazed supervisor window over the shop floor
-            Box("Upper_Sill", g, new Vector3(PARTX, 3.35f, (zA + zB) * 0.5f), new Vector3(PT, 0.4f, zB - zA), "OffWhite");
-            Box("Upper_Head", g, new Vector3(PARTX, 5.6f, (zA + zB) * 0.5f), new Vector3(PT, 0.8f, zB - zA), "OffWhite");
-            // door to the mezzanine, z 1.05 .. 2.0
-            Box("Upper_DoorJamb", g, new Vector3(PARTX, 4.35f, 0.85f), new Vector3(PT, 1.8f, 0.4f), "OffWhite");
-            Box("Upper_Glass", g, new Vector3(PARTX, 4.35f, (zA + 0.65f) * 0.5f), new Vector3(0.06f, 1.8f, 0.65f - zA), "Glass", default(Vector3), false);
-            for (int i = 0; i < 6; i++)
-                Box("Glass_Mullion_" + i, g, new Vector3(PARTX, 4.35f, zA + 0.9f + i * 1.28f), new Vector3(0.1f, 1.8f, 0.08f), "Alu", default(Vector3), false);
-            Box("Glass_Frame_Bot", g, new Vector3(PARTX, 3.48f, (zA + 0.65f) * 0.5f), new Vector3(0.12f, 0.08f, 0.65f - zA), "Alu", default(Vector3), false);
-            Box("Glass_Frame_Top", g, new Vector3(PARTX, 5.22f, (zA + 0.65f) * 0.5f), new Vector3(0.12f, 0.08f, 0.65f - zA), "Alu", default(Vector3), false);
+            // Upper level: one continuous glazed supervisor window over the shop floor.
+            // There used to be a door here as well, opening onto a 3.15 m drop into the
+            // workshop with no walkway on the far side. The mezzanine is reached by the
+            // stairs, so the door is gone and the glazing simply runs the full span.
+            float gTop = MEZZ + LevelKit.Nav.DoorHeight;      // 5.45
+            Box("Upper_Sill", g, new Vector3(PARTX, MEZZ + 0.2f, (zA + zB) * 0.5f), new Vector3(PT, 0.4f, zB - zA), "OffWhite");
+            Box("Upper_Head", g, new Vector3(PARTX, (gTop + BH) * 0.5f, (zA + zB) * 0.5f), new Vector3(PT, BH - gTop, zB - zA), "OffWhite");
+            float gh = gTop - (MEZZ + 0.4f), gy = (gTop + MEZZ + 0.4f) * 0.5f;
+            Box("Upper_Glass", g, new Vector3(PARTX, gy, (zA + zB) * 0.5f), new Vector3(0.06f, gh, zB - zA), "Glass", default(Vector3), false);
+            int mullions = Mathf.Max(2, Mathf.RoundToInt((zB - zA) / 1.5f));
+            for (int i = 0; i <= mullions; i++)
+                Box("Glass_Mullion_" + i, g, new Vector3(PARTX, gy, Mathf.Lerp(zA, zB, i / (float)mullions)), new Vector3(0.1f, gh, 0.08f), "Alu", default(Vector3), false);
+            Box("Glass_Frame_Bot", g, new Vector3(PARTX, MEZZ + 0.44f, (zA + zB) * 0.5f), new Vector3(0.12f, 0.08f, zB - zA), "Alu", default(Vector3), false);
+            Box("Glass_Frame_Top", g, new Vector3(PARTX, gTop - 0.04f, (zA + zB) * 0.5f), new Vector3(0.12f, 0.08f, zB - zA), "Alu", default(Vector3), false);
 
             // office block rear wall (z = 2.0)
             var b = Group("Office_BackWall", parent);
             // built as panels so the mezzanine stair door stays open
-            Box("Wall_L", b, new Vector3((OFF_L_X + 5.3f) * 0.5f, 3f, OFF_BACK_Z), new Vector3(5.3f - OFF_L_X, 6f, PT), "OffWhite");
-            Box("Wall_R", b, new Vector3((6.4f + OFF_R_X) * 0.5f, 3f, OFF_BACK_Z), new Vector3(OFF_R_X - 6.4f, 6f, PT), "OffWhite");
-            Box("Wall_Mid_Lo", b, new Vector3(5.85f, 1.575f, OFF_BACK_Z), new Vector3(1.1f, 3.15f, PT), "OffWhite");
-            Box("Wall_Mid_Hi", b, new Vector3(5.85f, 5.62f, OFF_BACK_Z), new Vector3(1.1f, 0.75f, PT), "OffWhite");
+            float sL = STAIR_OPENING_X - LevelKit.Nav.DoorClear * 0.5f;
+            float sR = STAIR_OPENING_X + LevelKit.Nav.DoorClear * 0.5f;
+            float headY = MEZZ + LevelKit.Nav.DoorHeight;          // 5.45, clears a standing player
+            Box("Wall_L", b, new Vector3((OFF_L_X + sL) * 0.5f, 3f, OFF_BACK_Z), new Vector3(sL - OFF_L_X, 6f, PT), "OffWhite");
+            Box("Wall_R", b, new Vector3((sR + OFF_R_X) * 0.5f, 3f, OFF_BACK_Z), new Vector3(OFF_R_X - sR, 6f, PT), "OffWhite");
+            Box("Wall_Mid_Lo", b, new Vector3(STAIR_OPENING_X, MEZZ * 0.5f, OFF_BACK_Z), new Vector3(LevelKit.Nav.DoorClear, MEZZ, PT), "OffWhite");
+            Box("Wall_Mid_Hi", b, new Vector3(STAIR_OPENING_X, (headY + 6f) * 0.5f, OFF_BACK_Z), new Vector3(LevelKit.Nav.DoorClear, 6f - headY, PT), "OffWhite");
         }
 
         static void BuildMezzanine(Transform parent)
@@ -67,9 +81,11 @@ namespace SecretsThatBreathe.LevelTools
 
             Box("Slab", g, new Vector3(cx, MEZZ - 0.1f, cz), new Vector3(dx, 0.2f, dz), "Concrete");
             Box("Edge_Beam", g, new Vector3(OFF_L_X - 0.02f, 2.9f, cz), new Vector3(0.12f, 0.45f, dz), "SteelDark", default(Vector3), false);
-            // support columns under the mezzanine
-            for (int i = 0; i < 3; i++)
-                Box("Column_" + i, g, new Vector3(OFF_L_X + 0.25f, 1.45f, zA + 1.6f + i * 3.0f), new Vector3(0.22f, 2.9f, 0.22f), "SteelDark");
+            // support columns under the mezzanine, spaced around the reception doorway rather
+            // than through it (one of them used to stand squarely in the opening)
+            float[] colZ = { zA + 1.4f, RECEP_DOOR_Z - 1.5f, RECEP_DOOR_Z + 1.5f, zB - 0.6f };
+            for (int i = 0; i < colZ.Length; i++)
+                Box("Column_" + i, g, new Vector3(OFF_L_X + 0.25f, 1.45f, colZ[i]), new Vector3(0.22f, 2.9f, 0.22f), "SteelDark");
             // ground floor ceiling of the office block
             Box("Ceiling_Lower", g, new Vector3(cx, 2.79f, cz), new Vector3(dx - 0.1f, 0.03f, dz - 0.1f), "White", default(Vector3), false);
             // upper office floor finish
@@ -80,7 +96,8 @@ namespace SecretsThatBreathe.LevelTools
         {
             var g = Group("Stairs_ToMezzanine", parent);
             // straight steel flight in the rear-right bay, climbing towards -Z
-            const float w = 1.1f, x = 5.85f;
+            const float w = 1.4f;
+            float x = STAIR_OPENING_X;
             const float zBottom = 6.6f, tread = 0.27f, rise = 3.15f / 16f;
             for (int i = 0; i < 16; i++)
             {
@@ -117,9 +134,12 @@ namespace SecretsThatBreathe.LevelTools
         static void BuildRearShutter(Transform parent)
         {
             var g = Group("Rear_RollerShutter", parent);
-            float cx = 0.5f, w = 4f;
-            for (int i = 0; i < 21; i++)
-                Box("Slat_" + i, g, new Vector3(cx, 0.1f + i * 0.2f, Z1 - 0.2f), new Vector3(w, 0.19f, 0.06f), "Alu", default(Vector3), i == 0);
+            float cx = REAR_DOOR_CX, w = REAR_DOOR_W;
+            // The shutter is up. The slats are coiled in the hood rather than parked across the
+            // opening, so the rear yard is a real second way in and out of the workshop.
+            for (int i = 0; i < 7; i++)
+                Box("Slat_" + i, g, new Vector3(cx, DOOR_H + 0.12f + i * 0.09f, Z1 - 0.2f - (i % 2) * 0.07f),
+                    new Vector3(w, 0.08f, 0.34f), "Alu", default(Vector3), false);
             Box("Box", g, new Vector3(cx, DOOR_H + 0.28f, Z1 - 0.25f), new Vector3(w + 0.3f, 0.5f, 0.4f), "SteelDark", default(Vector3), false);
             Box("Guide_L", g, new Vector3(cx - w * 0.5f - 0.06f, 2.1f, Z1 - 0.2f), new Vector3(0.12f, DOOR_H, 0.18f), "SteelDark", default(Vector3), false);
             Box("Guide_R", g, new Vector3(cx + w * 0.5f + 0.06f, 2.1f, Z1 - 0.2f), new Vector3(0.12f, DOOR_H, 0.18f), "SteelDark", default(Vector3), false);
@@ -131,61 +151,65 @@ namespace SecretsThatBreathe.LevelTools
         {
             var g = Group("Doors", parent);
 
+            // Every leaf below is hung open and carries no collider. A leaf parked across its
+            // own opening is indistinguishable from a wall, which is what used to seal this
+            // building shut in all four directions.
+            float dc = LevelKit.Nav.DoorClear, dh = LevelKit.Nav.DoorHeight;
+
             // reception <-> workshop
             var d1 = Group("Door_Reception", g);
-            Box("Leaf", d1, new Vector3(PARTX, 1.05f, -2.1f), new Vector3(0.06f, 2.1f, 0.95f), "OffWhite");
-            Box("Frame_T", d1, new Vector3(PARTX, 2.13f, -2.1f), new Vector3(0.16f, 0.08f, 1.1f), "SteelDark", default(Vector3), false);
-            Cyl("Handle", d1, new Vector3(PARTX - 0.07f, 1.05f, -1.75f), 0.04f, 0.12f, "Alu", new Vector3(0f, 0f, 90f));
-            Box("Kickplate", d1, new Vector3(PARTX - 0.04f, 0.2f, -2.1f), new Vector3(0.02f, 0.35f, 0.9f), "Alu", default(Vector3), false);
-
-            // mezzanine office door
-            var d2 = Group("Door_MezzOffice", g);
-            Box("Leaf", d2, new Vector3(PARTX, MEZZ + 1.05f, 1.55f), new Vector3(0.06f, 2.1f, 0.9f), "OffWhite");
-            Cyl("Handle", d2, new Vector3(PARTX - 0.07f, MEZZ + 1.05f, 1.2f), 0.04f, 0.12f, "Alu", new Vector3(0f, 0f, 90f));
+            LevelKit.DoorLeaf("Leaf", d1, new Vector3(PARTX, FLR, RECEP_DOOR_Z - dc * 0.5f), dc, dh - 0.05f, 0.06f, "OffWhite", -90f, 80f);
+            Box("Frame_T", d1, new Vector3(PARTX, dh + 0.04f, RECEP_DOOR_Z), new Vector3(0.16f, 0.08f, dc + 0.15f), "SteelDark", default(Vector3), false);
+            Marker("DOOR_Reception", d1, new Vector3(PARTX, 0f, RECEP_DOOR_Z));
 
             // side personnel door in the left wall
             var d3 = Group("Door_SideExit", g);
-            Box("Leaf", d3, new Vector3(X0 + 0.05f, 1.05f, 4.1f), new Vector3(0.06f, 2.1f, 0.95f), "SteelDark");
-            Cyl("Bar", d3, new Vector3(X0 + 0.16f, 1.05f, 4.1f), 0.05f, 0.8f, "Alu", new Vector3(90f, 0f, 0f));
-            Sign("Exit", d3, new Vector3(X0 + 0.3f, 2.35f, 4.1f), new Vector2(0.7f, 0.22f), "EXIT", new Color(0.4f, 1f, 0.5f), 90f);
-            Marker("DOOR_SideExit", d3, new Vector3(X0, 0f, 4.1f));
+            LevelKit.DoorLeaf("Leaf", d3, new Vector3(X0 - 0.02f, FLR, SIDE_DOOR_Z + dc * 0.5f), dc, dh - 0.05f, 0.06f, "SteelDark", 90f, 85f);
+            Sign("Exit", d3, new Vector3(X0 + 0.3f, 2.55f, SIDE_DOOR_Z), new Vector2(0.7f, 0.22f), "EXIT", new Color(0.4f, 1f, 0.5f), 90f);
+            Marker("DOOR_SideExit", d3, new Vector3(X0, 0f, SIDE_DOOR_Z));
         }
 
         static void BuildRoofStructure(Transform parent)
         {
             var g = Group("Roof_Structure", parent);
+            float sx = (X0 + PARTX) * 0.5f, sw = PARTX - X0;      // the workshop bay in X
             // primary beams across the workshop
             for (int i = 0; i < 5; i++)
             {
                 float z = -5.5f + i * 2.75f;
-                Box("Beam_" + i, g, new Vector3(-3.1f, 5.5f, z), new Vector3(13.6f, 0.42f, 0.2f), "SteelDark", default(Vector3), false);
-                Box("Beam_Bot_" + i, g, new Vector3(-3.1f, 5.31f, z), new Vector3(13.6f, 0.05f, 0.34f), "SteelDark", default(Vector3), false);
-                Box("Beam_Top_" + i, g, new Vector3(-3.1f, 5.69f, z), new Vector3(13.6f, 0.05f, 0.34f), "SteelDark", default(Vector3), false);
+                Box("Beam_" + i, g, new Vector3(sx, 5.5f, z), new Vector3(sw, 0.42f, 0.2f), "SteelDark", default(Vector3), false);
+                Box("Beam_Bot_" + i, g, new Vector3(sx, 5.31f, z), new Vector3(sw, 0.05f, 0.34f), "SteelDark", default(Vector3), false);
+                Box("Beam_Top_" + i, g, new Vector3(sx, 5.69f, z), new Vector3(sw, 0.05f, 0.34f), "SteelDark", default(Vector3), false);
             }
             // purlins
-            for (int i = 0; i < 6; i++)
-                Box("Purlin_" + i, g, new Vector3(-9.4f + i * 2.6f, 5.78f, 0f), new Vector3(0.12f, 0.16f, BD - 0.5f), "SteelDark", default(Vector3), false);
+            int purlins = Mathf.Max(2, Mathf.RoundToInt((sw - 1.2f) / 2.6f) + 1);
+            for (int i = 0; i < purlins; i++)
+                Box("Purlin_" + i, g, new Vector3(Mathf.Lerp(X0 + 0.6f, PARTX - 0.6f, i / (purlins - 1f)), 5.78f, 0f),
+                    new Vector3(0.12f, 0.16f, BD - 0.5f), "SteelDark", default(Vector3), false);
             // corrugated deck
-            Box("Deck", g, new Vector3(-3.1f, 5.9f, 0f), new Vector3(13.7f, 0.06f, BD - 0.4f), "Alu", default(Vector3), false);
-            // translucent roof lights – workshops always have a few
+            Box("Deck", g, new Vector3(sx, 5.9f, 0f), new Vector3(sw + 0.1f, 0.06f, BD - 0.4f), "Alu", default(Vector3), false);
+            // translucent roof lights, workshops always have a few
             for (int i = 0; i < 3; i++)
-                Box("Skylight_" + i, g, new Vector3(-8f + i * 4.5f, 5.93f, 1.5f), new Vector3(2.2f, 0.05f, 3.2f), "Glass", default(Vector3), false);
+                Box("Skylight_" + i, g, new Vector3(X0 + 2.5f + i * 4.5f, 5.93f, 1.5f), new Vector3(2.2f, 0.05f, 3.2f), "Glass", default(Vector3), false);
         }
 
         static void BuildInteriorLighting(Transform parent)
         {
             var g = Group("INT_Lighting", parent);
 
-            float[] xs = { -7.8f, -3.9f, 0.0f, 3.0f };
+            const int cols = 5;
             float[] zs = { -4.6f, 0.0f, 4.6f };
             int n = 0;
-            for (int a = 0; a < xs.Length; a++)
+            for (int a = 0; a < cols; a++)
+            {
+                float x = Mathf.Lerp(X0 + 1.7f, PARTX - 0.8f, a / (cols - 1f));
                 for (int b = 0; b < zs.Length; b++)
                 {
                     bool withLight = (n % 2 == 0);
-                    Fluorescent(g, "Shop_Light_" + n, new Vector3(xs[a], 5.15f, zs[b]), 2.2f, withLight, n == 4);
+                    Fluorescent(g, "Shop_Light_" + n, new Vector3(x, 5.15f, zs[b]), 2.2f, withLight, n == 4);
                     n++;
                 }
+            }
 
             // rear-right service strip
             Fluorescent(g, "Rear_Light_0", new Vector3(6.5f, 5.15f, 4.6f), 2.0f, true, false);
@@ -204,7 +228,7 @@ namespace SecretsThatBreathe.LevelTools
             Panel(g, "Mezz_Light_2", new Vector3(7.0f, 5.75f, -1.5f), true);
 
             // exit / emergency lighting
-            Box("EmergencyLight", g, new Vector3(X0 + 0.4f, 2.6f, 4.1f), new Vector3(0.28f, 0.12f, 0.1f), "LampGreen", default(Vector3), false);
+            Box("EmergencyLight", g, new Vector3(X0 + 0.4f, 2.6f, SIDE_DOOR_Z), new Vector3(0.28f, 0.12f, 0.1f), "LampGreen", default(Vector3), false);
         }
 
         /// <summary>Twin-tube industrial batten.</summary>
@@ -271,14 +295,16 @@ namespace SecretsThatBreathe.LevelTools
                 Box("Hazard_" + i, g, new Vector3(2.9f + i * 0.22f, y, 5.2f), new Vector3(0.1f, 0.012f, 1.2f), "Yellow", new Vector3(0f, 30f, 0f), false);
 
             // drainage channel with a steel grate
-            Box("Drain_Channel", g, new Vector3(-3.2f, FLR - 0.03f, -5.2f), new Vector3(13.2f, 0.08f, 0.28f), "ConcreteDark", default(Vector3), false);
-            for (int i = 0; i < 44; i++)
-                Box("Grate_" + i, g, new Vector3(-9.7f + i * 0.3f, FLR + 0.001f, -5.2f), new Vector3(0.16f, 0.02f, 0.26f), "Steel", default(Vector3), false);
+            float dx = (X0 + PARTX) * 0.5f, dw = PARTX - X0 - 0.4f;
+            Box("Drain_Channel", g, new Vector3(dx, FLR - 0.03f, -5.2f), new Vector3(dw, 0.08f, 0.28f), "ConcreteDark", default(Vector3), false);
+            int grates = Mathf.RoundToInt(dw / 0.3f);
+            for (int i = 0; i < grates; i++)
+                Box("Grate_" + i, g, new Vector3(dx - dw * 0.5f + 0.15f + i * 0.3f, FLR + 0.001f, -5.2f), new Vector3(0.16f, 0.02f, 0.26f), "Steel", default(Vector3), false);
 
             // oil stains / worn patches
             for (int i = 0; i < 6; i++)
             {
-                float ox = -8.5f + i * 2.4f;
+                float ox = X0 + 2.0f + i * 2.4f;
                 Decal("Stain_" + i, g, new Vector3(ox, y - 0.002f, -1.5f + (i % 3) * 2.3f), new Vector2(1.6f + i * 0.2f, 1.2f), "ConcreteDark", i * 27f);
             }
         }
@@ -299,7 +325,7 @@ namespace SecretsThatBreathe.LevelTools
 
             // main air line along the left wall with drops at each bay
             Cyl("AirLine_Main", g, new Vector3(X0 + 0.35f, 3.4f, 0f), 0.06f, BD - 0.6f, "Steel", new Vector3(90f, 0f, 0f));
-            Cyl("AirLine_Cross", g, new Vector3(-3.2f, 3.4f, -3.2f), 0.06f, 13.2f, "Steel", new Vector3(0f, 0f, 90f));
+            Cyl("AirLine_Cross", g, new Vector3((X0 + PARTX) * 0.5f, 3.4f, -3.2f), 0.06f, PARTX - X0, "Steel", new Vector3(0f, 0f, 90f));
             float[] drops = { -2.6f, 1.4f };
             for (int i = 0; i < drops.Length; i++)
             {
@@ -310,7 +336,7 @@ namespace SecretsThatBreathe.LevelTools
             }
 
             // cable tray + conduit
-            Box("CableTray", g, new Vector3(-3.2f, 4.9f, Z1 - 0.55f), new Vector3(13.2f, 0.1f, 0.3f), "Alu", default(Vector3), false);
+            Box("CableTray", g, new Vector3((X0 + PARTX) * 0.5f, 4.9f, Z1 - 0.55f), new Vector3(PARTX - X0, 0.1f, 0.3f), "Alu", default(Vector3), false);
             Cyl("Conduit_A", g, new Vector3(X0 + 0.5f, 4.2f, 0f), 0.05f, BD - 1f, "Alu", new Vector3(90f, 0f, 0f));
 
             // electrical panel, on the office partition out of the way of the work zones

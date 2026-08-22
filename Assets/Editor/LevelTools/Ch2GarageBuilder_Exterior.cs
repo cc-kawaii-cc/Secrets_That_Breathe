@@ -10,7 +10,7 @@ namespace SecretsThatBreathe.LevelTools
 
         static void BuildExterior()
         {
-            var g = Group("EXT_Site", _root);
+            var g = Group("EXT_Site", _dress);
 
             BuildForecourt(Group("Forecourt", g));
             BuildPerimeter(Group("Perimeter", g));
@@ -63,9 +63,9 @@ namespace SecretsThatBreathe.LevelTools
             // dirty details
             for (int i = 0; i < 7; i++)
                 Decal("Tyre_Mark_" + i, g, new Vector3(-6f + i * 2.1f, 0.006f, -9.5f - (i % 3) * 1.4f), new Vector2(0.6f, 4.5f), "ConcreteDark", (i % 4) * 6f);
-            Place(P_CONE, g, new Vector3(-6.4f, 0f, -9.0f), 0f, 0f, -90f);
-            Place(P_CONE, g, new Vector3(-5.2f, 0f, -9.4f), 0f, 0f, -90f);
-            Place(P_BARRIER, g, new Vector3(-8.5f, 0f, -9.2f), 12f, 0f, -90f);
+            Place(P_CONE, g, new Vector3(-6.4f, 0f, -9.0f), 0f);
+            Place(P_CONE, g, new Vector3(-5.2f, 0f, -9.4f), 0f);
+            Place(P_BARRIER, g, new Vector3(-8.5f, 0f, -9.2f), 12f);
 
             Marker("NAV_Forecourt", g, new Vector3(0f, 0f, -12f));
         }
@@ -325,55 +325,62 @@ namespace SecretsThatBreathe.LevelTools
         // ───────────────────────── vehicles ─────────────────────────
         static void BuildVehicles()
         {
-            var g = Group("VEHICLES", _root);
+            var g = Group("VEHICLES", _dress);
 
             // the friend's current job, up on the lift in bay 1
             var lifted = Place(P_CAR_A, g, new Vector3(-2.6f, 1.50f, -1.6f), 180f);
+            LevelKit.FitBoxCollider(lifted, 0.06f);
             if (lifted != null) lifted.name = "Car_FriendJob_OnLift";
 
             // KEM'S CAR – he drives in and parks straight in front of the open bay
             var kem = Place(P_CAR_B, g, new Vector3(2.6f, 0f, -11.6f), 180f);
+            LevelKit.FitBoxCollider(kem, 0.06f);
             if (kem != null) kem.name = "Car_KEM_Arrival";
 
             // customers left overnight
-            Place(P_CAR_A, g, new Vector3(-9.1f, 0f, -16.3f), 8f);
-            Place(P_CAR_B, g, new Vector3(-3.9f, 0f, -16.5f), -4f);
-            Place(P_CAR_A, g, new Vector3(20.5f, 0f, -3.2f), 90f);
+            LevelKit.FitBoxCollider(Place(P_CAR_A, g, new Vector3(-9.1f, 0f, -16.3f), 8f), 0.06f);
+            LevelKit.FitBoxCollider(Place(P_CAR_B, g, new Vector3(-3.9f, 0f, -16.5f), -4f), 0.06f);
+            LevelKit.FitBoxCollider(Place(P_CAR_A, g, new Vector3(20.5f, 0f, -3.2f), 90f), 0.06f);
 
             // long-term jobs / parts donors round the back
             var w1 = Place(P_CAR_B, g, new Vector3(-8.5f, 0f, 13.2f), 34f);
+            LevelKit.FitBoxCollider(w1, 0.06f);
             if (w1 != null) w1.name = "Car_PartsDonor_01";
             var w2 = Place(P_CAR_A, g, new Vector3(-3.4f, 0f, 16.8f), -22f);
+            LevelKit.FitBoxCollider(w2, 0.06f);
             if (w2 != null) w2.name = "Car_PartsDonor_02";
 
-            Place(P_CAR_B, g, new Vector3(-15f, 0f, -25.4f), 90f);
+            LevelKit.FitBoxCollider(Place(P_CAR_B, g, new Vector3(-15f, 0f, -25.4f), 90f), 0.06f);
         }
 
         // ───────────────────────── gameplay scaffolding ─────────────────────────
         // Chapter 2 beat sheet, wired as named empties the sequence scripts can grab.
         static void BuildGameplay()
         {
-            var g = Group("GAMEPLAY", _root);
+            var g = _play;
 
             // Kem arrives on foot from his car parked on the forecourt
-            Marker("PlayerSpawn_Arrival", g, new Vector3(1.6f, 0.2f, -10.4f));
-            var player = Place(P_PLAYER, g, new Vector3(1.6f, 1.2f, -10.4f), 0f);
-            if (player != null) player.name = "player";
+            // ตรงหน้าช่อง BAY 1 ที่เปิดอยู่ — เดินตรงเข้าไปได้เลย
+            // (จุดเดิมอยู่หน้า BAY 2 ซึ่งปิดตาย เปิดเกมมาเจอประตูปิดจ่อหน้า)
+            Marker("PlayerSpawn_Arrival", g, new Vector3(-2.6f, 0.2f, -11.5f));
+            LevelKit.PlacePlayer(P_PLAYER, g, new Vector3(-2.6f, FLR, -11.5f), 0f);
 
             Marker("PlayerSpawn_Street", g, new Vector3(0f, 1.2f, -25.4f));
             Marker("PlayerSpawn_Workshop", g, new Vector3(-2.6f, FLR, -5.5f));
             Marker("PlayerExit_ToStreet", g, new Vector3(0f, 0f, LOT_FRONT_Z));
 
             // where the friend is at each stage of the scene
-            var npc = Group("NPC_Friend", g);
-            var friend = Place("Assets/Champ&Kichzz/Prefab/Npc/NPC.prefab", npc, new Vector3(-2.4f, FLR, -4.4f), 180f);
+            var npc = Group("NPC_Friend", _actors);
+            // PlaceHuman, not Place: the raw prefab is a full 2 m capsule and stood a head
+            // taller than the NPCs in the other two Chapter 2 scenes
+            var friend = LevelKit.PlaceHuman("Assets/Champ&Kichzz/Prefab/Npc/NPC.prefab", npc, new Vector3(-2.4f, FLR, -4.4f), 180f);
             if (friend != null) friend.name = "NPC_Friend_PLACEHOLDER";
             Marker("NPC_Friend_UnderCar", npc, new Vector3(-3.4f, FLR, -3.4f));      // first found here, wrenching
             Marker("NPC_Friend_Greeting", npc, new Vector3(-2.4f, FLR, -4.4f));
-            Marker("NPC_Friend_AtBench", npc, new Vector3(-6.7f, FLR, 4.6f));        // examines the fragment
-            Marker("NPC_Friend_AtChart", npc, new Vector3(-6.2f, FLR, 5.9f));
+            Marker("NPC_Friend_AtBench", npc, new Vector3(-6.7f + WSHIFT, FLR, 4.6f));        // examines the fragment
+            Marker("NPC_Friend_AtChart", npc, new Vector3(-6.2f + WSHIFT, FLR, 5.9f));
             Marker("NPC_Friend_AtPC", npc, new Vector3(8.7f, MEZZ, -1.2f));          // digs out the order records
-            Marker("NPC_Friend_Sofa", npc, new Vector3(-9.0f, FLR + 0.45f, -2.7f));
+            Marker("NPC_Friend_Sofa", npc, new Vector3(-9.0f + WSHIFT, FLR + 0.45f, -2.7f));
             Marker("NPC_Friend_Outdoor", npc, new Vector3(15f, 0.5f, -8.1f));
 
             // camera anchors for the dialogue beats
@@ -381,10 +388,10 @@ namespace SecretsThatBreathe.LevelTools
             CamAnchor(cam, "CUT_01_Arrival", new Vector3(6.2f, 1.75f, -13.5f), new Vector3(4f, -122f, 0f));
             CamAnchor(cam, "CUT_02_Greeting", new Vector3(-0.6f, 1.6f, -5.6f), new Vector3(6f, -132f, 0f));
             CamAnchor(cam, "CUT_03_WalkToBench", new Vector3(-4.2f, 1.7f, 1.2f), new Vector3(4f, -34f, 0f));
-            CamAnchor(cam, "CUT_04_TwoShot_Bench", new Vector3(-7.5f, 1.6f, 2.6f), new Vector3(6f, 0f, 0f));
-            CamAnchor(cam, "CUT_05_CloseUp_Fragment", new Vector3(-7.9f, 1.28f, 4.55f), new Vector3(26f, -14f, 0f));
-            CamAnchor(cam, "CUT_06_PaintChart", new Vector3(-6.2f, 1.7f, 4.4f), new Vector3(2f, 0f, 0f));
-            CamAnchor(cam, "CUT_07_Board", new Vector3(-8.5f, 1.8f, 4.6f), new Vector3(0f, 0f, 0f));
+            CamAnchor(cam, "CUT_04_TwoShot_Bench", new Vector3(-7.5f + WSHIFT, 1.6f, 2.6f), new Vector3(6f, 0f, 0f));
+            CamAnchor(cam, "CUT_05_CloseUp_Fragment", new Vector3(-7.9f + WSHIFT, 1.28f, 4.55f), new Vector3(26f, -14f, 0f));
+            CamAnchor(cam, "CUT_06_PaintChart", new Vector3(-6.2f + WSHIFT, 1.7f, 4.4f), new Vector3(2f, 0f, 0f));
+            CamAnchor(cam, "CUT_07_Board", new Vector3(-8.5f + WSHIFT, 1.8f, 4.6f), new Vector3(0f, 0f, 0f));
             CamAnchor(cam, "CUT_08_Office", new Vector3(6.6f, MEZZ + 1.6f, -2.4f), new Vector3(6f, 58f, 0f));
 
             // interaction beats, in play order
@@ -393,10 +400,10 @@ namespace SecretsThatBreathe.LevelTools
             Marker("OBJ_02_TalkToFriend", obj, new Vector3(-2.6f, FLR, -4.6f));
             Marker("OBJ_03_PlaceEvidenceOnBench", obj, INSPECT_TABLE + new Vector3(-0.35f, 0.95f, 0f));
             Marker("OBJ_04_ExamineUnderMagnifier", obj, INSPECT_TABLE + new Vector3(-1.0f, 1.4f, 0.2f));
-            Marker("OBJ_05_MatchPaintCode", obj, new Vector3(-6.2f, 1.4f, 6.0f));
-            Marker("OBJ_06_SearchPartsDatabase", obj, new Vector3(-9.0f, 1.2f, 4.2f));
+            Marker("OBJ_05_MatchPaintCode", obj, new Vector3(-6.2f + WSHIFT, 1.4f, 6.0f));
+            Marker("OBJ_06_SearchPartsDatabase", obj, new Vector3(-9.0f + WSHIFT, 1.2f, 4.2f));
             Marker("OBJ_07_CheckOrderRecords", obj, new Vector3(8.9f, MEZZ + 1.0f, -1.2f));
-            Marker("OBJ_08_PinResultOnBoard", obj, new Vector3(-8.5f, 1.85f, 6.2f));
+            Marker("OBJ_08_PinResultOnBoard", obj, new Vector3(-8.5f + WSHIFT, 1.85f, 6.2f));
             Marker("OBJ_09_LeaveGarage", obj, new Vector3(0f, 0f, LOT_FRONT_Z));
         }
 

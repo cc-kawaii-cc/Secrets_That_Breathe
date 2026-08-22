@@ -8,7 +8,7 @@ namespace SecretsThatBreathe.LevelTools
     {
         static void BuildOffice()
         {
-            var g = Group("INT_Office", _root);
+            var g = Group("INT_Office", _dress);
             BuildReception(Group("Reception", g));
             BuildMezzOffice(Group("Mezzanine_Office", g));
         }
@@ -24,8 +24,9 @@ namespace SecretsThatBreathe.LevelTools
             Box("Base", c, new Vector3(6.1f, FLR + 0.5f, -3.6f), new Vector3(3.4f, 1.0f, 0.62f), "PanelDark");
             Box("Top", c, new Vector3(6.1f, FLR + 1.03f, -3.66f), new Vector3(3.6f, 0.06f, 0.78f), "Wood", default(Vector3), false);
             Box("Face_Red", c, new Vector3(6.1f, FLR + 0.5f, -3.92f), new Vector3(3.4f, 0.9f, 0.04f), "BrandRed", default(Vector3), false);
-            Box("Return", c, new Vector3(4.55f, FLR + 0.5f, -2.85f), new Vector3(0.62f, 1.0f, 1.9f), "PanelDark");
-            Box("Return_Top", c, new Vector3(4.5f, FLR + 1.03f, -2.85f), new Vector3(0.78f, 0.06f, 1.9f), "Wood", default(Vector3), false);
+            // pulled east off the partition: it used to stand in the reception doorway
+            Box("Return", c, new Vector3(5.15f, FLR + 0.5f, -2.85f), new Vector3(0.62f, 1.0f, 1.9f), "PanelDark");
+            Box("Return_Top", c, new Vector3(5.1f, FLR + 1.03f, -2.85f), new Vector3(0.78f, 0.06f, 1.9f), "Wood", default(Vector3), false);
             Box("Monitor", c, new Vector3(6.6f, FLR + 1.28f, -3.4f), new Vector3(0.5f, 0.32f, 0.04f), "ScreenBlue", new Vector3(0f, 165f, 0f), false);
             Box("Keyboard", c, new Vector3(6.5f, FLR + 1.08f, -3.65f), new Vector3(0.42f, 0.03f, 0.16f), "PanelDark", new Vector3(0f, 165f, 0f), false);
             Box("Card_Terminal", c, new Vector3(5.3f, FLR + 1.12f, -3.6f), new Vector3(0.12f, 0.14f, 0.2f), "SteelDark", new Vector3(-20f, 0f, 0f), false);

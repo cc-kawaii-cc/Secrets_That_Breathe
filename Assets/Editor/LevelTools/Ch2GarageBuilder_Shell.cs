@@ -27,27 +27,30 @@ namespace SecretsThatBreathe.LevelTools
         const float FASCIA_Z = Z0 - 0.30f;
         const float FACE_Z = Z0 - WT * 0.5f;      // outer face of the front wall (-7.125)
 
+        /// <summary>Centre of the personnel door in the left wall.</summary>
+        public const float SIDE_DOOR_Z = 4.1f;
+        /// <summary>Rear roller shutter opening, x -1.5 .. 2.5.</summary>
+        public const float REAR_DOOR_CX = 0.5f, REAR_DOOR_W = 4f;
+
         static void BuildShell()
         {
-            var g = Group("BUILD_Shell", _root);
+            var g = Group("BUILD_Shell", _struct);
+            float xL = X0 - WT * 0.5f, xR = X1 + WT * 0.5f;
+            float zF = Z0 - WT * 0.5f, zB = Z1 + WT * 0.5f;
 
             // ---- back wall (rear roller shutter 4.0 m wide at x -1.5..2.5) ----
             var back = Group("Wall_Back", g);
-            Box("Back_L", back, new Vector3((X0 - WT * 0.5f + -1.5f) * 0.5f, BH * 0.5f, Z1),
-                new Vector3(8.625f, BH, WT), "PanelDark");
-            Box("Back_R", back, new Vector3((2.5f + X1 + WT * 0.5f) * 0.5f, BH * 0.5f, Z1),
-                new Vector3(7.625f, BH, WT), "PanelDark");
-            Box("Back_Header", back, new Vector3(0.5f, (DOOR_H + BH) * 0.5f, Z1),
-                new Vector3(4f, BH - DOOR_H, WT), "PanelDark");
+            float bl = (REAR_DOOR_CX - REAR_DOOR_W * 0.5f) - xL;
+            float br = xR - (REAR_DOOR_CX + REAR_DOOR_W * 0.5f);
+            Box("Back_L", back, new Vector3(xL + bl * 0.5f, BH * 0.5f, Z1), new Vector3(bl, BH, WT), "PanelDark");
+            Box("Back_R", back, new Vector3(xR - br * 0.5f, BH * 0.5f, Z1), new Vector3(br, BH, WT), "PanelDark");
+            Box("Back_Header", back, new Vector3(REAR_DOOR_CX, (DOOR_H + BH) * 0.5f, Z1),
+                new Vector3(REAR_DOOR_W, BH - DOOR_H, WT), "PanelDark");
 
-            // ---- left wall (personnel door 1.0 x 2.1 at z 3.6..4.6) ----
-            var left = Group("Wall_Left", g);
-            Box("Left_A", left, new Vector3(X0, BH * 0.5f, (Z0 - WT * 0.5f + 3.6f) * 0.5f),
-                new Vector3(WT, BH, 3.6f + 7.125f), "PanelDark");
-            Box("Left_B", left, new Vector3(X0, BH * 0.5f, (4.6f + Z1 + WT * 0.5f) * 0.5f),
-                new Vector3(WT, BH, 7.125f - 4.6f), "PanelDark");
-            Box("Left_DoorHeader", left, new Vector3(X0, (2.1f + BH) * 0.5f, 4.1f),
-                new Vector3(WT, BH - 2.1f, 1f), "PanelDark");
+            // ---- left wall: personnel door sized off the player capsule, not eyeballed ----
+            // yaw 90 maps local +X onto world -Z, hence the sign on the opening centre
+            LevelKit.WallWithOpening("Wall_Left", g, new Vector3(X0, 0f, 0f), zB - zF, BH, WT, "PanelDark",
+                                     -SIDE_DOOR_Z, LevelKit.Nav.DoorClear, LevelKit.Nav.DoorHeight, 90f);
 
             // ---- right wall (solid, office side) ----
             Box("Wall_Right", g, new Vector3(X1, BH * 0.5f, 0f), new Vector3(WT, BH, BD), "PanelDark");
@@ -56,22 +59,22 @@ namespace SecretsThatBreathe.LevelTools
             var pl = Group("Plinth", g);
             Box("Plinth_Left", pl, new Vector3(X0 - 0.06f, 0.45f, 0f), new Vector3(0.16f, 0.9f, BD + 0.3f), "ConcreteDark", default(Vector3), false);
             Box("Plinth_Right", pl, new Vector3(X1 + 0.06f, 0.45f, 0f), new Vector3(0.16f, 0.9f, BD + 0.3f), "ConcreteDark", default(Vector3), false);
-            Box("Plinth_Back", pl, new Vector3(0f, 0.45f, Z1 + 0.06f), new Vector3(BW + 0.3f, 0.9f, 0.16f), "ConcreteDark", default(Vector3), false);
+            Box("Plinth_Back", pl, new Vector3(CX, 0.45f, Z1 + 0.06f), new Vector3(BW + 0.3f, 0.9f, 0.16f), "ConcreteDark", default(Vector3), false);
 
             // ---- roof slab ----
-            Box("Roof_Slab", g, new Vector3(0f, BH + 0.15f, 0f), new Vector3(BW + 0.7f, 0.3f, BD + 0.7f), "PanelDark");
+            Box("Roof_Slab", g, new Vector3(CX, BH + 0.15f, 0f), new Vector3(BW + 0.7f, 0.3f, BD + 0.7f), "PanelDark");
 
             // ---- parapet / fascia band ----
             var fas = Group("Parapet", g);
-            Box("Fascia_Front_Red", fas, new Vector3(0f, FASCIA_Y, FASCIA_Z), new Vector3(BW + 0.9f, FASCIA_H, 0.4f), "BrandRed", default(Vector3), false);
-            Box("Fascia_Front_Trim", fas, new Vector3(0f, FASCIA_Y - FASCIA_H * 0.5f - 0.06f, FASCIA_Z - 0.02f),
+            Box("Fascia_Front_Red", fas, new Vector3(CX, FASCIA_Y, FASCIA_Z), new Vector3(BW + 0.9f, FASCIA_H, 0.4f), "BrandRed", default(Vector3), false);
+            Box("Fascia_Front_Trim", fas, new Vector3(CX, FASCIA_Y - FASCIA_H * 0.5f - 0.06f, FASCIA_Z - 0.02f),
                 new Vector3(BW + 0.9f, 0.12f, 0.42f), "PanelBlack", default(Vector3), false);
             // red returns down both sides for 4 m, black for the rest
             Box("Fascia_L_Red", fas, new Vector3(X0 - 0.32f, FASCIA_Y, Z0 + 2.1f), new Vector3(0.4f, FASCIA_H, 4.2f), "BrandRed", default(Vector3), false);
             Box("Fascia_R_Red", fas, new Vector3(X1 + 0.32f, FASCIA_Y, Z0 + 2.1f), new Vector3(0.4f, FASCIA_H, 4.2f), "BrandRed", default(Vector3), false);
             Box("Fascia_L_Blk", fas, new Vector3(X0 - 0.32f, FASCIA_Y, 2.275f), new Vector3(0.4f, FASCIA_H, 10.15f), "PanelBlack", default(Vector3), false);
             Box("Fascia_R_Blk", fas, new Vector3(X1 + 0.32f, FASCIA_Y, 2.275f), new Vector3(0.4f, FASCIA_H, 10.15f), "PanelBlack", default(Vector3), false);
-            Box("Fascia_Back_Blk", fas, new Vector3(0f, FASCIA_Y, Z1 + 0.32f), new Vector3(BW + 0.9f, FASCIA_H, 0.4f), "PanelBlack", default(Vector3), false);
+            Box("Fascia_Back_Blk", fas, new Vector3(CX, FASCIA_Y, Z1 + 0.32f), new Vector3(BW + 0.9f, FASCIA_H, 0.4f), "PanelBlack", default(Vector3), false);
 
             BuildRoofDetails(g);
             BuildWallLiners(g);
@@ -111,7 +114,7 @@ namespace SecretsThatBreathe.LevelTools
             Marker("ROOF_Access", g, new Vector3(-0.9f, y, Z1 - 0.8f));
 
             // parapet coping strip so the roof reads as a real flat roof
-            Box("Coping_Back", g, new Vector3(0f, y + 0.08f, Z1 + 0.2f), new Vector3(BW + 0.7f, 0.16f, 0.3f), "Alu", default(Vector3), false);
+            Box("Coping_Back", g, new Vector3(CX, y + 0.08f, Z1 + 0.2f), new Vector3(BW + 0.7f, 0.16f, 0.3f), "Alu", default(Vector3), false);
             Box("Coping_L", g, new Vector3(X0 - 0.2f, y + 0.08f, 0f), new Vector3(0.3f, 0.16f, BD + 0.7f), "Alu", default(Vector3), false);
             Box("Coping_R", g, new Vector3(X1 + 0.2f, y + 0.08f, 0f), new Vector3(0.3f, 0.16f, BD + 0.7f), "Alu", default(Vector3), false);
         }
@@ -121,20 +124,22 @@ namespace SecretsThatBreathe.LevelTools
             var g = Group("Wall_Liners", parent);
             // white sandwich-panel lining of the workshop
             Box("Liner_Left", g, new Vector3(X0 + WT * 0.5f + 0.02f, 3f, 0f), new Vector3(0.04f, 5.4f, BD - WT), "OffWhite", default(Vector3), false);
-            Box("Liner_Back_L", g, new Vector3(-5.69f, 3f, Z1 - WT * 0.5f - 0.02f), new Vector3(8.375f, 5.4f, 0.04f), "OffWhite", default(Vector3), false);
-            Box("Liner_Back_R", g, new Vector3(6.3f, 3f, Z1 - WT * 0.5f - 0.02f), new Vector3(7.5f, 5.4f, 0.04f), "OffWhite", default(Vector3), false);
+            float lbW = (REAR_DOOR_CX - REAR_DOOR_W * 0.5f) - (X0 + WT * 0.5f);
+            float rbW = (X1 - WT * 0.5f) - (REAR_DOOR_CX + REAR_DOOR_W * 0.5f);
+            Box("Liner_Back_L", g, new Vector3(X0 + WT * 0.5f + lbW * 0.5f, 3f, Z1 - WT * 0.5f - 0.02f), new Vector3(lbW, 5.4f, 0.04f), "OffWhite", default(Vector3), false);
+            Box("Liner_Back_R", g, new Vector3(X1 - WT * 0.5f - rbW * 0.5f, 3f, Z1 - WT * 0.5f - 0.02f), new Vector3(rbW, 5.4f, 0.04f), "OffWhite", default(Vector3), false);
             Box("Liner_Back_Head", g, new Vector3(0.5f, 4.95f, Z1 - WT * 0.5f - 0.02f), new Vector3(4f, 1.5f, 0.04f), "OffWhite", default(Vector3), false);
             Box("Liner_Right", g, new Vector3(X1 - WT * 0.5f - 0.02f, 3f, 3.5f), new Vector3(0.04f, 5.4f, 7f), "OffWhite", default(Vector3), false);
             // grease skirt (dark lower band) – classic workshop detail
             Box("Skirt_Left", g, new Vector3(X0 + WT * 0.5f + 0.05f, 0.6f, 0f), new Vector3(0.04f, 1.2f, BD - WT), "SteelDark", default(Vector3), false);
-            Box("Skirt_Back_L", g, new Vector3(-5.69f, 0.6f, Z1 - WT * 0.5f - 0.05f), new Vector3(8.375f, 1.2f, 0.04f), "SteelDark", default(Vector3), false);
-            Box("Skirt_Back_R", g, new Vector3(6.3f, 0.6f, Z1 - WT * 0.5f - 0.05f), new Vector3(7.5f, 1.2f, 0.04f), "SteelDark", default(Vector3), false);
+            Box("Skirt_Back_L", g, new Vector3(X0 + WT * 0.5f + lbW * 0.5f, 0.6f, Z1 - WT * 0.5f - 0.05f), new Vector3(lbW, 1.2f, 0.04f), "SteelDark", default(Vector3), false);
+            Box("Skirt_Back_R", g, new Vector3(X1 - WT * 0.5f - rbW * 0.5f, 0.6f, Z1 - WT * 0.5f - 0.05f), new Vector3(rbW, 1.2f, 0.04f), "SteelDark", default(Vector3), false);
         }
 
         // ───────────────────────── street facade ─────────────────────────
         static void BuildFacade()
         {
-            var g = Group("BUILD_Facade", _root);
+            var g = Group("BUILD_Facade", _struct);
 
             // 1. black cladding panel with the RT logo
             float bw = F_BLACK_R - F_BLACK_L;
@@ -152,8 +157,10 @@ namespace SecretsThatBreathe.LevelTools
             Box("Pilaster_B", g, new Vector3((F_PIL_B_L + F_PIL_B_R) * 0.5f, BH * 0.5f, Z0 - 0.2f), new Vector3(0.8f, BH, 0.7f), "BrandRed");
 
             // 3. the two service bays
-            BuildBayDoor(g, "BayDoor_1", F_BAY1_L, F_BAY1_R);
-            BuildBayDoor(g, "BayDoor_2", F_BAY2_L, F_BAY2_R);
+            // Bay 1 is rolled up: it is how the player walks in off the forecourt.
+            // Bay 2 stays shut, and is the only leaf in the building that still blocks.
+            BuildBayDoor(_circ, "BayDoor_1", F_BAY1_L, F_BAY1_R, true);
+            BuildBayDoor(g, "BayDoor_2", F_BAY2_L, F_BAY2_R, false);
 
             // 4. office curtain wall
             BuildOfficeFacade(g);
@@ -190,8 +197,8 @@ namespace SecretsThatBreathe.LevelTools
             Sign("Logo_Text", g, new Vector3(cx, cy, FACE_Z - 0.20f), new Vector2(2.1f, 1.25f), "RT", Color.white);
         }
 
-        /// <summary>Sectional glass overhead door + its opening.</summary>
-        static void BuildBayDoor(Transform parent, string name, float xl, float xr)
+        /// <summary>Sectional glass overhead door + its opening. An open door parks its leaf overhead.</summary>
+        static void BuildBayDoor(Transform parent, string name, float xl, float xr, bool open)
         {
             var g = Group(name, parent);
             float w = xr - xl;
@@ -205,10 +212,19 @@ namespace SecretsThatBreathe.LevelTools
             Box("Jamb_L", g, new Vector3(xl + 0.05f, DOOR_H * 0.5f, Z0 - 0.02f), new Vector3(0.1f, DOOR_H, 0.34f), "Alu", default(Vector3), false);
             Box("Jamb_R", g, new Vector3(xr - 0.05f, DOOR_H * 0.5f, Z0 - 0.02f), new Vector3(0.1f, DOOR_H, 0.34f), "Alu", default(Vector3), false);
 
-            // 4 panel sectional leaf, parked closed just inside the wall
+            // 4 panel sectional leaf
             var leaf = Group("Leaf", g);
             for (int i = 0; i < 4; i++)
             {
+                if (open)
+                {
+                    // rolled back along the ceiling track, clear of the opening entirely
+                    float pz = Z0 + 0.75f + i * 1.06f;
+                    Box("Panel_" + i, leaf, new Vector3(cx, DOOR_H + 0.42f, pz), new Vector3(w - 0.12f, 0.09f, 1.0f), "Alu", default(Vector3), false);
+                    if (i > 0)
+                        Box("Glass_" + i, leaf, new Vector3(cx, DOOR_H + 0.46f, pz), new Vector3(w - 0.42f, 0.03f, 0.72f), "Glass", default(Vector3), false);
+                    continue;
+                }
                 float py = 0.53f + i * 1.04f;
                 Box("Panel_" + i, leaf, new Vector3(cx, py, Z0 + 0.14f), new Vector3(w - 0.12f, 1.0f, 0.09f), "Alu", default(Vector3), i == 0);
                 if (i > 0)
@@ -226,7 +242,8 @@ namespace SecretsThatBreathe.LevelTools
 
             // rubber threshold + floor guides
             Box("Threshold", g, new Vector3(cx, 0.055f, Z0 + 0.14f), new Vector3(w, 0.03f, 0.22f), "Rubber", default(Vector3), false);
-            Marker("DOOR_" + name, g, new Vector3(cx, 0f, Z0));
+            // a door that is locked by design is marked SHUT_ so the audit does not fail it
+            Marker((open ? "DOOR_" : "SHUT_") + name, g, new Vector3(cx, 0f, Z0));
         }
 
         static void BuildOfficeFacade(Transform parent)
@@ -237,7 +254,8 @@ namespace SecretsThatBreathe.LevelTools
             float glassTop = 4.6f;
 
             // sill + spandrel
-            Box("Sill", g, new Vector3(cx, 0.075f, Z0), new Vector3(w, 0.15f, WT), "ConcreteDark");
+            // a threshold, not a barrier: the capsule should walk over it, not into it
+            Box("Sill", g, new Vector3(cx, 0.075f, Z0), new Vector3(w, 0.15f, WT), "ConcreteDark", default(Vector3), false);
             Box("Spandrel", g, new Vector3(cx, (glassTop + BH) * 0.5f, Z0), new Vector3(w, BH - glassTop, WT), "PanelBlack");
 
             // glazing (two storeys, the mezzanine office sits behind the upper half) – split around the entrance

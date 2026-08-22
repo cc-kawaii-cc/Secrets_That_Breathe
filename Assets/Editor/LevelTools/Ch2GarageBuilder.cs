@@ -24,14 +24,20 @@ namespace SecretsThatBreathe.LevelTools
     public static partial class Ch2GarageBuilder
     {
         // ───────────────────────── master dimensions ─────────────────────────
-        public const float BW = 20f;             // building width  (X)
-        public const float BD = 14f;             // building depth  (Z)
+        // The workshop half was extended 2.5 m west so the pedestrian walkway along the left
+        // wall is a real route rather than a 1.9 m squeeze between the bench run and the lift
+        // bays. The office half (x >= PARTX) keeps every coordinate it had.
+        public const float X0 = -12.5f;          // left  wall line (workshop side)
+        public const float X1 = 10f;             // right wall line (office side)
+        public const float Z0 = -7f;             // FRONT facade (faces the street, -Z)
+        public const float Z1 = 7f;              // back wall
+        public const float BW = X1 - X0;         // 22.5  building width  (X)
+        public const float BD = Z1 - Z0;         // 14    building depth  (Z)
+        public const float CX = (X0 + X1) * 0.5f;// -1.25 building centre in X
         public const float BH = 6f;              // parapet height  (Y)
         public const float WT = 0.25f;           // wall thickness
-        public const float X0 = -BW * 0.5f;      // -10  left  wall line
-        public const float X1 = BW * 0.5f;       // +10  right wall line
-        public const float Z0 = -BD * 0.5f;      //  -7  FRONT facade (faces the street, -Z)
-        public const float Z1 = BD * 0.5f;       //  +7  back wall
+        /// <summary>How far the left wall moved. Props that hug that wall shift with it.</summary>
+        public const float WSHIFT = X0 + 10f;    // -2.5
         public const float FLR = 0.05f;          // interior slab top
         public const float PARTX = 3.8f;         // workshop | office partition
         public const float MEZZ = 3.15f;         // mezzanine walking level
@@ -40,7 +46,7 @@ namespace SecretsThatBreathe.LevelTools
         public const float LOT_FRONT_Z = -24f;   // street side fence line
         public const float LOT_BACK_Z = 20f;     // rear fence line
 
-        public const string ScenePath = "Assets/MainScenes/Main2_Garage.unity";
+        public const string ScenePath = "Assets/MainScenes/Main2_Garage/Main2_Garage.unity";
         public const string DataFolder = "Assets/MainScenes/Main2_Garage";
         public const string MatFolder = "Assets/MainScenes/Main2_Garage/Materials";
 
@@ -55,6 +61,15 @@ namespace SecretsThatBreathe.LevelTools
         const string P_BARRIER = "Assets/Champ&Kichzz/Street Assets/Prefabs/SA_TrafficBarrier_01.prefab";
 
         static Transform _root;
+        static Transform _env, _struct, _circ, _dress, _light, _actors, _play;
+
+        /// <summary>Circulation folder: doors, stairs, ramps. Everything the player walks through.</summary>
+        public static Transform Circulation { get { return _circ; } }
+        public static Transform Actors { get { return _actors; } }
+        public static Transform Play { get { return _play; } }
+        public static Transform Dressing { get { return _dress; } }
+        public static Transform Lighting { get { return _light; } }
+        public static Transform Structure { get { return _struct; } }
 
         public enum Mood { Day, Evening }
         /// <summary>Chapter 2 plays out after closing time, so the level ships in Evening mood.</summary>
@@ -75,11 +90,20 @@ namespace SecretsThatBreathe.LevelTools
             if (askToSave && !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
 
             EnsureFolders();
+            LevelKit.ResetPlaced();
             BuildMaterialLibrary();
 
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
 
             _root = new GameObject("=== CH2 RACETOOL GARAGE ===").transform;
+            LevelKit.BuildCategories(_root);
+            _env = LevelKit.Category(_root, LevelKit.Cat.Env);
+            _struct = LevelKit.Category(_root, LevelKit.Cat.Structure);
+            _circ = LevelKit.Category(_root, LevelKit.Cat.Circulation);
+            _dress = LevelKit.Category(_root, LevelKit.Cat.Dressing);
+            _light = LevelKit.Category(_root, LevelKit.Cat.Lighting);
+            _actors = LevelKit.Category(_root, LevelKit.Cat.Actors);
+            _play = LevelKit.Category(_root, LevelKit.Cat.Gameplay);
 
             BuildLighting();
             BuildGround();
@@ -92,6 +116,9 @@ namespace SecretsThatBreathe.LevelTools
             BuildVehicles();
             BuildGameplay();
             ApplyMood();
+            Ch2Act2Wiring.WireGarage(_root);
+
+            GroundProps();
 
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene, ScenePath);
@@ -99,6 +126,15 @@ namespace SecretsThatBreathe.LevelTools
             AssetDatabase.Refresh();
 
             Debug.Log("[Ch2Garage] Scene built and saved -> " + ScenePath);
+            Debug.Log(LevelAudit.Format("CH2 RACETOOL GARAGE", LevelAudit.Run(_root, 0.45f, BH)));
+        }
+
+        /// <summary>Sits every placed prefab exactly on the slab or ground under it.</summary>
+        static void GroundProps()
+        {
+            Physics.SyncTransforms();
+            var placed = LevelKit.Placed;
+            for (int i = 0; i < placed.Count; i++) LevelKit.SnapDown(placed[i]);
         }
 
         static void EnsureFolders()
@@ -197,7 +233,7 @@ namespace SecretsThatBreathe.LevelTools
         // ───────────────────────── lighting & atmosphere ─────────────────────────
         static void BuildLighting()
         {
-            var g = Group("ENV_Lighting", _root);
+            var g = Group("Atmosphere", _env);
 
             var sunGo = new GameObject("Sun (Directional)");
             sunGo.transform.SetParent(g, false);
@@ -236,14 +272,16 @@ namespace SecretsThatBreathe.LevelTools
             RenderSettings.ambientMode = AmbientMode.Trilight;
             RenderSettings.fog = true;
             RenderSettings.fogMode = FogMode.ExponentialSquared;
+            // เต็มความเข้มทำให้ผนังในเวิร์กชอปรับแสงสะท้อนจากท้องฟ้าจนแบนและซีด
+            RenderSettings.reflectionIntensity = 0.45f;
 
             var probeGo = new GameObject("Reflection Probe (Workshop)");
             probeGo.transform.SetParent(g, false);
-            probeGo.transform.localPosition = new Vector3(-3f, 2.6f, 0f);
+            probeGo.transform.localPosition = new Vector3((X0 + PARTX) * 0.5f, 2.6f, 0f);
             var probe = probeGo.AddComponent<ReflectionProbe>();
             probe.mode = ReflectionProbeMode.Realtime;
             probe.refreshMode = ReflectionProbeRefreshMode.OnAwake;
-            probe.size = new Vector3(BW, BH, BD);
+            probe.size = new Vector3(PARTX - X0, BH, BD);
             probe.resolution = 128;
             probe.boxProjection = true;
         }
@@ -329,18 +367,18 @@ namespace SecretsThatBreathe.LevelTools
         // ───────────────────────── site ground ─────────────────────────
         static void BuildGround()
         {
-            var g = Group("ENV_Ground", _root);
+            var g = Group("Ground", _struct);
 
             // whole site + surroundings
             Box("Ground_Base", g, new Vector3(0f, -0.36f, -6f), new Vector3(160f, 0.6f, 140f), "Dirt");
             // asphalt yard
             Box("Yard_Asphalt", g, new Vector3(0f, -0.05f, -2.3f), new Vector3(56f, 0.1f, 47.4f), "Asphalt");
             // concrete apron / building pad (top = 0.03)
-            Box("Pad_Concrete", g, new Vector3(0f, -0.02f, 0.6f), new Vector3(BW + 1.6f, 0.1f, BD + 3.4f), "Concrete");
+            Box("Pad_Concrete", g, new Vector3(CX, -0.02f, 0.6f), new Vector3(BW + 1.6f, 0.1f, BD + 3.4f), "Concrete");
             // apron slope in front of the doors
             Box("Apron_Front", g, new Vector3(-0.6f, -0.02f, Z0 - 3.4f), new Vector3(12.6f, 0.1f, 5f), "Concrete");
             // interior slab
-            Box("Floor_Workshop", g, new Vector3(0f, FLR * 0.5f, 0f), new Vector3(BW - WT * 2f, FLR, BD - WT * 2f), "EpoxyFloor");
+            Box("Floor_Workshop", g, new Vector3(CX, FLR * 0.5f, 0f), new Vector3(BW - WT * 2f, FLR, BD - WT * 2f), "EpoxyFloor");
         }
     }
 }

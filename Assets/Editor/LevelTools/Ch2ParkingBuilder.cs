@@ -26,18 +26,22 @@ namespace SecretsThatBreathe.LevelTools
         public const float HX = 22f;          // half width  -> 44 m
         public const float ZS = -18f;         // south edge (ramp foot)
         public const float ZN = 20f;          // north edge (club facade)
-        public const float CH = 3.0f;         // clear ceiling height
+        public const float CH = 3.4f;         // clear ceiling height (beam soffits still clear 2.8 m)
         public const float SLAB = 0.45f;      // structural slab above
         public const float LANE = 6f;         // half width of the main approach lane
         public const float BAY_W = 2.6f;      // parking bay width
         public const float BAY_D = 5.0f;      // parking bay depth
 
         // ramp
+        /// <summary>Column grid. Kept clear of the 5 m bays so cars never intersect a column.</summary>
+        public static readonly float[] COL_X = { -16.3f, -5.3f, 5.3f, 16.3f };
+        public static readonly float[] COL_Z = { -14f, -7f, 0f, 7f, 13.5f };
+
         public const float RAMP_X0 = 14f, RAMP_X1 = 21f;
         public const float RAMP_Z_BOT = -18f, RAMP_Z_TOP = -40f;
-        public const float STREET_Y = 3.45f;
+        public const float STREET_Y = CH + SLAB;   // the ramp has to climb the full structural depth
 
-        public const string ScenePath = "Assets/MainScenes/Main2_ParkingB1.unity";
+        public const string ScenePath = "Assets/MainScenes/Main2_ParkingB1/Main2_ParkingB1.unity";
         public const string DataFolder = "Assets/MainScenes/Main2_ParkingB1";
         public const string MatFolder = DataFolder + "/Materials";
 
@@ -49,6 +53,7 @@ namespace SecretsThatBreathe.LevelTools
         const string P_BARRIER = "Assets/Champ&Kichzz/Street Assets/Prefabs/SA_TrafficBarrier_01.prefab";
 
         static Transform _root;
+        static Transform _env, _struct, _circ, _dress, _light, _actors, _play;
 
         [MenuItem("Tools/Secrets That Breathe/Build Chapter 2 Parking B1", false, 11)]
         public static void BuildScene() { BuildScene(true); }
@@ -59,10 +64,19 @@ namespace SecretsThatBreathe.LevelTools
             if (askToSave && !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
 
             K.EnsureFolder(MatFolder);
+            K.ResetPlaced();
             Materials();
 
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             _root = new GameObject("=== CH2 PARKING B1 ===").transform;
+            K.BuildCategories(_root);
+            _env = K.Category(_root, K.Cat.Env);
+            _struct = K.Category(_root, K.Cat.Structure);
+            _circ = K.Category(_root, K.Cat.Circulation);
+            _dress = K.Category(_root, K.Cat.Dressing);
+            _light = K.Category(_root, K.Cat.Lighting);
+            _actors = K.Category(_root, K.Cat.Actors);
+            _play = K.Category(_root, K.Cat.Gameplay);
 
             Atmosphere();
             Structure();
@@ -73,12 +87,24 @@ namespace SecretsThatBreathe.LevelTools
             ClubEntrance();
             Vehicles();
             Gameplay();
+            Ch2Act2Wiring.WireParking(_root);
+
+            GroundProps();
 
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene, ScenePath);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             Debug.Log("[Ch2Parking] built -> " + ScenePath);
+            Debug.Log(LevelAudit.Format("CH2 PARKING B1", LevelAudit.Run(_root, 0.45f, STREET_Y + 0.4f)));
+        }
+
+        /// <summary>Sits every placed prefab exactly on the slab it is standing on.</summary>
+        static void GroundProps()
+        {
+            Physics.SyncTransforms();
+            var placed = K.Placed;
+            for (int i = 0; i < placed.Count; i++) K.SnapDown(placed[i]);
         }
 
         static void Materials()
@@ -121,7 +147,7 @@ namespace SecretsThatBreathe.LevelTools
         // ───────────────────────── atmosphere ─────────────────────────
         static void Atmosphere()
         {
-            var g = K.Group("ENV_Lighting", _root);
+            var g = K.Group("Atmosphere", _env);
 
             // faint night sky spilling down the ramp only
             var moon = K.AddLight(g, "RampSpill (Directional)", new Vector3(0f, 8f, -34f), new Vector3(58f, 12f, 0f),
@@ -136,6 +162,9 @@ namespace SecretsThatBreathe.LevelTools
             RenderSettings.fogMode = FogMode.ExponentialSquared;
             RenderSettings.fogColor = new Color(0.075f, 0.055f, 0.11f);
             RenderSettings.fogDensity = 0.017f;
+            // ค่า default 1 ทำให้ทุกพื้นผิวรับแสงสะท้อนจาก environment เต็มๆ
+            // ลานจอดใต้ดินตอนกลางคืนเลยสว่างเท่ากลางวัน และความมืดที่การลอบเร้นต้องใช้หายไปหมด
+            RenderSettings.reflectionIntensity = 0.12f;
 
             // a very dark night sky, only ever seen up the ramp mouth
             var sky = AssetDatabase.LoadAssetAtPath<Material>(DataFolder + "/M_P_NightSky.mat");
@@ -164,12 +193,15 @@ namespace SecretsThatBreathe.LevelTools
             rp.size = new Vector3(HX * 2f, CH, ZN - ZS);
             rp.boxProjection = true;
             rp.resolution = 128;
+            // ด่านนี้มีไฟกว่า 30 ดวง probe เต็มความเข้มจะสะท้อนกลับมาจนลานจอดสว่างเท่ากลางวัน
+            // หรี่ลงเพื่อคงความมืดที่การลอบเร้นต้องพึ่ง
+            rp.intensity = 0.32f;
         }
 
         // ───────────────────────── shell ─────────────────────────
         static void Structure()
         {
-            var g = K.Group("STRUCT", _root);
+            var g = K.Group("Shell", _struct);
             float cz = (ZS + ZN) * 0.5f, dz = ZN - ZS;
 
             K.Box("Floor_Slab", g, new Vector3(0f, -0.2f, cz), new Vector3(HX * 2f, 0.4f, dz), "Floor");
@@ -177,15 +209,19 @@ namespace SecretsThatBreathe.LevelTools
 
             K.Box("Wall_W", g, new Vector3(-HX - 0.15f, CH * 0.5f, cz), new Vector3(0.3f, CH + SLAB, dz), "Wall");
             K.Box("Wall_E", g, new Vector3(HX + 0.15f, CH * 0.5f, cz), new Vector3(0.3f, CH + SLAB, dz), "Wall");
-            K.Box("Wall_N", g, new Vector3(0f, CH * 0.5f, ZN + 0.15f), new Vector3(HX * 2f + 0.6f, CH + SLAB, 0.3f), "Wall");
+            // the north wall is punched for the club entrance, matching the hole in the facade
+            K.WallWithOpening("Wall_N", g, new Vector3(0f, 0f, ZN + 0.15f), HX * 2f + 0.6f, CH + SLAB, 0.3f, "Wall",
+                              0f, ENTRY_CLEAR_W, ENTRY_CLEAR_H);
             // south wall, with the ramp opening at x 14..21
             K.Box("Wall_S_A", g, new Vector3(-4.5f, CH * 0.5f, ZS - 0.15f), new Vector3(35f, CH + SLAB, 0.3f), "Wall");
             K.Box("Wall_S_B", g, new Vector3(21.5f, CH * 0.5f, ZS - 0.15f), new Vector3(1f, CH + SLAB, 0.3f), "Wall");
 
-            // columns – 4 lines flanking the lane and the outer aisles
+            // Columns sit in the aisles and the lane, never inside a bay. At the old x the
+            // column head overlapped the last half metre of every bay, so each parked car
+            // ended up buried in one.
             var col = K.Group("Columns", g);
-            float[] xs = { -17.2f, -6.4f, 6.4f, 17.2f };
-            float[] zs = { -14f, -7f, 0f, 7f, 13.5f };
+            float[] xs = COL_X;
+            float[] zs = COL_Z;
             for (int a = 0; a < xs.Length; a++)
                 for (int b = 0; b < zs.Length; b++)
                     Column(col, "Col_" + a + "_" + b, new Vector3(xs[a], 0f, zs[b]));
@@ -218,7 +254,7 @@ namespace SecretsThatBreathe.LevelTools
         // ───────────────────────── entry ramp ─────────────────────────
         static void Ramp()
         {
-            var g = K.Group("RAMP", _root);
+            var g = K.Group("Ramp", _circ);
             float len = RAMP_Z_BOT - RAMP_Z_TOP;                 // 22 m
             float cxr = (RAMP_X0 + RAMP_X1) * 0.5f;
             float czr = (RAMP_Z_BOT + RAMP_Z_TOP) * 0.5f;
@@ -275,7 +311,7 @@ namespace SecretsThatBreathe.LevelTools
         // ───────────────────────── parking rows ─────────────────────────
         static void ParkingRows()
         {
-            var g = K.Group("PARKING_Bays", _root);
+            var g = K.Group("Parking_Bays", _dress);
             // 4 rows: A(west wall) B(lane west) B'(lane east) A'(east wall)
             BayRow(g, "Row_A_West", -HX, BAY_D, 11, -16f, false);
             BayRow(g, "Row_B_West", -LANE - BAY_D, BAY_D, 11, -16f, true);
@@ -302,7 +338,7 @@ namespace SecretsThatBreathe.LevelTools
 
         static void FloorGraphics()
         {
-            var g = K.Group("FLOOR_Graphics", _root);
+            var g = K.Group("Floor_Graphics", _dress);
             float y = 0.014f;
 
             // centre line + lane edges on the approach lane
@@ -363,7 +399,8 @@ namespace SecretsThatBreathe.LevelTools
         // ───────────────────────── lighting, signage, services ─────────────────────────
         static void Services()
         {
-            var g = K.Group("SERVICES", _root);
+            var g = K.Group("Services", _dress);
+            var lg = K.Group("Fixtures", _light);
 
             // ceiling batten lights over the aisles and lane
             float[] lx = { -14f, 0f, 14f };
@@ -372,24 +409,24 @@ namespace SecretsThatBreathe.LevelTools
                 {
                     float z = -15f + i * 6.2f;
                     bool real = (i % 2 == 0) || a == 1;
-                    Batten(g, "Light_" + a + "_" + i, new Vector3(lx[a], CH - 0.42f, z), real);
+                    Batten(lg, "Light_" + a + "_" + i, new Vector3(lx[a], CH - 0.42f, z), real);
                 }
 
             // neon wall strips – the colour signature of the club level
             for (int i = 0; i < 2; i++)
             {
                 float x = i == 0 ? -HX + 0.25f : HX - 0.25f;
-                K.NeonStrip("Neon_Wall_M_" + i, g, new Vector3(x, 2.45f, 1f), new Vector3(0.1f, 0.1f, 34f), "NeonMagenta",
+                K.NeonStrip("Neon_Wall_M_" + i, lg, new Vector3(x, 2.45f, 1f), new Vector3(0.1f, 0.1f, 34f), "NeonMagenta",
                             new Color(1f, 0.08f, 0.6f), 2.4f, 13f);
-                K.NeonStrip("Neon_Wall_C_" + i, g, new Vector3(x, 2.1f, 1f), new Vector3(0.08f, 0.06f, 34f), "NeonCyan",
+                K.NeonStrip("Neon_Wall_C_" + i, lg, new Vector3(x, 2.1f, 1f), new Vector3(0.08f, 0.06f, 34f), "NeonCyan",
                             new Color(0.1f, 0.8f, 1f), 1.6f, 11f);
             }
             // neon accents on the column heads facing the lane
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < COL_Z.Length; i++)
             {
-                float z = -14f + i * 7f;
-                K.Box("Neon_Col_W" + i, g, new Vector3(-6.05f, 2.6f, z), new Vector3(0.06f, 0.07f, 0.75f), "NeonCyan", default(Vector3), false);
-                K.Box("Neon_Col_E" + i, g, new Vector3(6.05f, 2.6f, z), new Vector3(0.06f, 0.07f, 0.75f), "NeonCyan", default(Vector3), false);
+                float z = COL_Z[i];
+                K.Box("Neon_Col_W" + i, lg, new Vector3(COL_X[1] - 0.35f, CH - 0.8f, z), new Vector3(0.06f, 0.07f, 0.75f), "NeonCyan", default(Vector3), false);
+                K.Box("Neon_Col_E" + i, lg, new Vector3(COL_X[2] + 0.35f, CH - 0.8f, z), new Vector3(0.06f, 0.07f, 0.75f), "NeonCyan", default(Vector3), false);
             }
 
             // ducts, pipes, sprinkler and cable tray under the slab
@@ -403,10 +440,10 @@ namespace SecretsThatBreathe.LevelTools
                 K.Cyl("Sprinkler_" + i, mep, new Vector3(-11.5f + (i % 3) * 11.5f, CH - 0.5f, -15f + (i / 3) * 6.2f), 0.05f, 0.22f, "Brass");
 
             // wayfinding + exits
-            HangingSign(g, "Sign_ToClub", new Vector3(0f, 2.42f, 9f), "QUD CLUB  →  ENTRANCE", "NeonMagenta");
-            HangingSign(g, "Sign_Level", new Vector3(0f, 2.42f, -12f), "LEVEL B1   ·   NO PARKING IN AISLES", "SignAmber");
-            ExitSign(g, "Exit_W", new Vector3(-HX + 0.45f, 2.35f, 6.5f), 90f);
-            ExitSign(g, "Exit_E", new Vector3(HX - 0.45f, 2.35f, -6.5f), -90f);
+            HangingSign(g, "Sign_ToClub", new Vector3(0f, CH - 0.62f, 9f), "QUD CLUB  →  ENTRANCE", "NeonMagenta");
+            HangingSign(g, "Sign_Level", new Vector3(0f, CH - 0.62f, -12f), "LEVEL B1   ·   NO PARKING IN AISLES", "SignAmber");
+            ExitSign(lg, "Exit_W", new Vector3(-HX + 0.45f, 2.35f, 6.5f), 90f);
+            ExitSign(lg, "Exit_E", new Vector3(HX - 0.45f, 2.35f, -6.5f), -90f);
 
             // lift + stair lobby on the west wall
             var lob = K.Group("LiftLobby", g);
@@ -424,10 +461,10 @@ namespace SecretsThatBreathe.LevelTools
             // fire point + misc clutter
             K.Box("FireCabinet", g, new Vector3(HX - 0.32f, 1.15f, 11f), new Vector3(0.28f, 1.1f, 0.8f), "NeonRed");
             K.Box("Bin", g, new Vector3(-6.9f, 0.45f, -15.5f), new Vector3(0.6f, 0.9f, 0.6f), "SteelDark");
-            K.Place(P_CONE, g, new Vector3(-6.5f, 0f, 12.5f), 0f, 0f, -90f);
-            K.Place(P_CONE, g, new Vector3(6.5f, 0f, 12.5f), 0f, 0f, -90f);
-            K.Place(P_BARRIER, g, new Vector3(-8.6f, 0f, 15.4f), 0f, 0f, -90f);
-            K.Place(P_BARRIER, g, new Vector3(8.6f, 0f, 15.4f), 0f, 0f, -90f);
+            K.Place(P_CONE, g, new Vector3(-6.5f, 0f, 12.5f), 0f);
+            K.Place(P_CONE, g, new Vector3(6.5f, 0f, 12.5f), 0f);
+            K.Place(P_BARRIER, g, new Vector3(-8.6f, 0f, 15.4f), 0f);
+            K.Place(P_BARRIER, g, new Vector3(8.6f, 0f, 15.4f), 0f);
 
             // cctv
             Cctv(g, "CCTV_Lane_N", new Vector3(-6.4f, 2.7f, 13.2f), 200f);
@@ -452,7 +489,7 @@ namespace SecretsThatBreathe.LevelTools
             g.localPosition = p;
             K.Box("Rod_L", g, new Vector3(-2.2f, 0.42f, 0f), new Vector3(0.04f, 0.85f, 0.04f), "SteelDark", default(Vector3), false);
             K.Box("Rod_R", g, new Vector3(2.2f, 0.42f, 0f), new Vector3(0.04f, 0.85f, 0.04f), "SteelDark", default(Vector3), false);
-            K.Box("Face", g, Vector3.zero, new Vector3(5.0f, 0.62f, 0.08f), "Granite");
+            K.Box("Face", g, Vector3.zero, new Vector3(5.0f, 0.62f, 0.08f), "Granite", default(Vector3), false);
             // neon border rather than a solid glowing slab
             K.Box("Trim_T", g, new Vector3(0f, 0.33f, -0.05f), new Vector3(5.1f, 0.05f, 0.05f), neon, default(Vector3), false);
             K.Box("Trim_B", g, new Vector3(0f, -0.33f, -0.05f), new Vector3(5.1f, 0.05f, 0.05f), neon, default(Vector3), false);
@@ -489,20 +526,29 @@ namespace SecretsThatBreathe.LevelTools
         }
 
         // ───────────────────────── club entrance (the far end) ─────────────────────────
+        // the doorway into the club scene, sized well past the player capsule
+        const float ENTRY_CLEAR_W = 3.6f;
+        const float ENTRY_CLEAR_H = 2.6f;
+
         static void ClubEntrance()
         {
-            var g = K.Group("CLUB_ENTRANCE", _root);
+            var g = K.Group("Club_Entrance", _circ);
             float z = ZN - 0.35f;
 
-            K.Box("Facade", g, new Vector3(0f, 1.5f, z + 0.2f), new Vector3(21f, 3.0f, 0.5f), "Granite");
-            K.Box("Facade_Base", g, new Vector3(0f, 0.15f, z - 0.1f), new Vector3(21f, 0.3f, 0.35f), "Brass", default(Vector3), false);
+            // The facade is punched, not painted on: the opening is a genuine hole the player
+            // can walk into, and the glass leaves are hung open so they never block it.
+            K.WallWithOpening("Facade", g, new Vector3(0f, 0f, z + 0.2f), 21f, 3.0f, 0.5f, "Granite",
+                              0f, ENTRY_CLEAR_W, ENTRY_CLEAR_H);
+            for (int i = 0; i < 2; i++)
+            {
+                float bw = (21f - ENTRY_CLEAR_W) * 0.5f;
+                float bx = (i == 0 ? -1f : 1f) * (ENTRY_CLEAR_W * 0.5f + bw * 0.5f);
+                K.Box("Facade_Base_" + i, g, new Vector3(bx, 0.15f, z - 0.1f), new Vector3(bw, 0.3f, 0.35f), "Brass", default(Vector3), false);
+            }
 
-            // recessed glass doors
-            K.Box("DoorFrame", g, new Vector3(0f, 1.25f, z - 0.06f), new Vector3(4.6f, 2.5f, 0.12f), "SteelDark");
-            K.Box("Door_L", g, new Vector3(-1.05f, 1.15f, z - 0.14f), new Vector3(1.9f, 2.3f, 0.08f), "GlassDark", default(Vector3), false);
-            K.Box("Door_R", g, new Vector3(1.05f, 1.15f, z - 0.14f), new Vector3(1.9f, 2.3f, 0.08f), "GlassDark", default(Vector3), false);
-            K.Cyl("Handle_L", g, new Vector3(-0.18f, 1.1f, z - 0.22f), 0.05f, 1.3f, "Brass");
-            K.Cyl("Handle_R", g, new Vector3(0.18f, 1.1f, z - 0.22f), 0.05f, 1.3f, "Brass");
+            K.DoorFrame("DoorFrame", g, new Vector3(0f, 0f, z - 0.06f), ENTRY_CLEAR_W, ENTRY_CLEAR_H, 0.2f, 0.16f, "SteelDark");
+            K.DoorLeaf("Door_L", g, new Vector3(-ENTRY_CLEAR_W * 0.5f, 0f, z - 0.18f), ENTRY_CLEAR_W * 0.5f, ENTRY_CLEAR_H - 0.1f, 0.08f, "GlassDark", 180f, 100f);
+            K.DoorLeaf("Door_R", g, new Vector3(ENTRY_CLEAR_W * 0.5f, 0f, z - 0.18f), ENTRY_CLEAR_W * 0.5f, ENTRY_CLEAR_H - 0.1f, 0.08f, "GlassDark", 0f, -100f);
 
             // QUD CLUB neon
             var sg = K.Group("NeonSign", g);
@@ -533,7 +579,22 @@ namespace SecretsThatBreathe.LevelTools
                 K.AddLight(g, "FacadeWash_" + i, new Vector3(i == 0 ? -7f : 7f, 2.6f, 17.6f), new Vector3(28f, 180f, 0f),
                            LightType.Spot, new Color(0.55f, 0.25f, 0.95f), 4.0f, 12f, 70f);
 
-            K.Marker("DOOR_ToClubScene", g, new Vector3(0f, 0f, ZN - 0.6f));
+            // the transition trigger sits on open floor in front of the doors, not inside them
+            K.Marker("DOOR_ToClubScene", g, new Vector3(0f, 0f, ZN + 1.6f));
+            // A short lobby behind the doors. Without it the doorway opened onto the back of
+            // the north wall and the player could never stand in it.
+            var lob = K.Group("Entry_Lobby", g);
+            float vd = 3.0f, vw = ENTRY_CLEAR_W + 2.6f;
+            float vz = ZN + 0.3f + vd * 0.5f;
+            K.Box("Floor", lob, new Vector3(0f, -0.2f, vz), new Vector3(vw, 0.4f, vd + 0.6f), "Granite");
+            K.Box("Ceiling", lob, new Vector3(0f, CH + SLAB * 0.5f, vz), new Vector3(vw + 0.6f, SLAB, vd + 0.6f), "Ceiling");
+            K.Box("Wall_W", lob, new Vector3(-vw * 0.5f - 0.15f, CH * 0.5f, vz), new Vector3(0.3f, CH, vd + 0.6f), "Wall");
+            K.Box("Wall_E", lob, new Vector3(vw * 0.5f + 0.15f, CH * 0.5f, vz), new Vector3(0.3f, CH, vd + 0.6f), "Wall");
+            K.Box("Wall_Back", lob, new Vector3(0f, CH * 0.5f, ZN + 0.3f + vd + 0.15f), new Vector3(vw + 0.6f, CH, 0.3f), "Granite");
+            K.Box("Carpet_Lobby", lob, new Vector3(0f, 0.012f, vz), new Vector3(vw - 0.6f, 0.02f, vd), "Carpet", default(Vector3), false);
+            K.NeonStrip("Lobby_Neon", lob, new Vector3(0f, CH - 0.55f, vz), new Vector3(vw - 0.4f, 0.08f, 0.08f), "NeonMagenta", new Color(1f, 0.1f, 0.6f), 3.2f, 9f);
+            K.AddLight(lob, "Lobby_Light", new Vector3(0f, CH - 0.7f, vz), new Vector3(90f, 0f, 0f), LightType.Spot, new Color(1f, 0.5f, 0.78f), 4.5f, 9f, 95f);
+
             K.Marker("OBJ_ReachClubEntrance", g, new Vector3(0f, 0f, 16.5f));
         }
 
@@ -550,7 +611,7 @@ namespace SecretsThatBreathe.LevelTools
         // ───────────────────────── vehicles ─────────────────────────
         static void Vehicles()
         {
-            var g = K.Group("VEHICLES", _root);
+            var g = K.Group("Vehicles", _dress);
             // scattered parked cars – gaps left on purpose so the player can slip between rows
             float[] rowX = { -19.5f, -8.5f, 8.5f, 19.5f };
             float[] rowYaw = { 90f, 90f, -90f, -90f };
@@ -561,18 +622,22 @@ namespace SecretsThatBreathe.LevelTools
                     if ((i + r) % 3 == 1) continue;               // empty bays
                     if (r == 2 && i >= 9) continue;               // keep the VIP bay clear
                     float z = -16f + (i + 0.5f) * BAY_W;
-                    K.Place((n % 2 == 0) ? P_CAR_A : P_CAR_B, g, new Vector3(rowX[r], 0f, z), rowYaw[r]);
+                    var parked = K.Place((n % 2 == 0) ? P_CAR_A : P_CAR_B, g, new Vector3(rowX[r], 0f, z), rowYaw[r]);
+                    // the car FBX imports with addColliders off, so without this the player
+                    // walks straight through every parked car in the level
+                    K.FitBoxCollider(parked, 0.06f);
                     n++;
                 }
 
             // THE TARGET CAR – reserved bay next to the club entrance, lit and roped off
-            var vip = K.Group("TARGET_Car", _root);
+            var vip = K.Group("Vehicle_TARGET", _dress);
             vip.localPosition = new Vector3(8.6f, 0f, 12.6f);
             var car = K.Place(P_CAR_A, vip, Vector3.zero, -90f);
             if (car != null)
             {
                 car.name = "Car_TARGET_RedSports";
                 PaintBody(car, "CarRed");
+                K.FitBoxCollider(car, 0.06f);
             }
             K.Box("Bay_Paint", vip, new Vector3(0f, 0.014f, 0f), new Vector3(5.4f, 0.014f, 2.9f), "HazardBlack", default(Vector3), false);
             K.Box("Bay_Edge", vip, new Vector3(0f, 0.016f, 1.5f), new Vector3(5.4f, 0.014f, 0.12f), "LineYellow", default(Vector3), false);
@@ -604,15 +669,15 @@ namespace SecretsThatBreathe.LevelTools
         // ───────────────────────── gameplay ─────────────────────────
         static void Gameplay()
         {
-            var g = K.Group("GAMEPLAY", _root);
+            var g = _play;
 
             K.Marker("PlayerSpawn_RampFoot", g, new Vector3(17.5f, 0.2f, -15.5f));
-            K.Marker("PlayerSpawn_LaneSouth", g, new Vector3(-3f, 0.2f, -14f));
-            var player = K.Place(P_PLAYER, g, new Vector3(-3f, 1.2f, -14f), 0f);
-            if (player != null) player.name = "player";
+            // ถอยจากป้ายแขวนที่ z -12 มาหน่อย ไม่งั้นเปิดเกมมาป้ายจ่อหน้าเลย
+            K.Marker("PlayerSpawn_LaneSouth", g, new Vector3(-3.4f, 0.2f, -16f));
+            K.PlacePlayer(P_PLAYER, g, new Vector3(-3.4f, 0.02f, -16f), 0f);
 
             // guards, laid out per the level sketch
-            var gd = K.Group("GUARDS", g);
+            var gd = K.Group("GUARDS", _actors);
             Guard(gd, "Guard_01_EntranceW", new Vector3(-7.5f, 0f, 15.5f), 180f,
                   new Vector3[] { new Vector3(-7.5f, 0f, 15.5f), new Vector3(-17f, 0f, 15.5f), new Vector3(-17f, 0f, 10f) });
             Guard(gd, "Guard_02_EntranceE", new Vector3(7.5f, 0f, 15.5f), 180f,
@@ -626,11 +691,9 @@ namespace SecretsThatBreathe.LevelTools
 
             // cover / hiding
             var hide = K.Group("CoverPoints", g);
-            float[] cx = { -17.2f, -6.4f, 6.4f, 17.2f };
-            float[] cz = { -14f, -7f, 0f, 7f, 13.5f };
-            for (int a = 0; a < cx.Length; a++)
-                for (int b = 0; b < cz.Length; b++)
-                    K.Marker("Cover_Column_" + a + b, hide, new Vector3(cx[a] + (a < 2 ? -0.9f : 0.9f), 0f, cz[b]));
+            for (int a = 0; a < COL_X.Length; a++)
+                for (int b = 0; b < COL_Z.Length; b++)
+                    K.Marker("Cover_Column_" + a + b, hide, new Vector3(COL_X[a] + (a < 2 ? -0.9f : 0.9f), 0f, COL_Z[b]));
             K.Marker("Cover_BehindCar_W", hide, new Vector3(-9.4f, 0f, -3f));
             K.Marker("Cover_BehindCar_E", hide, new Vector3(9.4f, 0f, 4f));
             K.Marker("Cover_LiftLobby", hide, new Vector3(-19.5f, 0f, 5.5f));

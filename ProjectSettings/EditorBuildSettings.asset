@@ -6,9 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 1
     path: Assets/MainScenes/Main1.unity
     guid: f8600be0209284444b1997bd1d52abdd
   - enabled: 1
@@ -26,6 +23,15 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/MainScenes/StoryScenes/Main2_Night.unity
     guid: 6f137398fa763db489fbef0a1c14cab4
+  - enabled: 1
+    path: Assets/MainScenes/Main2_Garage/Main2_Garage.unity
+    guid: 9cb41c21c02c7a445860112188e2149e
+  - enabled: 1
+    path: Assets/MainScenes/Main2_ParkingB1/Main2_ParkingB1.unity
+    guid: ea880879d269ae4448a7ba593d50ed79
+  - enabled: 1
+    path: Assets/MainScenes/Main2_Club/Main2_Club.unity
+    guid: 3ce6adad38cd88a4ea71a3f4c75cbc84
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

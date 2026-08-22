@@ -12,7 +12,7 @@ public class StoryInteractable : MonoBehaviour
     public UnityEvent onInteract;
     public bool hasInteracted = false; 
 
-    public void DoInteract()
+    public virtual void DoInteract()
     {
         if (!hasInteracted)
         {
