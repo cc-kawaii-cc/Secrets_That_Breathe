@@ -1,3 +1,4 @@
+using SecretsThatBreathe.Act3;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -30,6 +31,8 @@ namespace SecretsThatBreathe.Act2
         Image _suspicionFill, _suspicionBg;
         Image _framingFill, _framingBg;
         Image _listenFill, _listenBg, _listenClarity, _listenClarityBg;
+        Image _noiseFill, _noiseBg, _noiseDanger, _noiseDangerBg;
+        TextMeshProUGUI _noiseLabel;
         RectTransform _viewfinder;
         Image _crosshair;
         Image _waypoint;
@@ -93,6 +96,8 @@ namespace SecretsThatBreathe.Act2
             EvidenceCamera.OnFramingChanged += OnFraming;
             EavesdropZone.OnListening += OnListening;
             EavesdropZone.OnEnded += OnListenEnded;
+            SilentEavesdropZone.OnNoiseLevel += OnNoise;
+            SilentEavesdropZone.OnNoiseMeterHide += OnNoiseHide;
         }
 
         void OnDisable()
@@ -105,6 +110,8 @@ namespace SecretsThatBreathe.Act2
             EvidenceCamera.OnFramingChanged -= OnFraming;
             EavesdropZone.OnListening -= OnListening;
             EavesdropZone.OnEnded -= OnListenEnded;
+            SilentEavesdropZone.OnNoiseLevel -= OnNoise;
+            SilentEavesdropZone.OnNoiseMeterHide -= OnNoiseHide;
         }
 
         void Start()
@@ -113,6 +120,7 @@ namespace SecretsThatBreathe.Act2
             if (director != null && director.Current != null) OnObjective(director.Current);
             SetPhotoVisible(false);
             SetListenVisible(false);
+            SetNoiseVisible(false);
         }
 
         // ───────────────────────── event handlers ─────────────────────────
@@ -249,6 +257,19 @@ namespace SecretsThatBreathe.Act2
 
         void OnListenEnded() { SetListenVisible(false); }
 
+        /// <summary>ตอนแอบฟังแบบ "ห้ามส่งเสียง" (ACT 3) — โชว์หลอดความดังจากไมค์จริง</summary>
+        void OnNoise(float loudness, float danger)
+        {
+            SetNoiseVisible(true);
+            SetBar(_noiseFill, loudness);
+            _noiseFill.color = danger > 0.6f ? Danger : danger > 0.25f ? Warn : Good;
+
+            SetBar(_noiseDanger, danger);
+            if (_noiseDanger != null) _noiseDanger.color = danger > 0.6f ? Danger : Warn;
+        }
+
+        void OnNoiseHide() { SetNoiseVisible(false); }
+
         void Update()
         {
             if (_noticeTimer > 0f)
@@ -289,8 +310,11 @@ namespace SecretsThatBreathe.Act2
             string torchTag = st.FlashlightOn
                 ? "\n<color=#FF6B4A>[F] ไฟฉายเปิดอยู่ — ยามเห็นแต่ไกล</color>"
                 : "\n<color=#8FA0B8>[F] ไฟฉาย</color>";
+            string skipTag = ChampArrivalSequence.SkipAvailable
+                ? "\n<color=#FF8C26>" + ChampArrivalSequence.SkipHintText + "</color>"
+                : "";
 
-            _abilities.text = crouchTag + shadowTag + throwTag + photoTag + torchTag;
+            _abilities.text = crouchTag + shadowTag + throwTag + photoTag + torchTag + skipTag;
         }
 
         void UpdateDebugLine()
@@ -318,6 +342,15 @@ namespace SecretsThatBreathe.Act2
             if (_listenFill != null) _listenFill.enabled = visible;
             if (_listenClarityBg != null) _listenClarityBg.enabled = visible;
             if (_listenClarity != null) _listenClarity.enabled = visible;
+        }
+
+        void SetNoiseVisible(bool visible)
+        {
+            if (_noiseBg != null) _noiseBg.enabled = visible;
+            if (_noiseFill != null) _noiseFill.enabled = visible;
+            if (_noiseDangerBg != null) _noiseDangerBg.enabled = visible;
+            if (_noiseDanger != null) _noiseDanger.enabled = visible;
+            if (_noiseLabel != null) _noiseLabel.enabled = visible;
         }
 
         // ───────────────────────── building the canvas ─────────────────────────
@@ -377,6 +410,16 @@ namespace SecretsThatBreathe.Act2
             _listenClarityBg = Solid(root, "ListenClarityBg", new Vector2(0.5f, 0f), new Vector2(0f, 132f),
                                      new Vector2(480f, 6f), new Color(0f, 0f, 0f, 0.4f));
             _listenClarity = StretchFill(_listenClarityBg, "ListenClarity", Dim);
+
+            // แอบฟังแบบห้ามส่งเสียง (ACT 3): หลอดความดังจากไมค์ + แถบความใกล้โดนจับ
+            _noiseLabel = Text(root, "NoiseLabel", new Vector2(0.5f, 0f), new Vector2(0f, 320f),
+                               new Vector2(480f, 36f), 22f, TextAlignmentOptions.Center, Dim);
+            _noiseLabel.text = "อย่าส่งเสียง";
+            _noiseBg = Bar(root, "NoiseBg", new Vector2(0.5f, 0f), new Vector2(0f, 300f),
+                           new Vector2(480f, 16f), new Color(0f, 0f, 0f, 0.55f), out _noiseFill, Good);
+            _noiseDangerBg = Solid(root, "NoiseDangerBg", new Vector2(0.5f, 0f), new Vector2(0f, 282f),
+                                   new Vector2(480f, 6f), new Color(0f, 0f, 0f, 0.4f));
+            _noiseDanger = StretchFill(_noiseDangerBg, "NoiseDanger", Dim);
 
             // ข้อความแจ้งเตือนสั้นๆ
             _notice = Text(root, "Notice", new Vector2(0.5f, 0f), new Vector2(0f, 96f),

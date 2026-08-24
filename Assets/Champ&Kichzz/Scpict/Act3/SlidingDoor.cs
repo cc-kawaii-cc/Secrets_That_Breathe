@@ -4,24 +4,28 @@ using UnityEngine;
 namespace SecretsThatBreathe.Act3
 {
     /// <summary>
-    /// ประตูบานเลื่อนคู่ (Door_L / Door_R) — เล็งแล้วกด E เพื่อเปิด/ปิด
+    /// ประตูบานเลื่อน (Door_L / Door_R) — เล็งแล้วกด E เพื่อเปิด/ปิด
     ///
-    /// สืบทอดจาก <see cref="Act2Interactable"/> เพื่อให้ <see cref="PlayerInteractor"/> เดิมหาเจอ
-    /// และได้เงื่อนไข/การปิด objective มาใช้ฟรี แต่ปลดให้กดซ้ำได้ —
-    /// ประตูต้องเปิดปิดได้เรื่อย ๆ ไม่ใช่กดครั้งเดียวจบเหมือนวัตถุสำรวจ
+    /// แต่ละบานเลื่อนไปตาม <see cref="openOffsets"/> ของตัวเอง (บวกกับตำแหน่งปิดที่จับไว้
+    /// ตอนเริ่มซีน) ปิดแล้วกลับตำแหน่งเดิมเป๊ะเสมอ ปรับระยะ/ทิศทางแยกทีละบานได้อิสระ
+    /// ใน Inspector — ไม่ผูกกับแกนหรือทิศทางตายตัวเหมือนเดิม
     ///
-    /// เปิดประตูมีเสียง ยามที่อยู่ในรัศมีจะหันมาดู เป็นราคาที่ต้องจ่ายของการเข้าบ้าน
+    /// การกันเดินทะลุแยกออกจากตัวบานเอง: ใช้ <see cref="blocker"/> เป็น collider ทึบต่างหาก
+    /// เปิด/ปิดตาม IsOpen เพราะถ้าติด collider ไว้ที่ตัวบานตรงๆ มันจะไปแย่งชนกับกล่องเล็ง
+    /// (raycast เจอ collider ไหนใกล้กว่าก่อน อีกอันที่อยู่ลึกกว่าจะโดนบังจนกดไม่ติด)
     /// </summary>
     public class SlidingDoor : Act2Interactable
     {
         [Header("บานประตู")]
-        [Tooltip("บานที่จะเลื่อน — บานคู่ให้ใส่สองตัว จะเลื่อนแยกออกจากกันคนละทาง")]
+        [Tooltip("บานที่จะเลื่อน — บานคู่ให้ใส่สองตัว")]
         public Transform[] leaves;
-        [Tooltip("ระยะที่แต่ละบานเลื่อนออกจากจุดปิด (เมตร)")]
-        public float slideDistance = 1.0f;
-        [Tooltip("แกนที่บานเลื่อนไป (world space) — ประตูลิฟต์ในซีนนี้เลื่อนตามแกน Z")]
-        public Vector3 slideAxis = Vector3.forward;
-        public float slideSpeed = 2.2f;
+        [Tooltip("ระยะ+ทิศที่แต่ละบานเลื่อนไปตอนเปิด (world space, บวกกับตำแหน่งปิดที่จับไว้ตอนเริ่มซีน)\nต้องมีจำนวนเท่ากับ leaves — ปรับเลขตรงนี้ได้เลยถ้าอยากให้เลื่อนมาก/น้อย/คนละทิศ")]
+        public Vector3[] openOffsets = { new Vector3(0f, 0f, -10f), new Vector3(0f, 0f, -6f) };
+        public float slideSpeed = 4f;
+
+        [Header("กันเดินทะลุ")]
+        [Tooltip("collider ทึบที่ปิดกั้นช่องประตูตอนปิดอยู่ — ปิดใช้งานอัตโนมัติตอนประตูเปิด (เว้นว่างได้ถ้าไม่ต้องกันคนเดิน)")]
+        public Collider blocker;
 
         [Header("เสียงตอนเปิด")]
         [Tooltip("ความดัง 0..1 ที่ยามจะได้ยิน (0 = เงียบสนิท)")]
@@ -32,16 +36,28 @@ namespace SecretsThatBreathe.Act3
         public bool IsOpen { get; private set; }
 
         Vector3[] _closed;
+        bool _usedOnce;
 
         void Awake()
         {
-            if (leaves == null) return;
+            if (leaves == null || leaves.Length == 0) return;
+
             _closed = new Vector3[leaves.Length];
             for (int i = 0; i < leaves.Length; i++)
                 if (leaves[i] != null) _closed[i] = leaves[i].position;
-        }
 
-        bool _usedOnce;
+            if (openOffsets == null || openOffsets.Length != leaves.Length)
+            {
+                Debug.LogWarning("[SlidingDoor] openOffsets ไม่ครบตามจำนวน leaves บนออบเจ็กต์ " + name +
+                                  " — บานที่ขาดจะไม่ขยับตอนเปิด");
+                var filled = new Vector3[leaves.Length];
+                for (int i = 0; i < leaves.Length; i++)
+                    filled[i] = (openOffsets != null && i < openOffsets.Length) ? openOffsets[i] : Vector3.zero;
+                openOffsets = filled;
+            }
+
+            if (blocker != null) blocker.enabled = true;   // เริ่มเกมประตูปิดอยู่ — บล็อกไว้ก่อน
+        }
 
         public override void DoInteract()
         {
@@ -66,6 +82,7 @@ namespace SecretsThatBreathe.Act3
         {
             if (IsOpen == open) return;
             IsOpen = open;
+            if (blocker != null) blocker.enabled = !open;
             if (open && openNoise > 0f)
                 StealthEvents.Noise(transform.position, openNoiseRadius, openNoise);
         }
@@ -73,14 +90,11 @@ namespace SecretsThatBreathe.Act3
         void Update()
         {
             if (leaves == null || _closed == null) return;
-            Vector3 axis = slideAxis.sqrMagnitude < 0.0001f ? Vector3.forward : slideAxis.normalized;
-
             for (int i = 0; i < leaves.Length; i++)
             {
                 if (leaves[i] == null) continue;
-                // บานคู่แยกออกคนละทาง: ตัวคู่ไปทางลบ ตัวคี่ไปทางบวก
-                float sign = (i % 2 == 0) ? -1f : 1f;
-                Vector3 target = IsOpen ? _closed[i] + axis * slideDistance * sign : _closed[i];
+                Vector3 offset = (openOffsets != null && i < openOffsets.Length) ? openOffsets[i] : Vector3.zero;
+                Vector3 target = IsOpen ? _closed[i] + offset : _closed[i];
                 leaves[i].position = Vector3.MoveTowards(leaves[i].position, target, slideSpeed * Time.deltaTime);
             }
         }

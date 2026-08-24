@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using SecretsThatBreathe.Act2;
 using UnityEngine;
@@ -17,6 +18,11 @@ namespace SecretsThatBreathe.Act3
     /// </summary>
     public class SilentEavesdropZone : MonoBehaviour
     {
+        /// <summary>ความดัง 0..1 และความใกล้โดนจับ 0..1 — HUD ใช้วาดหลอดวัดเสียง</summary>
+        public static event Action<float, float> OnNoiseLevel;
+        /// <summary>ฉากจบแล้ว (ผ่านหรือโดนจับ) — HUD ใช้ซ่อนหลอด</summary>
+        public static event Action OnNoiseMeterHide;
+
         [Header("บทสนทนา (แก้ได้ตามใจ — ชื่อผู้พูดรวมอยู่ในบรรทัดแล้ว)")]
         [TextArea(2, 6)]
         public string[] lines =
@@ -64,10 +70,13 @@ namespace SecretsThatBreathe.Act3
 
         /// <summary>ความดังปัจจุบัน 0..1 เอาไปทำหลอดบนจอได้</summary>
         public float CurrentLoudness { get; private set; }
+        /// <summary>ใกล้โดนจับแค่ไหน 0..1 (ดังต่อเนื่องมาแล้วกี่ % ของ graceSeconds)</summary>
+        public float DangerRatio { get; private set; }
         public bool Completed { get; private set; }
         public bool Running { get; private set; }
 
         Coroutine _routine;
+        float _loudFor;
 
         /// <summary>เรียกจาก <see cref="ChampArrivalSequence"/> ตอนแชมป์ถึงห้องนอนแล้ว</summary>
         public void Begin()
@@ -79,7 +88,7 @@ namespace SecretsThatBreathe.Act3
         IEnumerator Run()
         {
             Running = true;
-            float loudFor = 0f;
+            _loudFor = 0f;
 
             for (int i = 0; i < lines.Length; i++)
             {
@@ -97,13 +106,17 @@ namespace SecretsThatBreathe.Act3
 
                     if (IsMakingNoise())
                     {
-                        loudFor += Time.deltaTime;
-                        if (loudFor >= graceSeconds) { yield return CaughtRoutine(); yield break; }
+                        _loudFor += Time.deltaTime;
+                        DangerRatio = graceSeconds > 0f ? Mathf.Clamp01(_loudFor / graceSeconds) : 1f;
+                        if (OnNoiseLevel != null) OnNoiseLevel(CurrentLoudness, DangerRatio);
+                        if (_loudFor >= graceSeconds) { yield return CaughtRoutine(); yield break; }
                     }
                     else
                     {
                         // เงียบแล้วผ่อนคืนเร็วกว่าตอนสะสม ผู้เล่นจึงแก้ตัวได้ทัน
-                        loudFor = Mathf.Max(0f, loudFor - Time.deltaTime * 2f);
+                        _loudFor = Mathf.Max(0f, _loudFor - Time.deltaTime * 2f);
+                        DangerRatio = graceSeconds > 0f ? Mathf.Clamp01(_loudFor / graceSeconds) : 0f;
+                        if (OnNoiseLevel != null) OnNoiseLevel(CurrentLoudness, DangerRatio);
                     }
                     yield return null;
                 }
@@ -135,6 +148,7 @@ namespace SecretsThatBreathe.Act3
         IEnumerator CaughtRoutine()
         {
             Running = false;
+            HideMeter();
             if (SubtitleManager.Instance != null) SubtitleManager.Instance.Show(caughtLine, caughtHoldSeconds);
             if (Act2Director.Instance != null) Act2Director.Instance.Notice(retryNotice);
 
@@ -150,14 +164,13 @@ namespace SecretsThatBreathe.Act3
             // ตั้งฉากใหม่ทั้งชุด ผู้เล่นเดินกลับไปกดซ่อนแล้วดูรอบใหม่ได้เลย
             if (sequence != null) sequence.Reset();
             if (hideSpot != null) hideSpot.Rearm();
-            _routine = null;
         }
 
         void Complete()
         {
             Completed = true;
             Running = false;
-            _routine = null;
+            HideMeter();
 
             if (HideSpot.Current != null) HideSpot.Current.Exit();
 
@@ -168,6 +181,14 @@ namespace SecretsThatBreathe.Act3
                 if (!string.IsNullOrEmpty(objectiveId)) director.Complete(objectiveId);
             }
             if (SubtitleManager.Instance != null) SubtitleManager.Instance.Show(completeNotice, 5f);
+        }
+
+        void HideMeter()
+        {
+            _routine = null;
+            CurrentLoudness = 0f;
+            DangerRatio = 0f;
+            if (OnNoiseMeterHide != null) OnNoiseMeterHide();
         }
     }
 }

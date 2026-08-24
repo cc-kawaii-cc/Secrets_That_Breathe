@@ -120,6 +120,7 @@ namespace SecretsThatBreathe.LevelTools
             var boot = Child(host, "Bootstrap").gameObject;
             Ensure<Act2Bootstrap>(boot);
             Ensure<MicNoiseDetector>(boot);
+            Ensure<PenthouseIntro>(boot);
         }
 
         // ───────────────────────── ยาม ─────────────────────────
@@ -360,29 +361,43 @@ namespace SecretsThatBreathe.LevelTools
             var r = Find("Door_R");
             if (l == null || r == null) { Debug.LogWarning("[Ch3Wire] ไม่พบ Door_L / Door_R"); return; }
 
-            // บานประตูสร้างมาโดยไม่มี collider จึงไม่มีอะไรให้ raycast ของ PlayerInteractor ชน
-            // ใส่กล่องเล็งกล่องเดียวคลุมทั้งช่องประตูแทน เล็งบานไหนก็กดได้
-            //
-            // จงใจไม่ใส่ collider ที่ตัวบานเอง เพราะบานจะบังกล่องเล็ง แล้ว raycast จะไปโดนบาน
-            // ซึ่งไม่มี StoryInteractable ติดอยู่ กลายเป็นกดไม่ติดทั้งที่เล็งถูก
+            // บานประตูสร้างมาโดยไม่มี collider เลย — ไม่มีอะไรให้ raycast ชนเพื่อกด E
+            // และไม่มีอะไรกันคนเดินทะลุตอนปิดด้วย จึงแยก collider ออกเป็นสองอันคนละหน้าที่:
+            //   DoorInteract = trigger บาง ๆ สำหรับกด E อยู่ฝั่งนอก (ใกล้ทางที่ผู้เล่นเดินเข้ามา)
+            //   DoorBlocker  = ทึบ กันเดินทะลุตอนปิด อยู่ฝั่งใน — SlidingDoor จะปิดใช้งานเองตอนเปิดประตู
+            // ถ้าวางซ้อนตำแหน่งเดียวกัน raycast จะเจอแค่อันที่ใกล้กว่าเสมอ อีกอันโดนบังจนใช้ไม่ได้
+            // เลยต้องแยกออกจากกันเล็กน้อยตามแนวลึกของประตู โดยให้ตัวกดอยู่ใกล้ผู้เล่นกว่าเสมอ
             Transform host = l.parent != null ? l.parent : l;
-            var box = Child(host, "DoorInteract");
-            box.position = (l.position + r.position) * 0.5f;
-            box.rotation = Quaternion.identity;
+            float doorX = (l.position.x + r.position.x) * 0.5f;
+            float doorY = (l.position.y + r.position.y) * 0.5f;
+            float zc = (l.position.z + r.position.z) * 0.5f;
+            float gapZ = Mathf.Abs(l.position.z - r.position.z);
+            float clearH = Mathf.Max(Mathf.Abs(l.localScale.y), Mathf.Abs(r.localScale.y));
 
-            // กล่องบาง ๆ อยู่ที่ระนาบประตูพอดี ไม่กินลึกเข้าไปในห้องโดยสาร
-            // ไม่งั้นตอนยืนอยู่ในลิฟต์ กล่องนี้จะบังปุ่มเรียกลิฟต์ที่อยู่ผนังด้านใน
-            var col = Ensure<BoxCollider>(box.gameObject);
-            col.isTrigger = true;
-            col.center = Vector3.zero;
-            col.size = new Vector3(0.3f, 2.4f, Mathf.Abs(l.position.z - r.position.z) + 1.2f);
+            var interact = Child(host, "DoorInteract");
+            interact.position = new Vector3(doorX - 0.15f, doorY, zc);
+            interact.rotation = Quaternion.identity;
+            var iCol = Ensure<BoxCollider>(interact.gameObject);
+            iCol.isTrigger = true;
+            iCol.center = Vector3.zero;
+            iCol.size = new Vector3(0.2f, clearH + 0.3f, gapZ + 1.2f);
 
-            var door = Ensure<SlidingDoor>(box.gameObject);
+            var blockerT = Child(host, "DoorBlocker");
+            blockerT.position = new Vector3(doorX + 0.1f, doorY, zc);
+            blockerT.rotation = Quaternion.identity;
+            var bCol = Ensure<BoxCollider>(blockerT.gameObject);
+            bCol.isTrigger = false;
+            bCol.center = Vector3.zero;
+            bCol.size = new Vector3(0.2f, clearH, gapZ + 0.3f);
+
+            var door = Ensure<SlidingDoor>(interact.gameObject);
             door.objectName = "ประตูลิฟต์";
             door.objectiveId = OBJ_ENTER;
             door.leaves = new[] { l, r };
-            door.slideAxis = Vector3.forward;
-            door.slideDistance = 1.0f;
+            door.blocker = bCol;
+            // ใส่ค่าเริ่มต้นให้เฉพาะตอนยังไม่เคยตั้ง — ปรับระยะ/ทิศเองใน Inspector แล้วจะไม่โดนทับ
+            if (door.openOffsets == null || door.openOffsets.Length != door.leaves.Length)
+                door.openOffsets = new[] { new Vector3(0f, 0f, -10f), new Vector3(0f, 0f, -6f) };
         }
 
         // ───────────────────────── ขึ้นชั้นสอง / หนีออก ─────────────────────────

@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace SecretsThatBreathe.Act3
 {
@@ -12,6 +13,9 @@ namespace SecretsThatBreathe.Act3
     ///
     /// กล้องถูกย้ายทั้งตำแหน่งและมุม ไม่ใช่แค่หันตาม เพราะผู้เล่นมุดอยู่ในตู้ชั้นสอง
     /// ถ้าหันอย่างเดียวจะได้ภาพทะลุกำแพงไปมองลานจอด ซึ่งดูพังกว่าไม่ทำ
+    ///
+    /// กด <see cref="skipKey"/> ระหว่างคัตซีนได้ตลอด — ข้ามตรงไปฉากแอบฟังทันที ไม่ต้องรอ
+    /// ดูรถขับ/แชมป์เดินซ้ำทุกครั้งที่โดนจับแล้วต้องเล่นคัตซีนนี้ใหม่ (ไม่กดก็ดูต่อได้ตามปกติ)
     /// </summary>
     public class ChampArrivalSequence : MonoBehaviour
     {
@@ -36,8 +40,8 @@ namespace SecretsThatBreathe.Act3
         public Transform[] walkPath;
         [Tooltip("จุดยืนคุยโทรศัพท์ใน ZONE_SuiteBedroom")]
         public Transform phoneSpot;
-        public float walkSpeed = 2.0f;
-        public float turnSpeed = 6f;
+        public float walkSpeed = 3.4f;
+        public float turnSpeed = 8f;
         public float arriveDistance = 0.35f;
 
         [Header("กล้องผู้เล่น")]
@@ -52,7 +56,22 @@ namespace SecretsThatBreathe.Act3
         [Header("ต่อด้วยฉากแอบฟัง")]
         public SilentEavesdropZone eavesdrop;
 
+        [Header("ข้ามคัตซีน")]
+        [Tooltip("ปิดถ้าไม่อยากให้ข้ามได้เลย")]
+        public bool allowSkip = true;
+        public Key skipKey = Key.Space;
+        [Tooltip("ข้อความบอกปุ่มข้าม โชว์บน HUD ระหว่างคัตซีนนี้ทำงานอยู่")]
+        public string skipHint = "ข้ามไปแอบฟังเลย";
+
         public bool Running { get; private set; }
+        /// <summary>คัตซีนนี้กำลังเล่นอยู่และยังกดข้ามได้ — HUD ใช้โชว์ปุ่มลัด</summary>
+        public static bool SkipAvailable { get; private set; }
+        /// <summary>ข้อความ "[ปุ่ม] คำอธิบาย" ของอินสแตนซ์ที่กำลังเล่นอยู่ — ไว้ให้ HUD โชว์ตรงๆ</summary>
+        public static string SkipHintText
+        {
+            get { return _active != null ? "[" + _active.skipKey + "] " + _active.skipHint : ""; }
+        }
+        static ChampArrivalSequence _active;
 
         Camera _cam;
         Transform _camParent;
@@ -60,6 +79,7 @@ namespace SecretsThatBreathe.Act3
         Quaternion _camLocalRot;
         bool _camTaken;
         Coroutine _routine;
+        bool _skipRequested;
 
         void Start() { Reset(); }
 
@@ -74,6 +94,9 @@ namespace SecretsThatBreathe.Act3
         {
             if (_routine != null) { StopCoroutine(_routine); _routine = null; }
             Running = false;
+            SkipAvailable = false;
+            if (_active == this) _active = null;
+            _skipRequested = false;
             ReleaseCamera();
 
             if (car != null)
@@ -92,6 +115,9 @@ namespace SecretsThatBreathe.Act3
         IEnumerator Run()
         {
             Running = true;
+            _skipRequested = false;
+            _active = this;
+            SkipAvailable = allowSkip;
 
             if (car != null)
             {
@@ -110,7 +136,7 @@ namespace SecretsThatBreathe.Act3
             // ── รถขับเข้ามาจอด ──
             if (car != null && carParkSpot != null)
                 yield return MoveActor(car.transform, carParkSpot.position, driveSpeed, true);
-            if (pauseAfterPark > 0f) yield return new WaitForSeconds(pauseAfterPark);
+            if (pauseAfterPark > 0f) yield return WaitSkippable(pauseAfterPark);
 
             // ── แชมป์ลงจากรถ ──
             if (champ != null)
@@ -139,16 +165,28 @@ namespace SecretsThatBreathe.Act3
 
             ReleaseCamera();
             Running = false;
+            SkipAvailable = false;
+            if (_active == this) _active = null;
             _routine = null;
 
             if (eavesdrop != null) eavesdrop.Begin();
         }
 
-        /// <summary>เดิน/ขับตัวละครไปยังจุดหมาย พร้อมหันหน้าตามทิศที่ไป</summary>
+        /// <summary>
+        /// เดิน/ขับตัวละครไปยังจุดหมาย พร้อมหันหน้าตามทิศที่ไป
+        ///
+        /// เช็คปุ่มข้ามทุกเฟรม — กดแล้ว "วาร์ป" ไปจุดหมายทันทีโดยไม่รอเฟรมถัดไป
+        /// เพราะ Run() เรียก MoveActor/WaitSkippable ต่อกันหลายตัว แต่ละตัวที่เจอ
+        /// _skipRequested อยู่แล้วจะจบทันทีในเฟรมเดียวกันหมด ทำให้ทั้งคัตซีนกระโดด
+        /// ไปจบในเฟรมเดียวเมื่อกดข้าม แทนที่จะค่อยๆ วาร์ปทีละช่วง
+        /// </summary>
         IEnumerator MoveActor(Transform actor, Vector3 target, float speed, bool face)
         {
             while (actor != null)
             {
+                CheckSkip();
+                if (_skipRequested) { actor.position = target; yield break; }
+
                 Vector3 flat = target - actor.position;
                 flat.y = 0f;
                 if (flat.magnitude <= arriveDistance) yield break;
@@ -160,6 +198,29 @@ namespace SecretsThatBreathe.Act3
                 // ไต่ระดับความสูงตามหมุดด้วย เพื่อให้เดินขึ้นบันไดไปชั้นสองได้
                 actor.position = Vector3.MoveTowards(actor.position, target, speed * Time.deltaTime);
                 yield return null;
+            }
+        }
+
+        IEnumerator WaitSkippable(float seconds)
+        {
+            float t = 0f;
+            while (t < seconds)
+            {
+                CheckSkip();
+                if (_skipRequested) yield break;
+                t += Time.deltaTime;
+                yield return null;
+            }
+        }
+
+        void CheckSkip()
+        {
+            if (!allowSkip || _skipRequested) return;
+            var kb = Keyboard.current;
+            if (kb != null && kb[skipKey].wasPressedThisFrame)
+            {
+                _skipRequested = true;
+                SkipAvailable = false;
             }
         }
 
