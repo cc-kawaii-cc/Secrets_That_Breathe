@@ -84,6 +84,17 @@ namespace SecretsThatBreathe.LevelTools
         public static void BuildScene(bool askToSave)
         {
             if (EditorApplication.isPlaying) { Debug.LogError("[Ch3Penthouse] leave play mode first."); return; }
+
+            // ซีนนี้มีของที่วางเองอยู่ (บอดี้การ์ด จุดเกิดแชมป์ ฯลฯ) และ build คือการสร้างใหม่ทับ
+            // ทั้งซีน ไม่ใช่การอัปเดต — ถามก่อนเสมอ ไม่งั้นงานที่จัดไว้ในหน้าต่าง Scene หายหมด
+            if (askToSave && AssetDatabase.LoadAssetAtPath<SceneAsset>(ScenePath) != null &&
+                !EditorUtility.DisplayDialog(
+                    "สร้างซีน Penthouse ใหม่ทับ?",
+                    "Penthouse.unity มีอยู่แล้ว การ build จะสร้างซีนใหม่ทับทั้งหมด\n" +
+                    "ของที่วางเองในซีน (Bodyguard, Champ Spawn, ตำแหน่งที่ขยับเอง) จะหายทั้งหมด\n\n" +
+                    "ถ้าต้องการแค่ต่อระบบ ACT 3 เข้าซีนเดิม ให้ใช้เมนู Wire Chapter 3 Penthouse แทน",
+                    "สร้างใหม่ทับ", "ยกเลิก")) return;
+
             if (askToSave && !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
 
             K.EnsureFolder(MatFolder);

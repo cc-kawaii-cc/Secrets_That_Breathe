@@ -34,8 +34,8 @@ namespace SecretsThatBreathe.Act2
         [Header("การข้ามซีน")]
         [Tooltip("เคลียร์เควสในซีนครบแล้วพาไปซีนถัดไปเอง")]
         public bool autoAdvanceScene = true;
-        [Tooltip("หน่วงก่อนเปลี่ยนซีน ให้ผู้เล่นได้อ่านบทสรุปก่อน")]
-        public float advanceDelay = 3f;
+        [Tooltip("หน่วงก่อนเปลี่ยนซีน ให้ผู้เล่นได้อ่านบทสรุปก่อน (แนะนำ 3-5 วินาที)")]
+        [Range(1f, 10f)] public float advanceDelay = 4f;
 
         [Header("Checkpoint")]
         [Tooltip("จุดที่ผู้เล่นจะถูกส่งกลับเมื่อโดนยามจับ")]
@@ -116,12 +116,8 @@ namespace SecretsThatBreathe.Act2
             while (_index < list.Length && _done.Contains(list[_index].id)) _index++;
             Announce();
 
-            if (_index >= list.Length)
-            {
-                if (logBeats) Debug.Log("[Act2] จบ Act 2 — SD Card อยู่ที่เซฟในเพนต์เฮาส์ของแชมป์");
-                Notice("จบ ACT 2 — เป้าหมายต่อไป: เพนต์เฮาส์ของแชมป์");
-                return;
-            }
+            if (_index >= list.Length && logBeats) Debug.Log("[Act2] เคลียร์ objective ครบทุกบทแล้ว");
+            // ปล่อยให้ CheckSceneCleared ประกาศจบซีน/จบบทที่เดียว แม้เป็นตัวสุดท้ายของทั้งบท
             CheckSceneCleared();
         }
 
@@ -133,7 +129,7 @@ namespace SecretsThatBreathe.Act2
         /// </summary>
         void CheckSceneCleared()
         {
-            if (!autoAdvanceScene || _advancing) return;
+            if (_advancing) return;
 
             string scene = SceneManager.GetActiveScene().name;
             var list = Act2Script.Objectives;
@@ -143,19 +139,27 @@ namespace SecretsThatBreathe.Act2
             string next = Act2Script.NextScene(scene);
             if (logBeats) Debug.Log("[Act2] เคลียร์ซีน " + scene + " ครบแล้ว → " + (next ?? "จบบท"));
             if (OnSceneComplete != null) OnSceneComplete(scene);
-            if (string.IsNullOrEmpty(next)) return;
 
             _advancing = true;
-            StartCoroutine(AdvanceRoutine(next));
+            StartCoroutine(AdvanceRoutine(Act2Script.SceneCompleteLine(scene),
+                                          autoAdvanceScene ? next : null));
         }
 
-        IEnumerator AdvanceRoutine(string nextScene)
+        /// <summary>
+        /// ประกาศจบซีน ค้างไว้ให้ผู้เล่นอ่าน แล้วค่อยพาไปซีนถัดไป
+        /// ประกาศเสมอแม้ไม่มีซีนต่อ เพราะซีนปิดบทต้องขึ้น "จบ Act 3" ให้เห็นด้วย
+        /// </summary>
+        IEnumerator AdvanceRoutine(string line, string nextScene)
         {
-            Notice("เคลียร์ครบแล้ว — กำลังไปต่อ...");
+            Notice(line);
+            if (SubtitleManager.Instance != null) SubtitleManager.Instance.Show(line, advanceDelay);
             yield return new WaitForSeconds(advanceDelay);
 
-            if (GameManager.Instance != null) GameManager.Instance.LoadScene(nextScene);
-            else SceneManager.LoadScene(nextScene);
+            if (!string.IsNullOrEmpty(nextScene))
+            {
+                if (GameManager.Instance != null) GameManager.Instance.LoadScene(nextScene);
+                else SceneManager.LoadScene(nextScene);
+            }
             _advancing = false;
         }
 
@@ -294,6 +298,7 @@ namespace SecretsThatBreathe.Act2
         public const string SceneGarage = "Main2_Garage";
         public const string SceneParking = "Main2_ParkingB1";
         public const string SceneClub = "Main2_Club";
+        public const string ScenePenthouse = "Penthouse";
 
         // หลักฐาน
         public const string EV_PaintChip = "EV_PaintChip";
@@ -302,6 +307,7 @@ namespace SecretsThatBreathe.Act2
         public const string EV_BumperPhoto = "EV_BumperPhoto";
         public const string EV_DashcamMissing = "EV_DashcamMissing";
         public const string EV_SDCardLocation = "EV_SDCardLocation";
+        public const string EV_ConfessionCall = "EV_ConfessionCall";
 
         public static readonly Act2Objective[] Objectives =
         {
@@ -327,7 +333,27 @@ namespace SecretsThatBreathe.Act2
             new Act2Objective("OBJ_03_ReachVipEdge",        SceneClub,    "เข้าใกล้ขอบโซน VIP โดยไม่ให้ยามเห็น",    "OBJ_03_ReachVipEdge"),
             new Act2Objective("OBJ_04_OverhearSuits",       SceneClub,    "แอบฟังสองคนนั้นคุยกัน",                  "OBJ_04_OverhearSuits"),
             new Act2Objective("OBJ_05_LeaveViaStaffDoor",   SceneClub,    "ออกทางประตูพนักงาน",                     "OBJ_05_LeaveViaStaffDoor"),
+
+            // ── ACT 3: เพนต์เฮาส์ของแชมป์ ──
+            // ใช้ตัวจัดการชุดเดียวกับ ACT 2 (objective / เช็คพอยต์ / HUD / ระบบยาม)
+            // เป็นบทต่อเนื่องกัน แยกคลาสใหม่จะได้โค้ดซ้ำทั้งชุดโดยไม่ได้อะไรเพิ่ม
+            new Act2Objective("OBJ_A3_01_EnterHouse",    ScenePenthouse, "เปิดประตูลิฟต์ เข้าไปในเพนต์เฮาส์",     "Door_L"),
+            new Act2Objective("OBJ_A3_02_ReachUpstairs", ScenePenthouse, "ขึ้นชั้นสองโดยไม่ให้บอดี้การ์ดเห็น",    "NAV_StairTop"),
+            new Act2Objective("OBJ_A3_03_Hide",          ScenePenthouse, "ซ่อนตัวที่ตู้เสื้อผ้าในห้องนอน",        "Dresser"),
+            new Act2Objective("OBJ_A3_04_Overhear",      ScenePenthouse, "แอบฟังแชมป์คุยโทรศัพท์ — ห้ามส่งเสียง", "NAV_SuiteBedroom"),
+            new Act2Objective("OBJ_A3_05_Escape",        ScenePenthouse, "หนีออกจากเพนต์เฮาส์",                   "LIFT_ToClub"),
         };
+
+        /// <summary>ข้อความตอนเคลียร์ซีนนั้นครบ — ซีนปิดบทจะได้ประกาศจบบทให้ผู้เล่นอ่าน</summary>
+        public static string SceneCompleteLine(string scene)
+        {
+            switch (scene)
+            {
+                case SceneClub:      return "จบ Act 2 — SD Card อยู่ที่เซฟในเพนต์เฮาส์ของแชมป์";
+                case ScenePenthouse: return "จบ Act 3";
+                default:             return "เคลียร์ครบแล้ว — กำลังไปต่อ...";
+            }
+        }
 
         public static Act2Objective Find(string id)
         {

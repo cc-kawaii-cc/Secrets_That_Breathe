@@ -29,6 +29,8 @@ namespace SecretsThatBreathe.Act2
         [Tooltip("วิ่ง")] public float visibilitySprint = 1.35f;
         [Tooltip("หมอบแล้วคูณเพิ่ม (ยิ่งน้อยยิ่งเห็นยาก)")] public float crouchMultiplier = 0.45f;
         [Tooltip("อยู่ในเงา/หลังกำบัง คูณเพิ่ม")] public float shadowMultiplier = 0.5f;
+        [Tooltip("มุดอยู่ในที่ซ่อน (ตู้เสื้อผ้า/ล็อกเกอร์) — ยามเดินผ่านหน้าก็ไม่เห็น")]
+        [Range(0f, 1f)] public float hiddenVisibility = 0.02f;
         [Tooltip("เปิดไฟฉายแล้วคูณเพิ่ม — ส่องทางได้ แต่ยามเห็นแต่ไกล")]
         public float flashlightMultiplier = 2.2f;
 
@@ -52,6 +54,14 @@ namespace SecretsThatBreathe.Act2
         public float Visibility { get; private set; }
         public float Noise { get; private set; }
         public bool InShadow { get { return _shadowCount > 0; } }
+
+        /// <summary>
+        /// มุดอยู่ในที่ซ่อน — ตั้งโดย <see cref="Act3.HideSpot"/>
+        ///
+        /// ต้องเป็นสวิตช์แยก ไม่ใช่ PushVisibilityMultiplier เพราะตัวนั้นเก็บค่าที่ "สูงสุด"
+        /// ของเฟรม การดันค่าต่ำ ๆ เข้าไปจึงไม่มีผลอะไรเลย
+        /// </summary>
+        public bool Hidden { get; set; }
 
         PlayerMovement _movement;
         CrouchAbility _crouch;
@@ -107,6 +117,15 @@ namespace SecretsThatBreathe.Act2
                        * (InShadow ? shadowMultiplier : 1f)
                        * (FlashlightOn ? flashlightMultiplier : 1f)
                        * ExternalVisibilityMultiplier;
+
+            // อยู่ในที่ซ่อนแล้วยามมองไม่เห็นและไม่ได้ยิน — ผู้เล่นขยับไม่ได้อยู่แล้วตอนซ่อน
+            if (Hidden)
+            {
+                Visibility = hiddenVisibility;
+                Noise = 0f;
+                _stepTimer = 0f;
+                return;
+            }
 
             float baseNoise = !moving ? noiseIdle : (sprinting ? noiseSprint : noiseWalk);
             Noise = baseNoise * Mathf.Lerp(1f, noiseCrouchMultiplier, crouchAmt);

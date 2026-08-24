@@ -24,6 +24,24 @@ namespace SecretsThatBreathe.Act2
         [Tooltip("เข้าใกล้จุดที่สนใจแค่ไหนถือว่าถึงแล้ว")]
         public float arriveDistance = 0.6f;
 
+        [Header("พื้นและสิ่งกีดขวาง")]
+        [Tooltip("ถ่วงให้เท้าติดพื้นเสมอ — กันยามลอยกลางอากาศเมื่อหมุดอยู่คนละระดับ")]
+        public bool stickToGround = true;
+        public LayerMask groundMask = ~0;
+        [Tooltip("เริ่มยิงเรย์หาพื้นจากเหนือเท้าเท่าไร")]
+        public float groundSnapUp = 0.6f;
+        [Tooltip("มองหาพื้นลงไปไกลสุดเท่าไร — อย่าตั้งเกินความสูงระหว่างชั้น ไม่งั้นยามจะร่วงลงชั้นล่าง")]
+        public float groundProbe = 2.0f;
+
+        [Tooltip("หยุดเมื่อมีอะไรขวาง แล้วเปลี่ยนไปหมุดถัดไป — กันยามเดินทะลุกำแพง")]
+        public bool avoidObstacles = true;
+        public LayerMask obstacleMask = ~0;
+        public float bodyRadius = 0.4f;
+        [Tooltip("ตรวจล่วงหน้าไกลแค่ไหน")]
+        public float probeAhead = 0.7f;
+        [Tooltip("ความสูงที่ใช้ตรวจสิ่งกีดขวาง วัดจากเท้า (ต่ำกว่านี้ถือว่าก้าวข้ามได้)")]
+        public float chestHeight = 0.9f;
+
         readonly List<Vector3> _points = new List<Vector3>();
         GuardVision _vision;
         int _index;
@@ -32,12 +50,19 @@ namespace SecretsThatBreathe.Act2
         bool _alerted;
         Vector3 _homePos;
         Quaternion _homeRot;
+        float _feetOffset;
+
+        /// <summary>ตำแหน่งเท้า — จุดหมุนของโมเดลมักอยู่กลางตัว ไม่ใช่ที่พื้น</summary>
+        Vector3 Feet { get { return transform.position - Vector3.up * _feetOffset; } }
 
         void Awake()
         {
             _vision = GetComponent<GuardVision>();
             _homePos = transform.position;
             _homeRot = transform.rotation;
+
+            var rend = GetComponentInChildren<Renderer>();
+            _feetOffset = rend != null ? transform.position.y - rend.bounds.min.y : 0f;
 
             var route = transform.Find("PatrolRoute");
             if (route != null)
@@ -47,6 +72,9 @@ namespace SecretsThatBreathe.Act2
             // หมุดจุดเดียว (หรือไม่มีเลย) = ยามยืนประจำที่
             if (_points.Count == 1) _points.Clear();
         }
+
+        // วางให้ติดพื้นตั้งแต่เฟรมแรก เผื่อถูกวางค้างไว้ลอย ๆ หรือจมพื้นในหน้าต่าง Scene
+        void Start() { StickToGround(); }
 
         public void SetAlerted(bool alerted) { _alerted = alerted; }
 
@@ -87,7 +115,7 @@ namespace SecretsThatBreathe.Act2
             else _index = (_index + 1) % _points.Count;
         }
 
-        /// <summary>คืน true เมื่อถึงที่หมายแล้ว</summary>
+        /// <summary>คืน true เมื่อถึงที่หมายแล้ว (หรือไปต่อไม่ได้เพราะมีอะไรขวาง)</summary>
         bool MoveTowards(Vector3 target, float moveSpeed)
         {
             Vector3 flat = target - transform.position;
@@ -96,8 +124,55 @@ namespace SecretsThatBreathe.Act2
 
             Vector3 dir = flat.normalized;
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), turnSpeed * Time.deltaTime);
+
+            // ชนกำแพงแล้วยังดันต่อ = เดินทะลุ ผังด่านก็หมดความหมาย
+            // ถือว่า "ไปต่อไม่ได้" แล้วให้ไปหมุดถัดไปแทน ยามจึงไม่ค้างมุดกำแพงอยู่ตรงนั้น
+            if (avoidObstacles && Blocked(dir)) return true;
+
             transform.position += dir * moveSpeed * Time.deltaTime;
+            StickToGround();
             return false;
+        }
+
+        /// <summary>มีอะไรขวางในทิศที่กำลังจะเดินไหม (ไม่นับตัวเอง ผู้เล่น และ trigger)</summary>
+        bool Blocked(Vector3 dir)
+        {
+            Vector3 origin = Feet + Vector3.up * chestHeight;
+            var hits = Physics.SphereCastAll(origin, bodyRadius, dir, probeAhead,
+                                             obstacleMask, QueryTriggerInteraction.Ignore);
+            var player = StealthTarget.Instance;
+            for (int i = 0; i < hits.Length; i++)
+            {
+                Transform hit = hits[i].collider.transform;
+                if (hit.IsChildOf(transform)) continue;
+                if (player != null && hit.IsChildOf(player.transform)) continue;
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// วางเท้าให้แตะพื้นที่อยู่ข้างใต้เสมอ
+        /// groundProbe ตั้งสั้นกว่าความสูงระหว่างชั้นไว้ ยามชั้นบนจะได้ไม่ร่วงไปเกาะพื้นชั้นล่าง
+        /// </summary>
+        void StickToGround()
+        {
+            if (!stickToGround) return;
+
+            Vector3 from = Feet + Vector3.up * groundSnapUp;
+            var hits = Physics.RaycastAll(from, Vector3.down, groundSnapUp + groundProbe,
+                                          groundMask, QueryTriggerInteraction.Ignore);
+            float best = float.NegativeInfinity;
+            for (int i = 0; i < hits.Length; i++)
+            {
+                if (hits[i].collider.transform.IsChildOf(transform)) continue;
+                if (hits[i].point.y > best) best = hits[i].point.y;
+            }
+            if (float.IsNegativeInfinity(best)) return;
+
+            Vector3 p = transform.position;
+            p.y = best + _feetOffset;
+            transform.position = p;
         }
 
         void OnDrawGizmosSelected()
