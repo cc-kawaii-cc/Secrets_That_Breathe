@@ -283,8 +283,6 @@ namespace Tenkoku.Core
 	public float precipQuality = 1f;
 	private float cloudStepTime = 0f;
 	public float cloudBrightness = 1.0f;
-	[Range(0.0f, 1.0f)]
-	public float cloudColorSaturation = 0.55f;
 
 	private Matrix4x4 MV;
 
@@ -2284,7 +2282,6 @@ bool totalEclipse = false;
 
 		temperatureColor = temperatureGradient.Evaluate( weather_temperature / 120f );
 		colorClouds = Color.Lerp(colorClouds,colorClouds*temperatureColor,temperatureColor.a);
-		colorClouds = SetCloudSaturation(colorClouds);
 
 		
 		
@@ -2296,7 +2293,6 @@ bool totalEclipse = false;
 	    colorHighlightClouds = Color.Lerp(colorHighlightClouds,colorHighlightClouds*colorOverlay,colorOverlay.a);
 
 	    colorHighlightClouds = Color.Lerp(colorHighlightClouds,colorHighlightClouds*temperatureColor,temperatureColor.a);
-	    colorHighlightClouds = SetCloudSaturation(colorHighlightClouds);
 
 
 
@@ -3741,16 +3737,6 @@ if (float.IsNaN(eclipseFactor)) eclipseFactor = 1f;
 	}
 
 
-
-	private Color SetCloudSaturation(Color source) {
-		// Preserve perceived brightness while reducing the very strong red/orange
-		// tint produced by the original sunset color ramp in Game view.
-		float luminance = (source.r * 0.2126f) + (source.g * 0.7152f) + (source.b * 0.0722f);
-		Color neutral = new Color(luminance, luminance, luminance, source.a);
-		Color result = Color.LerpUnclamped(neutral, source, Mathf.Clamp01(cloudColorSaturation));
-		result.a = source.a;
-		return result;
-	}
 
 	public Color DecodeColorKey( int position ) {
 

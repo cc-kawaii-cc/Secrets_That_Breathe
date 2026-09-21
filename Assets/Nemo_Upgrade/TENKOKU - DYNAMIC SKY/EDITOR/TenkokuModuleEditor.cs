@@ -408,43 +408,38 @@ public class TenkokuModuleEditor : Editor {
         	script.cloudBrightness = EditorGUI.Slider(new Rect(rt.x+margin+165, rt.y+385, setWidth, 18), "", script.cloudBrightness,0.0f,2.0f);
 			ToolTip(rt.x+margin+109, rt.y+385,"Changes the level of cloud brightening.");
 
-			GUI.Label (new Rect (rt.x+margin+10, rt.y+405, 180, 15), new GUIContent("Cloud Color Saturation"));
-			script.cloudColorSaturation = EditorGUI.Slider(new Rect(rt.x+margin+165, rt.y+405, setWidth, 18), "", script.cloudColorSaturation,0.0f,1.0f);
-			ToolTip(rt.x+margin+137, rt.y+405,"Controls sunset cloud color strength. 0 is neutral gray, 1 is the original Tenkoku color. Recommended for URP: 0.45 to 0.65.");
-
-
         	GUI.contentColor = colorEnabled;
     		GUI.backgroundColor = colorEnabled;
 	        	
-	        GUI.Label (new Rect (rt.x+margin+10, rt.y+425, 180, 15), new GUIContent("Precipitation Quality"));
-	        script.precipQuality = EditorGUI.Slider(new Rect(rt.x+margin+165, rt.y+425, setWidth, 18), "", script.precipQuality,0.01f,2.0f);
-			ToolTip(rt.x+margin+127, rt.y+425,"Controls number of rain and snow particles emitted.  Higher quality emits more particles at the cost of more system resources.  Lower this setting for better performance.  Default is 1.");
+	        GUI.Label (new Rect (rt.x+margin+10, rt.y+405, 180, 15), new GUIContent("Precipitation Quality"));
+	        script.precipQuality = EditorGUI.Slider(new Rect(rt.x+margin+165, rt.y+405, setWidth, 18), "", script.precipQuality,0.01f,2.0f);
+			ToolTip(rt.x+margin+127, rt.y+405,"Controls number of rain and snow particles emitted.  Higher quality emits more particles at the cost of more system resources.  Lower this setting for better performance.  Default is 1.");
 
 
 
 
 
-			script.enableAutoAdvance = EditorGUI.Toggle(new Rect(rt.x+margin+10, rt.y+455, 20, 18),"", script.enableAutoAdvance);
+			script.enableAutoAdvance = EditorGUI.Toggle(new Rect(rt.x+margin+10, rt.y+435, 20, 18),"", script.enableAutoAdvance);
 
 			if (!script.enableAutoAdvance){
 	        	GUI.contentColor = colorDisabled;
         		GUI.backgroundColor = colorDisabled;
 			}
 
-			EditorGUI.LabelField(new Rect(rt.x+margin+30, rt.y+455, 340, 18),"AUTO-ADVANCE SYSTEM TIMER");
-	        script.systemTime = EditorGUI.FloatField(new Rect(rt.x+margin+260, rt.y+455, 120, 18),"",script.systemTime);
+			EditorGUI.LabelField(new Rect(rt.x+margin+30, rt.y+435, 340, 18),"AUTO-ADVANCE SYSTEM TIMER");
+	        script.systemTime = EditorGUI.FloatField(new Rect(rt.x+margin+260, rt.y+435, 120, 18),"",script.systemTime);
 			
         	//GUI.contentColor = colorDisabled;
         	//GUI.backgroundColor = colorDisabled;
         	GUI.contentColor = new Color(0.54f,0.55f,0.55f,1.0f);
-	        	EditorGUI.LabelField(new Rect(rt.x+margin+30, rt.y+475, 340, 18),"the 'systemTime' variable is automatically advanced by");
-	        	EditorGUI.LabelField(new Rect(rt.x+margin+30, rt.y+487, 340, 18),"default.  This variable can be shared across a network to");
-			EditorGUI.LabelField(new Rect(rt.x+margin+30, rt.y+499, 340, 18),"sync cloud positions between client and server computers.");
+	        	EditorGUI.LabelField(new Rect(rt.x+margin+30, rt.y+455, 340, 18),"the 'systemTime' variable is automatically advanced by");
+	        	EditorGUI.LabelField(new Rect(rt.x+margin+30, rt.y+467, 340, 18),"default.  This variable can be shared across a network to");
+			EditorGUI.LabelField(new Rect(rt.x+margin+30, rt.y+479, 340, 18),"sync cloud positions between client and server computers.");
 			GUI.contentColor = colorEnabled;
         	GUI.backgroundColor = colorEnabled;
 
 
-	        	GUILayout.Space(495.0f);
+	        	GUILayout.Space(475.0f);
         }
         GUILayout.Space(10.0f);
 
