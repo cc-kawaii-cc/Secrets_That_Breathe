@@ -510,7 +510,8 @@ MonoBehaviour:
   flashlightSource: {fileID: 7000000000000000004}
   startOn: 0
   toggleKey: 20
-  toggleDelay: 0.6
+  delayAfterTurningOn: 0.6
+  delayAfterTurningOff: 0.6
   audioSource: {fileID: 0}
   turnOnSound: {fileID: 0}
   turnOffSound: {fileID: 0}

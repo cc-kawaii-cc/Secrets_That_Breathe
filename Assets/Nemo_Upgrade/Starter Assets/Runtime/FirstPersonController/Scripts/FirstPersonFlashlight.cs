@@ -12,7 +12,10 @@ namespace StarterAssets
 
         [Header("Input")]
         [SerializeField] private Key toggleKey = Key.F;
-        [SerializeField, Min(0f)] private float toggleDelay = 0.6f;
+        [Tooltip("Time after turning the flashlight on before it can be turned off.")]
+        [SerializeField, Min(0f)] private float delayAfterTurningOn = 0.6f;
+        [Tooltip("Time after turning the flashlight off before it can be turned on again.")]
+        [SerializeField, Min(0f)] private float delayAfterTurningOff = 0.6f;
 
         [Header("Sound")]
         [SerializeField] private AudioSource audioSource;
@@ -58,7 +61,8 @@ namespace StarterAssets
             if (flashlightSource == null || Time.unscaledTime < nextToggleTime) return;
 
             isOn = !isOn;
-            nextToggleTime = Time.unscaledTime + toggleDelay;
+            float delay = isOn ? delayAfterTurningOn : delayAfterTurningOff;
+            nextToggleTime = Time.unscaledTime + delay;
             flashlightSource.enabled = isOn;
 
             AudioClip clip = isOn ? turnOnSound : turnOffSound;
