@@ -299,6 +299,8 @@ namespace SecretsThatBreathe.Act2
         public const string SceneParking = "Main2_ParkingB1";
         public const string SceneClub = "Main2_Club";
         public const string ScenePenthouse = "Penthouse";
+        public const string SceneCourtroom = "Main4_Courtroom";
+        public const string SceneCourtSteps = "Main4_CourtSteps";
 
         // หลักฐาน
         public const string EV_PaintChip = "EV_PaintChip";
@@ -308,6 +310,7 @@ namespace SecretsThatBreathe.Act2
         public const string EV_DashcamMissing = "EV_DashcamMissing";
         public const string EV_SDCardLocation = "EV_SDCardLocation";
         public const string EV_ConfessionCall = "EV_ConfessionCall";
+        public const string EV_SDCard = "EV_SDCard";
 
         public static readonly Act2Objective[] Objectives =
         {
@@ -342,6 +345,15 @@ namespace SecretsThatBreathe.Act2
             new Act2Objective("OBJ_A3_03_Hide",          ScenePenthouse, "ซ่อนตัวที่ตู้เสื้อผ้าในห้องนอน",        "Dresser"),
             new Act2Objective("OBJ_A3_04_Overhear",      ScenePenthouse, "แอบฟังแชมป์คุยโทรศัพท์ — ห้ามส่งเสียง", "NAV_SuiteBedroom"),
             new Act2Objective("OBJ_A3_05_Escape",        ScenePenthouse, "หนีออกจากเพนต์เฮาส์",                   "LIFT_ToClub"),
+
+            // ── ACT 4: ความยุติธรรมที่ถูกซื้อ ──
+            // ใช้ตัวจัดการชุดเดิมเหมือน ACT 3 ฉากที่เหลือเป็นคัตซีนซึ่ง CourtroomSequence / CourtStepsSequence คุมเอง
+            new Act2Objective("OBJ_A4_01_TakeSeat",     SceneCourtroom,  "ไปประจำโต๊ะทนายโจทก์",                     "OBJ_A4_01_TakeSeat"),
+            new Act2Objective("OBJ_A4_02_CrossExamine", SceneCourtroom,  "สืบพยาน — ว่าความให้ศาลเชื่อจนสิ้นสงสัย",      "MARK_WitnessStand"),
+            new Act2Objective("OBJ_A4_03_PlayClip",     SceneCourtroom,  "เปิดคลิปจาก SD Card ที่จอหน้าศาล",          "SCREEN_EvidenceTV"),
+            new Act2Objective("OBJ_A4_04_LeaveCourt",   SceneCourtroom,  "ออกจากห้องพิจารณาคดี",                     "EXIT_ToCourtSteps"),
+            new Act2Objective("OBJ_A4_05_ReachAunt",    SceneCourtSteps, "ตามป้าสมรไป",                              "Aunt_Samorn"),
+            new Act2Objective("OBJ_A4_06_Ritual",       SceneCourtSteps, "เดินไปที่ริมถนน",                           "OBJ_A4_06_Ritual"),
         };
 
         /// <summary>ข้อความตอนเคลียร์ซีนนั้นครบ — ซีนปิดบทจะได้ประกาศจบบทให้ผู้เล่นอ่าน</summary>
@@ -351,6 +363,8 @@ namespace SecretsThatBreathe.Act2
             {
                 case SceneClub:      return "จบ Act 2 — SD Card อยู่ที่เซฟในเพนต์เฮาส์ของแชมป์";
                 case ScenePenthouse: return "จบ Act 3";
+                case SceneCourtroom: return "ข้างนอก... ฝนเริ่มตกหนัก";
+                case SceneCourtSteps: return "จบ EPISODE 1";
                 default:             return "เคลียร์ครบแล้ว — กำลังไปต่อ...";
             }
         }
