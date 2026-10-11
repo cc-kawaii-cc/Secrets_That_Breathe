@@ -1,0 +1,51 @@
+{
+  "seed": 381017,
+  "revision": "5k cluster cards",
+  "source_leaf_definitions": 6877,
+  "leaf_cards": 664,
+  "green_fruit": 75,
+  "lods": [
+    {
+      "level": 0,
+      "triangles": 4950,
+      "vertices": 5512,
+      "parts": {
+        "Bark_LOD0": 2122,
+        "Leaves_LOD0": 1328,
+        "Fruit_Green_LOD0": 1500
+      }
+    },
+    {
+      "level": 1,
+      "triangles": 2382,
+      "vertices": 2761,
+      "parts": {
+        "Bark_LOD1": 1042,
+        "Leaves_LOD1": 732,
+        "Fruit_Green_LOD1": 608
+      }
+    },
+    {
+      "level": 2,
+      "triangles": 950,
+      "vertices": 1069,
+      "parts": {
+        "Bark_LOD2": 530,
+        "Leaves_LOD2": 240,
+        "Fruit_Green_LOD2": 180
+      }
+    }
+  ],
+  "bounds_blender": {
+    "min": [
+      -3.8214282989501953,
+      -3.7057411670684814,
+      -0.08756625652313232
+    ],
+    "max": [
+      3.5191149711608887,
+      3.6244378089904785,
+      7.329159736633301
+    ]
+  }
+}

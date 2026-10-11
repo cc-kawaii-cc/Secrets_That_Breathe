@@ -1,0 +1,14 @@
+Unity 6000.3.8f1 / URP 17.3.0 wind verification
+PASS: custom texture, tiling and colour preserved by upgrade.
+MangoTree LOD triangles: 161576
+MangoTree LOD triangles: 53808
+MangoTree LOD triangles: 12668
+MangoTree_NoFruit LOD triangles: 161576
+MangoTree_NoFruit LOD triangles: 53808
+MangoTree_NoFruit LOD triangles: 12668
+PASS: direction, main strength, turbulence input, pulse and spherical attenuation.
+PASS: animated LOD0, changed pixels=128157
+PASS: animated LOD1, changed pixels=128141
+PASS: animated LOD2, changed pixels=124608
+PASS: inactive zone, Main=0 and disabled component stop movement.
+PASS: Lit forward/deferred, shadow, depth, depth normals and motion-vector passes compile.

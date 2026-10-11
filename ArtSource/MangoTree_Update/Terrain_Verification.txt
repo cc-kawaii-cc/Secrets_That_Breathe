@@ -1,0 +1,14 @@
+Unity 6000.3.8f1 / URP 17.3.0 / native Terrain mango verification
+MangoTree_Update_Terrain LOD0: 4950 triangles, 3 material slots
+MangoTree_Update_Terrain LOD1: 2382 triangles, 3 material slots
+MangoTree_Update_Terrain LOD2: 950 triangles, 3 material slots
+MangoTree_Update_Terrain_NoFruit LOD0: 3450 triangles, 2 material slots
+MangoTree_Update_Terrain_NoFruit LOD1: 1774 triangles, 2 material slots
+MangoTree_Update_Terrain_NoFruit LOD2: 770 triangles, 2 material slots
+Native trunk raycast: False (requires Play Mode collision verification)
+PASS: nine native Terrain.treeInstances, random rotations/scales, animated shared wind; changed pixels=37861
+PASS: trees are rendered by native Terrain, rather than spawned mesh GameObjects; visible pixels=122609
+PASS: inactive Wind Zone, Main=0 and disabled shared controller stop movement.
+PASS: spherical radius and animated radial wind; changed pixels=9439
+PASS: adding the existing mango prototype preserves other prototypes and planted trees.
+PASS: Play Mode native tree trunk collision 9/9 raycasts, and shared wind updates automatically in Runtime LateUpdate.

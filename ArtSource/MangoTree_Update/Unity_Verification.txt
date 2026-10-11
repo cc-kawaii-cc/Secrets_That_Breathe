@@ -1,0 +1,15 @@
+Unity 6000.3.8f1 / URP 17.3.0 / MangoTree_Update
+MangoTree_Update LOD0 triangles: 4950
+MangoTree_Update LOD1 triangles: 2382
+MangoTree_Update LOD2 triangles: 950
+MangoTree_Update bounds: Center: (0.15, 3.62, 0.04), Extents: (3.67, 3.71, 3.67)
+MangoTree_Update_NoFruit LOD0 triangles: 4950
+MangoTree_Update_NoFruit LOD1 triangles: 2382
+MangoTree_Update_NoFruit LOD2 triangles: 950
+MangoTree_Update_NoFruit bounds: Center: (0.15, 3.62, 0.04), Extents: (3.67, 3.71, 3.67)
+PASS: <=5000 triangles for the entire LOD0 tree including green fruit and stems; independent references, scale, three LODs, two-sided alpha leaf clusters, bark normal and collider.
+PASS: Directional and Spherical Wind Zone direction, strength, turbulence, pulse and falloff.
+PASS: animated LOD0, changed pixels=155220
+PASS: animated LOD1, changed pixels=151962
+PASS: animated LOD2, changed pixels=140415
+PASS: inactive zone / Main=0 stop movement; shader forward, GBuffer, shadow, depth, normals and motion-vector passes compile.
