@@ -18,6 +18,10 @@ namespace SecretsThatBreathe
         public Transform noodles;
         public SeatPromptUI promptCanvas;
 
+        [Header("Empty cup after eating")]
+        [Tooltip("Optional empty-cup object from the Hierarchy. Place it at the full cup position as a separate sibling object. Hidden until eating finishes.")]
+        public GameObject emptyCupModel;
+
         [Header("Look at cup to eat")]
         [Tooltip("Allowed angle from the camera forward direction to the cup centre. 35 allows a broad 70-degree cone.")]
         [Range(1f, 80f)] public float lookAngle = 35f;
@@ -74,6 +78,11 @@ namespace SecretsThatBreathe
             if (promptCanvas == null) promptCanvas = SeatPromptUI.FindOrCreate(gameObject.scene);
             promptCanvas.EnsureEatPrompt();
             promptCanvas.SetEatVisible(false);
+            if (emptyCupModel != null)
+            {
+                if (HasValidEmptyCup()) emptyCupModel.SetActive(false);
+                else Debug.LogWarning("[Noodles] Empty Cup Model must be a separate scene object, outside MEMEEE and the Player hierarchy.", this);
+            }
         }
 
         private void OnEnable() { eat?.Enable(); awaitingRelease = true; wasSeated = false; }
@@ -196,11 +205,25 @@ namespace SecretsThatBreathe
             RestoreObject();
             State = MealState.Finished;
             if (promptCanvas != null) promptCanvas.SetEatVisible(false);
+            if (HasValidEmptyCup())
+            {
+                noodles.gameObject.SetActive(false);
+                emptyCupModel.SetActive(true);
+            }
             onMealFinished.Invoke();
+        }
+
+        private bool HasValidEmptyCup()
+        {
+            if (emptyCupModel == null || noodles == null || !emptyCupModel.scene.IsValid()) return false;
+            Transform empty = emptyCupModel.transform;
+            return !empty.IsChildOf(noodles) && !noodles.IsChildOf(empty) &&
+                !empty.IsChildOf(transform.root) && !transform.IsChildOf(empty);
         }
 
         public void CancelEating()
         {
+            if (State == MealState.Finished) return;
             RestoreObject();
             State = MealState.Ready;
             awaitingRelease = true;

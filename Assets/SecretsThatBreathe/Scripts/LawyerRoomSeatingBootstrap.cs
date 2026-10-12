@@ -52,6 +52,7 @@ namespace SecretsThatBreathe
             var eating = fps.GetComponent<NoodleEatingController>();
             if (eating == null) eating = fps.gameObject.AddComponent<NoodleEatingController>();
             if (eating.noodles == null) eating.noodles = bowl;
+            if (fps.GetComponent<DrawerSearchScareSequence>() == null) fps.gameObject.AddComponent<DrawerSearchScareSequence>();
         }
     }
 }

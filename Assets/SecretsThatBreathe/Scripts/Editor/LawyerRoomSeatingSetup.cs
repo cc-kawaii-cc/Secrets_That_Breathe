@@ -133,6 +133,11 @@ namespace SecretsThatBreathe.Editor
             EditorUtility.SetDirty(player);
             PrefabUtility.RecordPrefabInstancePropertyModifications(chair);
             PrefabUtility.RecordPrefabInstancePropertyModifications(player);
+            var drawerStory = GetOrAdd<DrawerSearchScareSequence>(fps.gameObject);
+            drawerStory.ConfigureScene();
+            drawerStory.UseThaiFontIfNeeded(AssetDatabase.LoadAssetAtPath<TMPro.TMP_FontAsset>("Assets/Champ&Kichzz/Fonts/PKFbasicDemo SDF.asset"));
+            EditorUtility.SetDirty(drawerStory);
+            PrefabUtility.RecordPrefabInstancePropertyModifications(drawerStory);
             EditorSceneManager.MarkSceneDirty(scene);
             Selection.activeGameObject = fps.gameObject;
             EditorGUIUtility.PingObject(fps.gameObject);

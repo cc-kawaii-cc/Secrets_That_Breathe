@@ -4,6 +4,8 @@
 
 ลาก `Prefabs/LouveredLight_T8_2x36W.prefab` เข้า Scene ได้เลย จุดกำเนิดอยู่กลางด้านบนสำหรับแนบเพดาน ตัวโคมหันลงแกน -Y และด้านยาวอยู่แกน Z
 
+แบบปิดไฟ: ใช้ `Prefabs/LouveredLight_T8_2x36W_Off.prefab` หลอดใช้วัสดุ `Tube_Off.mat` ที่ไม่มี Emission และปิด Light ทุกดวง รูปทรงและ Collider เหมือนโคมเดิม สร้างใหม่ได้ที่ `Tools > Louvered Light > Create Off Prefab`
+
 วัสดุ `Materials/Tube_Emission.mat` ใช้ URP/Lit และเปิด Emission สีขาวอมฟ้า ค่า HDR สูงสุด 4 ปรับสีและความสว่างที่ Emission ใน Inspector ได้ หากต้องการแสงฟุ้ง ให้เปิด Bloom และ Post Processing ของกล้อง ตัวอย่างอยู่ใน `Demo/LouveredLight_Preview.unity`
 
 ลูก `Downward Light (optional)` เป็น Spot Light ส่องพื้น ปิดได้เมื่อใช้แสงจากการ Bake หรือไฟของฉากเอง Emission ทำให้ผิวหลอดสว่าง ส่วนแสงที่ตกบนวัตถุอื่นใช้ Light หรือ baked GI

@@ -19,14 +19,14 @@ namespace SecretsThatBreathe
         public void EnsureEatPrompt()
         {
             if (eatPanel != null || promptPanel == null) return;
-            Transform existing = transform.Find("EatPrompt");
+            Transform existing = SeatingCanvasGroups.FindPanel(this, "EatPrompt");
             if (existing != null)
             {
                 eatPanel = existing.gameObject;
                 eatLabel = existing.GetComponentInChildren<TMP_Text>(true);
                 return;
             }
-            eatPanel = Instantiate(promptPanel, promptPanel.transform.parent);
+            eatPanel = Instantiate(promptPanel, SeatingCanvasGroups.Group(this, SeatingCanvasGroups.Gameplay));
             eatPanel.name = "EatPrompt";
             eatLabel = eatPanel.GetComponentInChildren<TMP_Text>(true);
             if (eatLabel != null) eatLabel.text = "[E] Eat noodles";
@@ -57,7 +57,7 @@ namespace SecretsThatBreathe
             foreach (GameObject root in scene.GetRootGameObjects())
             {
                 var existing = root.GetComponentInChildren<SeatPromptUI>(true);
-                if (existing != null) { existing.SetVisible(false); return existing; }
+                if (existing != null) { SeatingCanvasGroups.Organize(existing); existing.SetVisible(false); return existing; }
             }
             var canvasObject = new GameObject("SeatingCanvas", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler));
             SceneManager.MoveGameObjectToScene(canvasObject, scene);
@@ -93,6 +93,7 @@ namespace SecretsThatBreathe
             var ui = canvasObject.AddComponent<SeatPromptUI>();
             ui.promptPanel = panel;
             ui.promptLabel = label;
+            SeatingCanvasGroups.Organize(ui);
             ui.SetVisible(false);
             return ui;
         }

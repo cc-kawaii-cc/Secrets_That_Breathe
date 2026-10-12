@@ -70,6 +70,53 @@ namespace SecretsThatBreathe.LouveredLight.Editor
             UnityEngine.Object.DestroyImmediate(go);
             AssetDatabase.SaveAssets();
             Validate(prefab);
+            BuildOff();
+        }
+        [MenuItem("Tools/Louvered Light/Create Off Prefab")]
+        public static void BuildOff()
+        {
+            var source = AssetDatabase.LoadAssetAtPath<GameObject>(Root + "/Prefabs/LouveredLight_T8_2x36W.prefab");
+            var tube = AssetDatabase.LoadAssetAtPath<Material>(Root + "/Materials/Tube_Emission.mat");
+            if (!source || !tube) throw new Exception("Build the illuminated lamp first");
+            string path = Root + "/Materials/Tube_Off.mat";
+            var off = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (!off) { off = new Material(tube); AssetDatabase.CreateAsset(off, path); }
+            else off.CopyPropertiesFromMaterial(tube);
+            off.name = "Tube_Off";
+            off.DisableKeyword("_EMISSION");
+            off.SetColor("_EmissionColor", Color.black);
+            off.globalIlluminationFlags = MaterialGlobalIlluminationFlags.EmissiveIsBlack;
+            EditorUtility.SetDirty(off);
+            var go = UnityEngine.Object.Instantiate(source);
+            try
+            {
+                go.name = "LouveredLight_T8_2x36W_Off";
+                int changed = 0;
+                foreach (var renderer in go.GetComponentsInChildren<MeshRenderer>(true))
+                {
+                    var mats = renderer.sharedMaterials;
+                    for (int i = 0; i < mats.Length; i++)
+                        if (mats[i] == tube) { mats[i] = off; changed++; }
+                    renderer.sharedMaterials = mats;
+                }
+                if (changed == 0) throw new Exception("Tube renderer missing");
+                foreach (var light in go.GetComponentsInChildren<Light>(true)) light.enabled = false;
+                var prefab = PrefabUtility.SaveAsPrefabAsset(go, Root + "/Prefabs/LouveredLight_T8_2x36W_Off.prefab");
+                AssetDatabase.SaveAssets();
+                foreach (var renderer in prefab.GetComponentsInChildren<MeshRenderer>(true))
+                    foreach (var mat in renderer.sharedMaterials)
+                        if (mat.IsKeywordEnabled("_EMISSION") || mat.GetColor("_EmissionColor").maxColorComponent > 0)
+                            throw new Exception("Off prefab still emits light");
+                foreach (var light in prefab.GetComponentsInChildren<Light>(true))
+                    if (light.enabled) throw new Exception("Off prefab still has an enabled light");
+                Debug.Log("LAMP_OFF_VALIDATION_PASS: non-emissive tubes; all lights disabled; geometry and collider preserved.");
+            }
+            finally { UnityEngine.Object.DestroyImmediate(go); }
+        }
+        public static void BatchOff()
+        {
+            try { BuildOff(); EditorApplication.Exit(0); }
+            catch (Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
         }
         static void Validate(GameObject prefab)
         {

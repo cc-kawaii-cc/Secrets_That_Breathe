@@ -28,27 +28,27 @@ Material:
     m_Floats:
     - _Absorption: 0.75
     - _DepthAlphaBoost: 0.35
-    - _DepthMax: 6
+    - _DepthMax: 50
     - _EdgeFade: 0.35
     - _EdgeFoamIntensity: 1
     - _EdgeFoamThreshold: 0.08
     - _EdgeFoamWidth: 1.5
     - _FoamCrestIntensity: 1
     - _FoamCrestThreshold: 0.3
-    - _FoamIntensity: 1
+    - _FoamIntensity: 0
     - _FoamNoiseScale: 2
     - _FoamNoiseSpeed: 1.1
-    - _FresnelBias: 0.1
+    - _FresnelBias: 0
     - _FresnelPower: 4
-    - _FresnelScale: 1
+    - _FresnelScale: 0
     - _GerstnerIntensity: 1
     - _MinAlpha: 0.18
-    - _Opacity: 0.85
+    - _Opacity: 1
     - _RefractionStrength: 0.65
-    - _RippleScale: 2.5
+    - _RippleScale: 20
     - _RippleSpeed: 1
     - _RippleStrength: 0.55
-    - _Shininess: 180
+    - _Shininess: 500
     - _ShoreDepth: 0.9
     m_Colors:
     - _BaseColor: {r: 0.079999976, g: 0.54999995, b: 0.7, a: 0.45}

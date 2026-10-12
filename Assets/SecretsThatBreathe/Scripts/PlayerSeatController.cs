@@ -14,7 +14,7 @@ namespace SecretsThatBreathe
     {
         public enum SeatState { Exploring, SittingDown, Seated }
         public SeatState State { get; private set; }
-        public bool CanSit => isActiveAndEnabled && State == SeatState.Exploring;
+        public bool CanSit => isActiveAndEnabled && State == SeatState.Exploring && !standControlsHeld;
         public bool SeatedLookLocked { get; set; }
 
         [Header("References")]
@@ -42,6 +42,7 @@ namespace SecretsThatBreathe
         private Vector3 originalBodyPosition, originalCameraPosition;
         private Quaternion originalBodyRotation, originalCameraRotation;
         private bool controllerWasEnabled, captured;
+        private bool standControlsHeld;
         private float yaw, pitch;
 
         private void Awake()
@@ -79,6 +80,10 @@ namespace SecretsThatBreathe
             Suspend(firstPersonController);
             Suspend(playerCamera.GetComponent<CinemachineBrain>());
             foreach (Behaviour control in additionalControls) Suspend(control);
+            // A seated player cannot use the flashlight. Disabling the component also
+            // switches its Light off through FirstPersonFlashlight.OnDisable().
+            foreach (FirstPersonFlashlight flashlight in playerBody.root.GetComponentsInChildren<FirstPersonFlashlight>(true))
+                Suspend(flashlight);
             if (characterController != null) characterController.enabled = false;
 
             playerBody.SetPositionAndRotation(target.seatPoint.position, target.seatPoint.rotation);
@@ -130,6 +135,17 @@ namespace SecretsThatBreathe
         // Restore the pre-seat pose when cancelled/disabled; normal gameplay stays seated.
         public void CancelSeating()
         {
+            ExitSeat(null, false);
+        }
+
+        // While the screen is black, return to standing height without allowing input until fade-in finishes.
+        public void StandUp(Transform destination = null, bool holdControls = false)
+        {
+            ExitSeat(destination, holdControls);
+        }
+
+        private void ExitSeat(Transform destination, bool holdControls)
+        {
             if (transition != null) { StopCoroutine(transition); transition = null; }
             if (!captured) return;
             cameraAnimation.Release();
@@ -139,16 +155,32 @@ namespace SecretsThatBreathe
                 playerCamera.transform.localPosition = originalCameraPosition;
                 playerCamera.transform.localRotation = originalCameraRotation;
             }
+            if (destination != null && playerBody != null)
+            {
+                Quaternion rotationDelta = destination.rotation * Quaternion.Inverse(originalBodyRotation);
+                Vector3 cameraOffset = playerCamera != null ? playerCamera.transform.position - originalBodyPosition : Vector3.zero;
+                Quaternion viewRotation = playerCamera != null ? playerCamera.transform.rotation : Quaternion.identity;
+                playerBody.SetPositionAndRotation(destination.position, destination.rotation);
+                if (playerCamera != null) playerCamera.transform.SetPositionAndRotation(destination.position + rotationDelta * cameraOffset, rotationDelta * viewRotation);
+            }
             Physics.SyncTransforms();
-            if (characterController != null) characterController.enabled = controllerWasEnabled;
-            foreach (var pair in savedControls) if (pair.Key != null) pair.Key.enabled = pair.Value;
-            savedControls.Clear();
             captured = false;
             SeatedLookLocked = false;
             chair = null;
             State = SeatState.Exploring;
+            standControlsHeld = true;
+            if (!holdControls) ResumeAfterStand();
         }
 
-        private void OnDisable() { CancelSeating(); }
+        public void ResumeAfterStand()
+        {
+            if (captured || !standControlsHeld) return;
+            if (characterController != null) characterController.enabled = controllerWasEnabled;
+            foreach (var pair in savedControls) if (pair.Key != null) pair.Key.enabled = pair.Value;
+            savedControls.Clear();
+            standControlsHeld = false;
+        }
+
+        private void OnDisable() { CancelSeating(); if (standControlsHeld) ResumeAfterStand(); }
     }
 }
