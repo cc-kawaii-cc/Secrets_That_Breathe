@@ -92,10 +92,12 @@ namespace SecretsThatBreathe
             Suspend(firstPersonController);
             Suspend(playerCamera.GetComponent<CinemachineBrain>());
             foreach (Behaviour control in additionalControls) Suspend(control);
-            // A seated player cannot use the flashlight. Disabling the component also
-            // switches its Light off through FirstPersonFlashlight.OnDisable().
+            // Clear the on-state before suspending input; standing up must not restore an already-on flashlight.
             foreach (FirstPersonFlashlight flashlight in playerBody.root.GetComponentsInChildren<FirstPersonFlashlight>(true))
+            {
+                flashlight.ForceOff();
                 Suspend(flashlight);
+            }
             if (characterController != null) characterController.enabled = false;
 
             var story = GetComponent<DrawerSearchScareSequence>();
@@ -200,7 +202,12 @@ namespace SecretsThatBreathe
         {
             if (captured || !standControlsHeld) return;
             if (characterController != null) characterController.enabled = controllerWasEnabled;
-            foreach (var pair in savedControls) if (pair.Key != null) pair.Key.enabled = pair.Value;
+            foreach (var pair in savedControls)
+            {
+                if (pair.Key == null) continue;
+                if (pair.Key is FirstPersonFlashlight flashlight) flashlight.ForceOff();
+                pair.Key.enabled = pair.Value;
+            }
             savedControls.Clear();
             standControlsHeld = false;
         }

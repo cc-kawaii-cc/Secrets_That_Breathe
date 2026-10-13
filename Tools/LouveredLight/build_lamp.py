@@ -32,12 +32,12 @@ def box(name, pos, size, mat, bevel=.001):
     bpy.ops.mesh.primitive_cube_add(size=1,location=pos); ob=bpy.context.object; ob.name=name
     ob.dimensions=size; bpy.ops.object.transform_apply(location=False,rotation=False,scale=True); ob.data.materials.append(mat)
     if bevel:
-        mod=ob.modifiers.new('Folded softened edges','BEVEL'); mod.width=bevel; mod.segments=2
+        mod=ob.modifiers.new('Folded softened edges','BEVEL'); mod.width=bevel; mod.segments=1
         bpy.context.view_layer.objects.active=ob; bpy.ops.object.modifier_apply(modifier=mod.name)
         mod=ob.modifiers.new('Weighted normals','WEIGHTED_NORMAL'); bpy.ops.object.modifier_apply(modifier=mod.name)
     parts.append(ob); return ob
-def cylinder(name,pos,radius,length,mat,along_y=True):
-    bpy.ops.mesh.primitive_cylinder_add(vertices=24,radius=radius,depth=length,location=pos)
+def cylinder(name,pos,radius,length,mat,along_y=True,segments=12):
+    bpy.ops.mesh.primitive_cylinder_add(vertices=segments,radius=radius,depth=length,location=pos)
     ob=bpy.context.object; ob.name=name
     if along_y: ob.rotation_euler[0]=math.pi/2
     ob.data.materials.append(mat)
@@ -53,7 +53,7 @@ for y in [-.608,.608]: box('Housing end',(0,y,-.039),(.282,.024,.078),white,.002
 
 # Two curved, closed polished reflector troughs with upward lips.
 for cx in [-.074,.074]:
-    n=16; verts=[]
+    n=10; verts=[]
     for y in [-.574,.574]:
         for dz in [0,.001]:
             for i in range(n+1):
@@ -66,11 +66,11 @@ for cx in [-.074,.074]:
                   (2*stride+i,2*stride+i+1,3*stride+i+1,3*stride+i)]
     faces += [(0,2*stride,3*stride,stride),(n,stride+n,3*stride+n,2*stride+n)]
     mesh('Parabolic reflector',verts,faces,chrome)
-    cylinder('T8 fluorescent glass',(cx,0,-.039),.013,1.10,glass)
+    cylinder('T8 fluorescent glass',(cx,0,-.039),.013,1.10,glass,segments=16)
     for y in [-.558,.558]:
         cylinder('Metal tube end cap',(cx,y,-.039),.0133,.017,cap)
         box('Lamp holder',(cx,y*1.027,-.030),(.034,.022,.047),socket,.002)
-        for px in [-.006,.006]: cylinder('Contact pin',(cx+px,y*1.02,-.039),.0012,.008,cap)
+        for px in [-.006,.006]: cylinder('Contact pin',(cx+px,y*1.02,-.039),.0012,.008,cap,segments=8)
 
 # Twelve transverse V-folded aluminium blades; narrow lower edges leave tubes visible.
 for j in range(12):
@@ -81,7 +81,7 @@ for j in range(12):
     mesh('Folded cross louver',verts,faces,chrome)
 box('Centre spine',(0,0,-.065),(.009,1.155,.022),chrome,.001)
 for x in [-.132,.132]:
-    for y in [-.577,.577]: cylinder('Captive screw',(x,y,-.079),.003,.0018,dark,False)
+    for y in [-.577,.577]: cylinder('Captive screw',(x,y,-.079),.003,.0018,dark,False,8)
 
 # Combine by material to keep the final asset to six renderers.
 for mat in [white,chrome,glass,cap,socket,dark]:

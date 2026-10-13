@@ -36,6 +36,8 @@ namespace SecretsThatBreathe
             float y, width, height = 90f;
             switch (panelName)
             {
+                case "MicrowavePrompt": text = "[E] อะไรน่ะ"; y = 0.16f; width = 700f; break;
+                case "MicrowaveMessage": text = "ใครเวฟไก่ทิ้งไว้เนี่ย ไหม้หมดแล้วมั้ง"; y = 0.16f; width = 1400f; height = 120f; break;
                 case "DrawerObjective": text = "เอกสารที่ต้องเซ็นต์อยู่ลิ้นชักฝั่งซ้าย"; y = 0.84f; width = 900f; break;
                 case "DrawerSearchPrompt": text = "[E] ค้นหาเอกสาร"; y = 0.25f; width = 600f; break;
                 case "DrawerSearching": text = "กำลังค้นหาเอกสาร..."; y = 0.25f; width = 700f; break;

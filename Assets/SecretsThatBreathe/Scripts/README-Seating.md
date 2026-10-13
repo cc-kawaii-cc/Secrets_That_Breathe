@@ -31,6 +31,18 @@ Message Duration ปรับเวลาแสดง, Trigger Once กำหน
 LawyerRoomSeatingBootstrap จะติดตั้ง components และสร้างจุดนั่งตอนโหลด Scene นี้ หากยังไม่ได้ติดตั้งผ่านเมนู โดยไม่เปลี่ยน Scene หรือ prefab บนดิสก์
 ตอนกดนั่ง จอจะเฟดดำก่อน ย้ายตัวและกล้องไปยังจุดนั่งตอนดำสนิท ค้างดำ แล้วเฟดกลับ เมื่อจบสามารถใช้เมาส์มองซ้ายขวาได้ 65 องศาและก้มเงยได้ 35 องศา โดยยังเดินไม่ได้
 เวลานั่งใช้ค่าชุดเดียวกับตอนลุกบน DrawerSearchScareSequence: Stand Fade Out Duration / Stand Black Hold / Stand Fade In Duration ค่าเริ่มต้น 0.7 / 0.15 / 0.7 วินาที ปรับครั้งเดียวมีผลทั้งนั่งและลุก ไม่มีแอนิเมชันลดกล้อง/ก้มระหว่างนั่งแล้ว
+ไฟฉายถูกบังคับปิดทั้ง Light และสถานะที่จำไว้เมื่อกดนั่ง หลังลุกจะคืนปุ่มควบคุมไฟฉายแต่ยังปิดอยู่ ผู้เล่นกด F เพื่อเปิดใหม่เอง ไม่คืนสถานะเปิดจากก่อนนั่ง
+
+### มือถือเป็นไฟฉาย
+
+PhoneFlashlightView บน PlayerCapsule ใช้ Phone_Blank เป็นโมเดลถือที่มุมขวาล่างของ MainCamera ชื่อ HeldPhone จะสร้างตอน Play ไม่แทนมือถือที่วางบนโต๊ะ
+กด F เปิด: ยกมือถือพร้อม Screen_Flashlight_Off ที่ใช้ Phone_Flashlight_Off.png รอ Phone On Delay (0.3 วินาที) แล้วเปลี่ยนเป็น Screen_Flashlight_On ที่ใช้ Phone_Flashlight_On.png และเปิด Spot Light เดิมพร้อมเสียงเปิด
+กด F ปิด: ดับไฟและเปลี่ยนเป็น Screen_Flashlight_Off ที่ใช้ Phone_Flashlight_Off.png พร้อมเสียงปิด รอ Phone Off Delay (0.3 วินาที) แล้วซ่อนมือถือ
+ปรับ Phone On Delay / Phone Off Delay ที่ FirstPersonFlashlight หัวข้อ Phone Presentation และปรับ Screen Position, Camera Distance, Local Rotation, Phone Scale ที่ PhoneFlashlightView
+Screen Position เป็นพิกัดจอ 0–1 เริ่มต้น (0.78, 0.27) ที่ขวาล่าง ระยะมือถือถูกกันให้อยู่พ้น near clip ของกล้องเพื่อไม่ให้จมหาย
+มีการป้องกันกดซ้ำระหว่างช่วงรอ เปิด/ปิดจะนับตามเวลาเกมและหยุดเมื่อ Pause เมื่อกดนั่งหรือปิด controller จะยกเลิกการเปลี่ยนสถานะที่ค้างอยู่ ปิดไฟ และเก็บมือถือทันที
+Prefab มือถือมีไฟและตัวเปลี่ยนหน้าจอของตัวเอง แต่สำเนาที่ถือจะพักทั้งสองส่วนเพื่อให้ใช้ไฟฉาย Player ดวงเดิมเพียงดวงเดียว ไม่มี Collider บนมือถือที่ถือมาขวางผู้เล่นหรือการกด E
+PhoneFlashlightSetup เพิ่มและผูกให้ใน Lawyer Room ที่เปิดอยู่หลังคอมไพล์/เปิด Scene กด Ctrl+S ก่อนทำ Build เพื่อเก็บ references ของ prefab และ Material
 ไม่มีปุ่มลุกในช่วงนี้ เพื่อเตรียมต่อการกินมาม่า
 
 ## ปรับตำแหน่ง
