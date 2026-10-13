@@ -3717,7 +3717,7 @@ Light:
   serializedVersion: 12
   m_Type: 3
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.04
+  m_Intensity: 0.05
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -11278,7 +11278,7 @@ Light:
   serializedVersion: 12
   m_Type: 3
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.04
+  m_Intensity: 0.05
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -30121,6 +30121,10 @@ PrefabInstance:
       propertyPath: phonePresentation
       value: 
       objectReference: {fileID: 1217907371}
+    - target: {fileID: 7887667450962773414, guid: 7c4383362bb47e94bae5dcaad61a5a4f, type: 3}
+      propertyPath: m_AdditionalLightsShadowResolutionTier
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7887667450962773415, guid: 7c4383362bb47e94bae5dcaad61a5a4f, type: 3}
       propertyPath: m_Color.g
       value: 0.9490196
