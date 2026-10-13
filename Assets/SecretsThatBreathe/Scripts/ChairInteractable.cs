@@ -12,15 +12,18 @@ namespace SecretsThatBreathe
         [Header("Prompt area")]
         [Tooltip("Player body must be inside this box to show the prompt and allow sitting. Adjust it with Edit Collider.")]
         public BoxCollider interactionZone;
+        [Tooltip("When assigned, this trigger's message must finish displaying before sitting or inspecting nearby chairs.")]
+        public MiddleRoomThoughtTrigger unlockTrigger;
+        public bool IsUnlocked => unlockTrigger == null || unlockTrigger.HasFinishedShowing;
         [Header("Look at chair to sit")]
         [Tooltip("Angle allowed away from the chair mesh centre, per side. 35 gives a broad 70-degree cone.")]
         [Range(1f, 80f)] public float lookAngle = 35f;
         [Min(0.1f)] public float lookDistance = 3f;
         private Renderer[] lookRenderers;
-        public string prompt = "[E] Sit";
+        [Tooltip("Initial eye height used only when creating missing seat points. Adjust SeatedCameraPoint to change an existing seat.")]
         [Min(0.3f)] public float defaultEyeHeight = 1.1f;
 
-        public bool CanSit => isActiveAndEnabled && seatPoint != null && seatedCameraPoint != null;
+        public bool CanSit => isActiveAndEnabled && IsUnlocked && seatPoint != null && seatedCameraPoint != null;
 
         public bool TryInteract(PlayerSeatController player)
         {

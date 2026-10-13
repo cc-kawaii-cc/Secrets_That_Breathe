@@ -14,8 +14,17 @@ namespace SecretsThatBreathe
     {
         public enum SeatState { Exploring, SittingDown, Seated }
         public SeatState State { get; private set; }
-        public bool CanSit => isActiveAndEnabled && State == SeatState.Exploring && !standControlsHeld;
+        public bool CanExplore => isActiveAndEnabled && State == SeatState.Exploring && !standControlsHeld;
+        public bool ChairInteractionsLocked { get; private set; }
+        public bool CanSit => CanExplore && !ChairInteractionsLocked;
         public bool SeatedLookLocked { get; set; }
+
+        public void LockChairInteractions()
+        {
+            ChairInteractionsLocked = true;
+            var interactor = GetComponent<SeatInteractor>();
+            if (interactor != null) interactor.ClearChairUI();
+        }
 
         [Header("References")]
         public Transform playerBody;
@@ -24,6 +33,9 @@ namespace SecretsThatBreathe
         public FirstPersonController firstPersonController;
         [Tooltip("Other movement, look, or interaction components to suspend while seated.")]
         public Behaviour[] additionalControls = new Behaviour[0];
+        [Header("Sit fade (shares the stand-up timing settings)")]
+        public ScreenFadeUI sitFade;
+        private bool ownsSitFade;
 
         [Header("Seated look")]
         [Range(0f, 120f)] public float yawLimit = 65f;
@@ -86,10 +98,14 @@ namespace SecretsThatBreathe
                 Suspend(flashlight);
             if (characterController != null) characterController.enabled = false;
 
-            playerBody.SetPositionAndRotation(target.seatPoint.position, target.seatPoint.rotation);
+            var story = GetComponent<DrawerSearchScareSequence>();
+            if (story != null && story.screenFade != null) sitFade = story.screenFade;
+            if (sitFade == null) sitFade = ScreenFadeUI.FindOrCreate(SeatPromptUI.FindOrCreate(gameObject.scene));
+            ownsSitFade = true;
+            sitFade.Clear();
             cameraAnimation.Begin(playerCamera.transform, startPosition, startRotation);
             yaw = pitch = 0f;
-            transition = StartCoroutine(SitTransition(startPosition, startRotation));
+            transition = StartCoroutine(SitTransition());
             onSitStarted.Invoke();
             return true;
         }
@@ -101,19 +117,22 @@ namespace SecretsThatBreathe
             control.enabled = false;
         }
 
-        private IEnumerator SitTransition(Vector3 startPosition, Quaternion startRotation)
+        private IEnumerator SitTransition()
         {
-            float elapsed = 0f;
-            float seconds = Mathf.Max(0.05f, cameraAnimation.duration);
-            while (elapsed < seconds)
-            {
-                if (chair == null || !chair.CanSit || playerCamera == null) { CancelSeating(); yield break; }
-                cameraAnimation.Sample(startPosition, startRotation, chair.seatedCameraPoint, elapsed / seconds);
-                yield return null;
-                elapsed += Time.deltaTime;
-            }
+            var story = GetComponent<DrawerSearchScareSequence>();
+            float fadeOut = story != null ? story.standFadeOutDuration : 0.7f;
+            float blackHold = story != null ? story.standBlackHold : 0.15f;
+            float fadeIn = story != null ? story.standFadeInDuration : 0.7f;
+            yield return sitFade.FadeTo(1f, fadeOut);
+            if (chair == null || !chair.CanSit || playerCamera == null) { CancelSeating(); yield break; }
+            playerBody.SetPositionAndRotation(chair.seatPoint.position, chair.seatPoint.rotation);
+            Physics.SyncTransforms();
+            cameraAnimation.SetPose(chair.seatedCameraPoint.position, chair.seatedCameraPoint.rotation);
+            yield return new WaitForSeconds(Mathf.Max(0f, blackHold));
+            yield return sitFade.FadeTo(0f, fadeIn);
             if (chair == null || !chair.CanSit) { CancelSeating(); yield break; }
             cameraAnimation.SetPose(chair.seatedCameraPoint.position, chair.seatedCameraPoint.rotation);
+            ownsSitFade = false;
             State = SeatState.Seated;
             transition = null;
             onSeated.Invoke();
@@ -147,6 +166,11 @@ namespace SecretsThatBreathe
         private void ExitSeat(Transform destination, bool holdControls)
         {
             if (transition != null) { StopCoroutine(transition); transition = null; }
+            if (ownsSitFade)
+            {
+                if (sitFade != null) sitFade.Clear();
+                ownsSitFade = false;
+            }
             if (!captured) return;
             cameraAnimation.Release();
             if (playerBody != null) playerBody.SetPositionAndRotation(originalBodyPosition, originalBodyRotation);

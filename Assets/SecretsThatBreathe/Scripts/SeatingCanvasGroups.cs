@@ -34,7 +34,7 @@ namespace SecretsThatBreathe
             Transform water = Group(canvas, Water), aunt = Group(canvas, Aunt), gameplay = Group(canvas, Gameplay);
             foreach (string name in new[] { "WaterMachinePrompt", "WaterMachineMessage" }) changed |= Move(FindPanel(canvas, name), water);
             foreach (string name in new[] { "AuntDialogue", "AuntMoneyChoices" }) changed |= Move(FindPanel(canvas, name), aunt);
-            foreach (string name in new[] { "SitPrompt", "EatPrompt", "DrawerObjective", "DrawerSearchPrompt", "DrawerSearching" }) changed |= Move(FindPanel(canvas, name), gameplay);
+            foreach (string name in new[] { "SitPrompt", "EatPrompt", "BeforeEatingThought", "AfterEatingThought1", "AfterEatingThought2", "AfterEatingThought3", "DrawerObjective", "DrawerSearchPrompt", "DrawerSearching", "MiddleRoomThought", "FindDeskThought" }) changed |= Move(FindPanel(canvas, name), gameplay);
             return changed;
         }
 

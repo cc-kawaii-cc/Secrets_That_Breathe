@@ -48,26 +48,23 @@ namespace SecretsThatBreathe
         public TMP_Text auntDialogueText;
         public AuntMoneyChoiceUI moneyChoiceUI;
         public AuntDialogueUI auntDialogueUI;
+        public PostMealThoughtUI postMealThoughtUI;
 
         [Header("Aunt dialogue after zoom")]
         [Min(0f)] public float dialogueStartDelay = 0.5f;
-        // Preserve old scene values only for first-time migration into Canvas text objects.
-        [SerializeField, HideInInspector] private string auntFirstLine = "หนู... หนูใช่ทนายเข้มใช่มั้ยลูก... ช่วยป้าด้วยนะ ลูกสาวป้า... โดนรถชนตาย";
-        [SerializeField, HideInInspector] private string auntSecondLine = "ป้าไปแจ้งความแล้ว... แต่ตำรวจเขาไม่รับแจ้ง บอกว่าคู่กรณีเป็นลูก ส.ส. ... สุดท้ายเขาสรุปว่าเป็นแค่อุบัติเหตุ";
-        [SerializeField, HideInInspector] private string auntMoneyLine = "ป้าเหลือเงินอยู่แค่นี้... ป้าขอจ้างหนูนะ ช่วยลูกป้าหน่อยนะลูก";
-        [SerializeField, HideInInspector] private string refuseMoneyLine = "เก็บเงินไว้ทำศพน้องเถอะป้า คดีนี้ผมทำให้ฟรี... ผมสัญญาว่าจะลากคอมันมาเข้าคุกให้ได้";
-        [Header("Inner thoughts (quotes are included when displayed)")]
-        [SerializeField, HideInInspector] private string firstMoneyThought = "จะดีหรอเข้ม ป้าเขาก็ดูไม่ค่อยมีเงินเท่าไหร่นะ";
-        [SerializeField, HideInInspector] private string secondMoneyThought = "เงินเก็บเราก็พอมีนะ ทำคดีช่วยป้าหน่อยไหม";
-        [SerializeField, HideInInspector] private string thirdMoneyThought = "อย่าเลย ไม่ต้องรับเงินป้ามาหรอก";
 
         [Header("Look at drawer")]
         [Range(1f, 80f)] public float lookAngle = 40f;
         [Min(0.1f)] public float lookDistance = 4f;
 
+        [Header("Thoughts after eating")]
+        [Min(0f)] public float afterMealThoughtDelay = 1f;
+        [Min(0.1f)] public float afterMealThoughtDuration = 2f;
+        [Tooltip("Pause between the first, second and third thoughts only.")]
+        [Min(0f)] public float afterMealThoughtGap = 1f;
+        [Tooltip("Seconds after the third thought disappears before showing the drawer objective.")]
+        [Min(0f)] public float beforeDrawerObjectiveDelay = 1f;
         [Header("Search and approach")]
-        [Tooltip("Seconds after the cup is put down before showing the drawer objective. Uses game time, so pausing also pauses the delay.")]
-        [Min(0f)] public float afterMealDelay = 10f;
         [Min(0.1f)] public float searchDuration = 2.5f;
         [Min(0.1f)] public float approachDuration = 1.2f;
         public bool hideAuntUntilSearch = true;
@@ -171,9 +168,10 @@ namespace SecretsThatBreathe
                 }
             if (promptCanvas == null) promptCanvas = SeatPromptUI.FindOrCreate(gameObject.scene);
             if (screenFade == null) screenFade = ScreenFadeUI.FindOrCreate(promptCanvas);
-            if (objectiveText == null) objectiveText = MakeText("DrawerObjective", "ดูเอกสารที่ลิ้นชักฝั่งซ้ายหน่อย", 0.84f, 900f);
-            if (searchPromptText == null) searchPromptText = MakeText("DrawerSearchPrompt", "[E] ค้นหาเอกสาร", 0.25f, 600f);
-            if (searchingText == null) searchingText = MakeText("DrawerSearching", "กำลังค้นหาเอกสาร...", 0.25f, 700f);
+            if (objectiveText == null) objectiveText = promptCanvas.EnsureNamedText("DrawerObjective");
+            if (searchPromptText == null) searchPromptText = promptCanvas.EnsureNamedText("DrawerSearchPrompt");
+            if (searchingText == null) searchingText = promptCanvas.EnsureNamedText("DrawerSearching");
+            postMealThoughtUI = PostMealThoughtUI.FindOrCreate(promptCanvas, objectiveText);
             ConfigureDialogueUI();
             if (drawer != null) drawerMeshes = drawer.GetComponentsInChildren<Renderer>(true);
 
@@ -255,39 +253,12 @@ namespace SecretsThatBreathe
             if (auntDialogueText == null)
             {
                 bool existed = SeatingCanvasGroups.FindPanel(promptCanvas, "AuntDialogue") != null;
-                auntDialogueText = MakeText("AuntDialogue", auntFirstLine, 0.14f, 1400f);
+                auntDialogueText = promptCanvas.EnsureNamedText("AuntDialogue");
                 if (!existed && auntDialogueText != null)
                     auntDialogueText.transform.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(1400f, 180f);
             }
-            auntDialogueUI = AuntDialogueUI.FindOrCreate(promptCanvas, auntDialogueText,
-                new[] { auntFirstLine, auntSecondLine, auntMoneyLine, refuseMoneyLine, firstMoneyThought, secondMoneyThought, thirdMoneyThought });
+            auntDialogueUI = AuntDialogueUI.FindOrCreate(promptCanvas, auntDialogueText);
             if (moneyChoiceUI == null) moneyChoiceUI = AuntMoneyChoiceUI.FindOrCreate(promptCanvas, auntDialogueText);
-        }
-
-        private TMP_Text MakeText(string panelName, string text, float anchorY, float width)
-        {
-            Transform existing = SeatingCanvasGroups.FindPanel(promptCanvas, panelName);
-            if (existing != null) return existing.GetComponentInChildren<TMP_Text>(true);
-            var panel = Instantiate(promptCanvas.promptPanel, SeatingCanvasGroups.Group(promptCanvas,
-                panelName == "AuntDialogue" ? SeatingCanvasGroups.Aunt : SeatingCanvasGroups.Gameplay));
-            panel.name = panelName;
-            var rect = panel.GetComponent<RectTransform>();
-            rect.anchorMin = rect.anchorMax = new Vector2(0.5f, anchorY);
-            rect.anchoredPosition = Vector2.zero;
-            rect.sizeDelta = new Vector2(width, 90f);
-            var background = panel.GetComponent<UnityEngine.UI.Image>();
-            if (background != null) background.enabled = false;
-            var label = panel.GetComponentInChildren<TMP_Text>(true);
-            if (label != null)
-            {
-                label.text = text;
-                // Reuse a loaded Thai font when the copied prompt font lacks Thai glyphs.
-                if (label.font == null || !label.font.HasCharacter('ด'))
-                    foreach (var font in Resources.FindObjectsOfTypeAll<TMP_FontAsset>())
-                        if (font.HasCharacter('ด')) { label.font = font; break; }
-            }
-            panel.SetActive(false);
-            return label;
         }
 
         private static void Show(TMP_Text text, bool visible)
@@ -299,6 +270,7 @@ namespace SecretsThatBreathe
             Show(objectiveText, false); Show(searchPromptText, false); Show(searchingText, false); Show(auntDialogueText, false);
             if (auntDialogueUI != null) auntDialogueUI.HideAll();
             if (moneyChoiceUI != null) moneyChoiceUI.HideChoices();
+            if (postMealThoughtUI != null) postMealThoughtUI.HideAll();
         }
 
         private void Update()
@@ -312,8 +284,13 @@ namespace SecretsThatBreathe
             }
             else if (Stage == StoryStage.WaitingAfterMeal)
             {
-                mealDelayElapsed += Time.deltaTime;
-                if (mealDelayElapsed >= Mathf.Max(0f, afterMealDelay)) Stage = StoryStage.LookForDrawer;
+                if (seated)
+                {
+                    mealDelayElapsed += Time.deltaTime;
+                    if (postMealThoughtUI.ShowAtTime(mealDelayElapsed, afterMealThoughtDelay, afterMealThoughtDuration, afterMealThoughtGap, beforeDrawerObjectiveDelay))
+                        Stage = StoryStage.LookForDrawer;
+                }
+                else postMealThoughtUI.HideAll();
             }
             if (searchMotionActive) searchShakeTime += Time.deltaTime;
             if (Stage == StoryStage.LookForDrawer)
@@ -367,6 +344,9 @@ namespace SecretsThatBreathe
             if (auntDialogueUI != null)
                 foreach (var label in auntDialogueUI.GetComponentsInChildren<TMP_Text>(true))
                     if (label.font == null || !label.font.HasCharacter('ด')) label.font = font;
+            if (postMealThoughtUI != null)
+                foreach (var label in new[] { postMealThoughtUI.firstThought, postMealThoughtUI.secondThought, postMealThoughtUI.thirdThought })
+                    if (label != null && (label.font == null || !label.font.HasCharacter('ก'))) label.font = font;
         }
 
         private IEnumerator SearchThenScare()
@@ -479,6 +459,10 @@ namespace SecretsThatBreathe
         public void FinishDialogue()
         {
             if (Stage != StoryStage.AuntDialogue || DialogueLineIndex != 5 || !moneyDecision.HasRefused || sequence != null) return;
+            player.LockChairInteractions();
+            foreach (var root in gameObject.scene.GetRootGameObjects())
+                foreach (var machine in root.GetComponentsInChildren<WaterVendingMachineInteraction>(true))
+                    machine.LockInteraction();
             HideAllText();
             Stage = StoryStage.JumpScare;
             sequence = StartCoroutine(ReturnAfterDialogue());

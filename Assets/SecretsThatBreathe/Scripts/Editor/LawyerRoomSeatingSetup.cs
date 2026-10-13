@@ -198,6 +198,11 @@ namespace SecretsThatBreathe.Editor
                     player = UnityEngine.Object.FindFirstObjectByType<PlayerSeatController>();
                     chair = UnityEngine.Object.FindFirstObjectByType<ChairInteractable>();
                     Require(player != null && chair != null, "Missing scene components");
+                    if (chair.unlockTrigger != null && !chair.unlockTrigger.HasFinishedShowing)
+                    {
+                        Require(!chair.CanSit, "Chair unlocked before the desk thought trigger");
+                        chair.unlockTrigger = null; // Isolate the seating/fade verification from the exploration prerequisite.
+                    }
                     Vector3 outside = chair.interactionZone.transform.TransformPoint(chair.interactionZone.center + chair.interactionZone.size * 2f);
                     player.playerBody.position = outside;
                     Require(!player.TrySit(chair), "Sitting allowed outside the interaction zone");
@@ -213,13 +218,17 @@ namespace SecretsThatBreathe.Editor
                     Require(player.TrySit(chair), "First sit rejected");
                     Require(!player.TrySit(chair), "Repeated sit accepted");
                     Require(!player.firstPersonController.enabled && !player.characterController.enabled, "Player controls not suspended");
-                    deadline = EditorApplication.timeSinceStartup + 2.5;
+                    var fadeTiming = player.GetComponent<DrawerSearchScareSequence>();
+                    float fadeSeconds = fadeTiming != null ? Mathf.Max(0.05f, fadeTiming.standFadeOutDuration) +
+                        Mathf.Max(0f, fadeTiming.standBlackHold) + Mathf.Max(0.05f, fadeTiming.standFadeInDuration) : 1.55f;
+                    deadline = EditorApplication.timeSinceStartup + fadeSeconds + 1f;
                     SessionState.SetInt("STB.Seating.Smoke", 2);
                 }
                 else if (step == 2 && EditorApplication.timeSinceStartup >= deadline)
                 {
                     Require(player.State == PlayerSeatController.SeatState.Seated, "Transition did not finish");
                     Require(Vector3.Distance(player.playerCamera.transform.position, chair.seatedCameraPoint.position) < 0.02f, "Camera missed seated point");
+                    Require(player.sitFade.fadeGroup.alpha < 0.001f, "Screen remained black after sitting");
                     player.CancelSeating();
                     Require(Vector3.Distance(player.playerBody.position, startPosition) < 0.001f, "Cancel did not restore body");
                     Require(player.firstPersonController.enabled && player.characterController.enabled, "Cancel did not restore controls");
@@ -227,6 +236,7 @@ namespace SecretsThatBreathe.Editor
                     player.enabled = false;
                     Require(player.State == PlayerSeatController.SeatState.Exploring && player.firstPersonController.enabled,
                         "Disable during transition left player locked");
+                    Require(player.sitFade.fadeGroup.alpha < 0.001f, "Cancelled sitting left the screen black");
                     SessionState.SetInt("STB.Seating.Smoke", 0);
                     Debug.Log("[Seating] PASS: transition, repeated input, final camera, cancellation and disable restoration.");
                     EditorApplication.Exit(0);

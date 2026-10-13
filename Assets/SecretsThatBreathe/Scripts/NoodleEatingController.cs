@@ -17,6 +17,14 @@ namespace SecretsThatBreathe
         [Tooltip("The actual MEMEEE object in the scene, not a copy or prefab asset.")]
         public Transform noodles;
         public SeatPromptUI promptCanvas;
+        public TMPro.TMP_Text beforeEatingText;
+
+        [Header("After sitting, before eating")]
+        [Min(0f)] public float beforeEatingDelay = 3f;
+        [Min(0.1f)] public float beforeEatingTextDuration = 3f;
+        [Min(0f)] public float afterEatingTextDelay = 1f;
+        private float introTime;
+        private bool introFinished;
 
         [Header("Empty cup after eating")]
         [Tooltip("Optional empty-cup object from the Hierarchy. Place it at the full cup position as a separate sibling object. Hidden until eating finishes.")]
@@ -78,11 +86,27 @@ namespace SecretsThatBreathe
             if (promptCanvas == null) promptCanvas = SeatPromptUI.FindOrCreate(gameObject.scene);
             promptCanvas.EnsureEatPrompt();
             promptCanvas.SetEatVisible(false);
+            ConfigureBeforeEatingUI();
+            ShowBeforeEatingText(false);
             if (emptyCupModel != null)
             {
                 if (HasValidEmptyCup()) emptyCupModel.SetActive(false);
                 else Debug.LogWarning("[Noodles] Empty Cup Model must be a separate scene object, outside MEMEEE and the Player hierarchy.", this);
             }
+        }
+
+        public void ConfigureBeforeEatingUI()
+        {
+            if (promptCanvas == null) promptCanvas = SeatPromptUI.FindOrCreate(gameObject.scene);
+            if (beforeEatingText == null) beforeEatingText = promptCanvas.EnsureNamedText("BeforeEatingThought");
+        }
+
+        private void ShowBeforeEatingText(bool visible)
+        {
+            if (beforeEatingText == null) return;
+            var panel = beforeEatingText.transform.parent.gameObject;
+            if (visible && !panel.activeSelf && promptCanvas != null) promptCanvas.ShowRoomThought(beforeEatingText);
+            else if (panel.activeSelf != visible) panel.SetActive(visible);
         }
 
         private void OnEnable() { eat?.Enable(); awaitingRelease = true; wasSeated = false; }
@@ -97,10 +121,30 @@ namespace SecretsThatBreathe
                 if (elapsed >= TotalDuration) FinishEating();
                 return;
             }
-            if (seated && !wasSeated) awaitingRelease = true;
+            if (seated && !wasSeated)
+            {
+                awaitingRelease = true;
+                introTime = 0f;
+                introFinished = false;
+            }
+            else if (seated && State == MealState.Ready && !introFinished)
+                introTime += Time.deltaTime;
+            if (!seated)
+            {
+                introTime = 0f;
+                introFinished = false;
+                ShowBeforeEatingText(false);
+            }
+            else if (State == MealState.Ready && !introFinished)
+            {
+                float start = Mathf.Max(0f, beforeEatingDelay);
+                float end = start + Mathf.Max(0.1f, beforeEatingTextDuration);
+                ShowBeforeEatingText(introTime >= start && introTime < end);
+                if (introTime >= end + Mathf.Max(0f, afterEatingTextDelay)) introFinished = true;
+            }
             wasSeated = seated;
             if (seated && awaitingRelease && !eat.IsPressed()) awaitingRelease = false;
-            bool ready = seated && State == MealState.Ready && noodles != null && noodles.gameObject.activeInHierarchy &&
+            bool ready = seated && introFinished && State == MealState.Ready && noodles != null && noodles.gameObject.activeInHierarchy &&
                 Time.timeScale > 0f && IsLookingAtCup();
             if (promptCanvas != null) promptCanvas.SetEatVisible(ready);
             if (!ready || awaitingRelease) return;
@@ -123,7 +167,7 @@ namespace SecretsThatBreathe
 
         public bool TryEat()
         {
-            if (!isActiveAndEnabled || State != MealState.Ready || !player.isActiveAndEnabled ||
+            if (!isActiveAndEnabled || !introFinished || State != MealState.Ready || !player.isActiveAndEnabled ||
                 player.State != PlayerSeatController.SeatState.Seated || player.playerCamera == null ||
                 noodles == null || !noodles.gameObject.activeInHierarchy || Time.timeScale <= 0f || !IsLookingAtCup()) return false;
             mealObject = noodles;
@@ -223,6 +267,7 @@ namespace SecretsThatBreathe
 
         public void CancelEating()
         {
+            ShowBeforeEatingText(false);
             if (State == MealState.Finished) return;
             RestoreObject();
             State = MealState.Ready;

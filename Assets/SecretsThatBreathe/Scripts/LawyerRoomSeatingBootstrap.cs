@@ -53,6 +53,9 @@ namespace SecretsThatBreathe
             if (eating == null) eating = fps.gameObject.AddComponent<NoodleEatingController>();
             if (eating.noodles == null) eating.noodles = bowl;
             if (fps.GetComponent<DrawerSearchScareSequence>() == null) fps.gameObject.AddComponent<DrawerSearchScareSequence>();
+            MiddleRoomThoughtTrigger.Install(scene, player, SeatPromptUI.FindOrCreate(scene));
+            MiddleRoomThoughtTrigger.InstallDeskThought(scene, player, SeatPromptUI.FindOrCreate(scene));
+            ChairExplorationInstaller.Install(scene, player, SeatPromptUI.FindOrCreate(scene));
         }
     }
 }

@@ -16,6 +16,56 @@ namespace SecretsThatBreathe
         public GameObject eatPanel;
         public TMP_Text eatLabel;
 
+        public void ShowRoomThought(TMP_Text text)
+        {
+            var inspection = GetComponentInChildren<ChairInspectionUI>(true);
+            if (inspection != null) inspection.HideMessages();
+            foreach (string name in new[] { "MiddleRoomThought", "FindDeskThought" })
+            {
+                var panel = SeatingCanvasGroups.FindPanel(this, name);
+                if (panel != null) panel.gameObject.SetActive(false);
+            }
+            if (text != null) text.transform.parent.gameObject.SetActive(true);
+        }
+
+        public TMP_Text EnsureNamedText(string panelName)
+        {
+            var existing = SeatingCanvasGroups.FindPanel(this, panelName);
+            if (existing != null) return existing.GetComponentInChildren<TMP_Text>(true);
+            string text;
+            float y, width, height = 90f;
+            switch (panelName)
+            {
+                case "DrawerObjective": text = "เอกสารที่ต้องเซ็นต์อยู่ลิ้นชักฝั่งซ้าย"; y = 0.84f; width = 900f; break;
+                case "DrawerSearchPrompt": text = "[E] ค้นหาเอกสาร"; y = 0.25f; width = 600f; break;
+                case "DrawerSearching": text = "กำลังค้นหาเอกสาร..."; y = 0.25f; width = 700f; break;
+                case "MiddleRoomThought": text = "นี่มันกี่โมงแล้วนะ คนอื่นๆกลับกันหมดแล้ว"; y = 0.16f; width = 1400f; height = 120f; break;
+                case "FindDeskThought": text = "นี่โต๊ะเราอยู่ไหนนะ"; y = 0.16f; width = 1400f; height = 120f; break;
+                case "BeforeEatingThought": text = "ทำงานเหนื่อนมาทั้งวันแล้ว เติมพลังหน่อยดีกว่า"; y = 0.16f; width = 1400f; height = 120f; break;
+                case "AfterEatingThought1": text = "อยากกลับบ้านแล้ว"; y = 0.16f; width = 1400f; height = 120f; break;
+                case "AfterEatingThought2": text = "ทำไมฉันไม่ทิ้งงานแล้วหนีกลับบ้านไปเลยล่ะ"; y = 0.16f; width = 1400f; height = 120f; break;
+                case "AfterEatingThought3": text = "ก็เป็นความคิดที่ดี"; y = 0.16f; width = 1400f; height = 120f; break;
+                case "AuntDialogue": text = AuntDialogueUI.DefaultFirstLine; y = 0.14f; width = 1400f; height = 180f; break;
+                default: throw new System.ArgumentException("Unknown Canvas text panel: " + panelName);
+            }
+            var panel = Instantiate(promptPanel, SeatingCanvasGroups.Group(this,
+                panelName == "AuntDialogue" ? SeatingCanvasGroups.Aunt : SeatingCanvasGroups.Gameplay));
+            panel.name = panelName;
+            var rect = panel.GetComponent<RectTransform>();
+            rect.anchorMin = rect.anchorMax = new Vector2(0.5f, y);
+            rect.anchoredPosition = Vector2.zero;
+            rect.sizeDelta = new Vector2(width, height);
+            var background = panel.GetComponent<Image>();
+            if (background != null) background.enabled = false;
+            var label = panel.GetComponentInChildren<TMP_Text>(true);
+            label.text = text;
+            if (label.font == null || !label.font.HasCharacter('ด'))
+                foreach (var font in Resources.FindObjectsOfTypeAll<TMP_FontAsset>())
+                    if (font.HasCharacter('ด')) { label.font = font; break; }
+            panel.SetActive(false);
+            return label;
+        }
+
         public void EnsureEatPrompt()
         {
             if (eatPanel != null || promptPanel == null) return;

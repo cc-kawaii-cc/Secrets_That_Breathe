@@ -12,9 +12,12 @@ namespace SecretsThatBreathe
         public SeatPromptUI promptCanvas;
         [Tooltip("Optional custom prompt object. Used when Prompt Canvas is not assigned.")]
         public GameObject promptUI;
+        public ChairInspectionUI chairInspectionUI;
         private PlayerSeatController player;
         private ChairInteractable focused;
         private ChairInteractable[] chairs;
+        private ChairInspectionInteractable[] inspectChairs;
+        private ChairInspectionInteractable focusedInspection;
         private InputAction interact;
 
         private void Awake()
@@ -27,18 +30,21 @@ namespace SecretsThatBreathe
         private void Start()
         {
             chairs = FindObjectsByType<ChairInteractable>(FindObjectsSortMode.None);
+            inspectChairs = FindObjectsByType<ChairInspectionInteractable>(FindObjectsSortMode.None);
             if (promptCanvas == null && promptUI == null)
                 promptCanvas = SeatPromptUI.FindOrCreate(gameObject.scene);
+            if (chairInspectionUI == null) chairInspectionUI = ChairInspectionUI.FindOrCreate(promptCanvas != null ? promptCanvas : SeatPromptUI.FindOrCreate(gameObject.scene));
             SetPrompt(false);
         }
 
         private void OnEnable() { interact?.Enable(); }
-        private void OnDisable() { interact?.Disable(); focused = null; SetPrompt(false); }
+        private void OnDisable() { interact?.Disable(); focused = null; SetPrompt(false); if (chairInspectionUI != null) chairInspectionUI.SetHint(false); }
         private void OnDestroy() { interact?.Dispose(); }
 
         private void Update()
         {
             focused = null;
+            focusedInspection = null;
             if (player.CanSit && player.playerBody != null && Time.timeScale > 0f)
             {
                 float nearestDistance = float.PositiveInfinity;
@@ -50,15 +56,38 @@ namespace SecretsThatBreathe
                     float distance = (candidate.seatPoint.position - player.playerBody.position).sqrMagnitude;
                     if (distance < nearestDistance) { focused = candidate; nearestDistance = distance; }
                 }
-                if (focused != null && interact.WasPressedThisFrame() && focused.TryInteract(player)) focused = null;
+                foreach (var candidate in inspectChairs)
+                {
+                    if (candidate == null || candidate.gameObject.scene != gameObject.scene || !candidate.CanInspect(player)) continue;
+                    float distance = candidate.DistanceSquared(player.playerBody.position);
+                    if (distance < nearestDistance) { focusedInspection = candidate; focused = null; nearestDistance = distance; }
+                }
+                if (interact.WasPressedThisFrame())
+                {
+                    if (focused != null && focused.TryInteract(player)) focused = null;
+                    else if (focusedInspection != null && focusedInspection.TryInspect(player, chairInspectionUI)) focusedInspection = null;
+                }
             }
             SetPrompt(focused != null);
+            if (chairInspectionUI != null) chairInspectionUI.SetHint(focusedInspection != null);
         }
 
         private void SetPrompt(bool visible)
         {
             if (promptCanvas != null) promptCanvas.SetVisible(visible);
             else if (promptUI != null && promptUI.activeSelf != visible) promptUI.SetActive(visible);
+        }
+
+        public void ClearChairUI()
+        {
+            focused = null;
+            focusedInspection = null;
+            SetPrompt(false);
+            if (chairInspectionUI != null)
+            {
+                chairInspectionUI.SetHint(false);
+                chairInspectionUI.HideMessages();
+            }
         }
     }
 }

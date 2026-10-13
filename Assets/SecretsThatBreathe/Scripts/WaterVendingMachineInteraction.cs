@@ -16,6 +16,7 @@ namespace SecretsThatBreathe
         [Min(.1f)] public float messageDuration = 6f;
 
         public bool HasInteracted { get; private set; }
+        public bool InteractionLocked { get; private set; }
         Renderer[] meshes;
         float messageTime;
 
@@ -27,6 +28,7 @@ namespace SecretsThatBreathe
         }
         void Update()
         {
+            if (InteractionLocked) return;
             if (messageTime > 0)
             {
                 messageTime -= Time.deltaTime;
@@ -39,7 +41,7 @@ namespace SecretsThatBreathe
         }
         public bool CanInteract()
         {
-            if (HasInteracted || !isActiveAndEnabled || Time.timeScale <= 0) return false;
+            if (InteractionLocked || HasInteracted || !isActiveAndEnabled || Time.timeScale <= 0) return false;
             if (!playerCamera) playerCamera = Camera.main;
             if (!playerCamera || playerCamera.gameObject.scene != gameObject.scene) return false;
             if (!playerBody)
@@ -85,6 +87,13 @@ namespace SecretsThatBreathe
             messagePanel.SetActive(true);
             messageTime = messageDuration;
             return true;
+        }
+        public void LockInteraction()
+        {
+            InteractionLocked = true;
+            if (hintPanel) hintPanel.SetActive(false);
+            if (messagePanel) messagePanel.SetActive(false);
+            messageTime = 0;
         }
         void OnDisable()
         {

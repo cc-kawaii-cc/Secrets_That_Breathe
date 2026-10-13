@@ -25,11 +25,22 @@ namespace SecretsThatBreathe.Editor
                     if (SeatingCanvasGroups.Organize(canvas)) EditorSceneManager.MarkSceneDirty(scene);
                 var player = root.GetComponentInChildren<PlayerSeatController>(true);
                 if (player == null) continue;
+                var eating = player.GetComponent<NoodleEatingController>();
+                if (eating != null && eating.beforeEatingText == null)
+                {
+                    eating.ConfigureBeforeEatingUI();
+                    var font = AssetDatabase.LoadAssetAtPath<TMPro.TMP_FontAsset>("Assets/Champ&Kichzz/Fonts/PKFbasicDemo SDF.asset");
+                    if (font != null && (eating.beforeEatingText.font == null || !eating.beforeEatingText.font.HasCharacter('ท')))
+                        eating.beforeEatingText.font = font;
+                    EditorUtility.SetDirty(eating);
+                    PrefabUtility.RecordPrefabInstancePropertyModifications(eating);
+                    EditorSceneManager.MarkSceneDirty(scene);
+                }
                 var existing = player.GetComponent<DrawerSearchScareSequence>();
                 if (existing != null)
                 {
                     if (existing.auntDialogueText == null || existing.moneyChoiceUI == null || existing.auntDialogueUI == null ||
-                        existing.auntDialogueUI.thankYouLine == null || existing.mainDoor == null || existing.auntExitPoint == null || existing.screenFade == null)
+                        existing.auntDialogueUI.thankYouLine == null || existing.mainDoor == null || existing.auntExitPoint == null || existing.screenFade == null || existing.postMealThoughtUI == null)
                     {
                         existing.ConfigureScene();
                         existing.UseThaiFontIfNeeded(AssetDatabase.LoadAssetAtPath<TMPro.TMP_FontAsset>("Assets/Champ&Kichzz/Fonts/PKFbasicDemo SDF.asset"));
@@ -37,11 +48,22 @@ namespace SecretsThatBreathe.Editor
                         PrefabUtility.RecordPrefabInstancePropertyModifications(existing);
                         EditorSceneManager.MarkSceneDirty(scene);
                     }
+                    if (existing.screenFade != null && player.sitFade != existing.screenFade)
+                    {
+                        Undo.RecordObject(player, "Share sit and stand fade");
+                        player.sitFade = existing.screenFade;
+                        EditorUtility.SetDirty(player);
+                        PrefabUtility.RecordPrefabInstancePropertyModifications(player);
+                        EditorSceneManager.MarkSceneDirty(scene);
+                    }
                     continue;
                 }
                 var story = Undo.AddComponent<DrawerSearchScareSequence>(player.gameObject);
                 if (story == null) continue;
                 story.ConfigureScene();
+                player.sitFade = story.screenFade;
+                EditorUtility.SetDirty(player);
+                PrefabUtility.RecordPrefabInstancePropertyModifications(player);
                 story.UseThaiFontIfNeeded(AssetDatabase.LoadAssetAtPath<TMPro.TMP_FontAsset>("Assets/Champ&Kichzz/Fonts/PKFbasicDemo SDF.asset"));
                 EditorUtility.SetDirty(story);
                 PrefabUtility.RecordPrefabInstancePropertyModifications(story);
