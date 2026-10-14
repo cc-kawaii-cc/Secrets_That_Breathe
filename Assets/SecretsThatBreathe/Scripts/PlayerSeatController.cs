@@ -14,9 +14,10 @@ namespace SecretsThatBreathe
     {
         public enum SeatState { Exploring, SittingDown, Seated }
         public SeatState State { get; private set; }
-        public bool CanExplore => isActiveAndEnabled && State == SeatState.Exploring && !standControlsHeld;
+        public bool CanExplore => isActiveAndEnabled && State == SeatState.Exploring && !standControlsHeld
+            && !PhoneCallInteraction.IsBusy(gameObject.scene);
         public bool ChairInteractionsLocked { get; private set; }
-        public bool CanSit => CanExplore && !ChairInteractionsLocked;
+        public bool CanSit => CanExplore && !ChairInteractionsLocked && !OfficeIntroDialogue.IsBlocking(gameObject.scene);
         public bool SeatedLookLocked { get; set; }
 
         public void LockChairInteractions()

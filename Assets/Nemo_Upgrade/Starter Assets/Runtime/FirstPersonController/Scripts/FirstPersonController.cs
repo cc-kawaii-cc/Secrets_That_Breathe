@@ -11,6 +11,7 @@ namespace StarterAssets
 #endif
 	public class FirstPersonController : MonoBehaviour
 	{
+		public bool MovementLocked { get; set; }
 		[Header("Player")]
 		[Tooltip("Move speed of the character in m/s")]
 		public float MoveSpeed = 4.0f;
@@ -133,11 +134,16 @@ namespace StarterAssets
 
 		private void CameraRotation()
 		{
-			// if there is an input
-			if (_input.look.sqrMagnitude >= _threshold)
+			// Mouse deltas are already scaled by the input binding. Don't discard slow,
+			// one-pixel movements; retain the existing small-input filter for gamepads.
+			bool mouseInput = IsCurrentDeviceMouse;
+			bool hasLookInput = mouseInput
+				? (_input.look.x != 0f || _input.look.y != 0f)
+				: _input.look.sqrMagnitude >= _threshold;
+			if (hasLookInput)
 			{
 				//Don't multiply mouse input by Time.deltaTime
-				float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
+				float deltaTimeMultiplier = mouseInput ? 1.0f : Time.deltaTime;
 				
 				_cinemachineTargetPitch += _input.look.y * RotationSpeed * deltaTimeMultiplier;
 				_rotationVelocity = _input.look.x * RotationSpeed * deltaTimeMultiplier;
@@ -155,6 +161,12 @@ namespace StarterAssets
 
 		private void Move()
 		{
+			if (MovementLocked)
+			{
+				_speed = 0f;
+				_controller.Move(Vector3.up * (_verticalVelocity * Time.deltaTime));
+				return;
+			}
 			// set target speed based on move speed, sprint speed and if sprint is pressed
 			float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
 
@@ -214,7 +226,7 @@ namespace StarterAssets
 				}
 
 				// Jump
-				if (EnableJump && _input.jump && _jumpTimeoutDelta <= 0.0f)
+				if (!MovementLocked && EnableJump && _input.jump && _jumpTimeoutDelta <= 0.0f)
 				{
 					// the square root of H * -2 * G = how much velocity needed to reach desired height
 					_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);

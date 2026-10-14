@@ -15,7 +15,7 @@ namespace SecretsThatBreathe
                 foreach (var item in root.GetComponentsInChildren<ChairInteractable>(true))
                     if (item.name == "Chair Kam") main = item;
             if (main == null) return;
-            main.unlockTrigger = MiddleRoomThoughtTrigger.InstallDeskThought(scene, player, canvas);
+            main.unlockTrigger = null;
             var interactor = player.GetComponent<SeatInteractor>();
             if (interactor != null && interactor.chairInspectionUI == null) interactor.chairInspectionUI = ChairInspectionUI.FindOrCreate(canvas);
             var inspectionUI = interactor != null ? interactor.chairInspectionUI : ChairInspectionUI.FindOrCreate(canvas);

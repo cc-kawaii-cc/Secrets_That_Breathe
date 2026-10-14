@@ -6,6 +6,7 @@ namespace StarterAssets
 {
     public interface IPhoneFlashlightPresentation
     {
+        bool CanToggle { get; }
         void ShowOn();
         void ShowOff();
         void HidePhone();
@@ -75,6 +76,7 @@ namespace StarterAssets
 
         public void Toggle()
         {
+            if (Phone != null && !Phone.CanToggle) return;
             if (!isActiveAndEnabled || Time.timeScale <= 0f || flashlightSource == null || phoneTransition != null || Time.unscaledTime < nextToggleTime) return;
 
             if (Phone != null)

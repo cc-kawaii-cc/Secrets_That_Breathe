@@ -41,6 +41,7 @@ namespace SecretsThatBreathe
         }
         public bool CanInteract()
         {
+            if (PhoneCallInteraction.IsBusy(gameObject.scene)) return false;
             if (InteractionLocked || HasInteracted || !isActiveAndEnabled || Time.timeScale <= 0) return false;
             if (!playerCamera) playerCamera = Camera.main;
             if (!playerCamera || playerCamera.gameObject.scene != gameObject.scene) return false;

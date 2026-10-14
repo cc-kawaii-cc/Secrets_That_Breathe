@@ -1,5 +1,6 @@
 using UnityEditor;
 using UnityEditor.SceneManagement;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace SecretsThatBreathe.Editor
@@ -18,33 +19,51 @@ namespace SecretsThatBreathe.Editor
             if (EditorApplication.isPlayingOrWillChangePlaymode) return;
             Scene scene = SceneManager.GetSceneByPath(LawyerRoomSeatingSetup.ScenePath);
             if (!scene.IsValid() || !scene.isLoaded) return;
+            bool changed = false;
             foreach (var root in scene.GetRootGameObjects())
-            {
-                var player = root.GetComponentInChildren<PlayerSeatController>(true);
-                if (player == null) continue;
-                bool hasFirst = false, hasDesk = false;
-                foreach (var sceneRoot in scene.GetRootGameObjects())
-                    foreach (var candidate in sceneRoot.GetComponentsInChildren<MiddleRoomThoughtTrigger>(true))
+                foreach (var trigger in root.GetComponentsInChildren<MiddleRoomThoughtTrigger>(true))
+                    if (trigger.name == "MiddleRoomThoughtTrigger" || trigger.name == "FindDeskThoughtTrigger")
                     {
-                        if (candidate.name == "MiddleRoomThoughtTrigger") hasFirst = true;
-                        if (candidate.name == "FindDeskThoughtTrigger") hasDesk = true;
+                        Undo.DestroyObjectImmediate(trigger.gameObject);
+                        changed = true;
                     }
-                if (hasFirst && hasDesk) return;
-                var canvas = SeatPromptUI.FindOrCreate(scene);
-                var trigger = MiddleRoomThoughtTrigger.Install(scene, player, canvas);
-                var deskTrigger = MiddleRoomThoughtTrigger.InstallDeskThought(scene, player, canvas);
-                if (!hasFirst) Undo.RegisterCreatedObjectUndo(trigger.gameObject, "Create middle-room thought trigger");
-                if (!hasDesk) Undo.RegisterCreatedObjectUndo(deskTrigger.gameObject, "Create desk thought trigger");
-                var font = AssetDatabase.LoadAssetAtPath<TMPro.TMP_FontAsset>("Assets/Champ&Kichzz/Fonts/PKFbasicDemo SDF.asset");
-                if (font != null && trigger.messageText != null && (trigger.messageText.font == null || !trigger.messageText.font.HasCharacter('น')))
-                    trigger.messageText.font = font;
-                if (font != null && deskTrigger.messageText != null && (deskTrigger.messageText.font == null || !deskTrigger.messageText.font.HasCharacter('น')))
-                    deskTrigger.messageText.font = font;
-                EditorUtility.SetDirty(trigger);
-                EditorUtility.SetDirty(deskTrigger);
-                EditorSceneManager.MarkSceneDirty(scene);
-                return;
+            var canvas = SeatPromptUI.FindOrCreate(scene);
+            foreach (var name in new[] { "MiddleRoomThought", "FindDeskThought" })
+            {
+                var oldPanel = SeatingCanvasGroups.FindPanel(canvas, name);
+                if (oldPanel == null) continue;
+                Undo.DestroyObjectImmediate(oldPanel.gameObject);
+                changed = true;
             }
+            var existing = canvas.GetComponentInChildren<OfficeIntroDialogue>(true);
+            if (existing == null || existing.lines == null || existing.lines.Length != 5 || existing.testSkipHint == null)
+            {
+                var intro = OfficeIntroDialogue.Install(canvas);
+                EditorUtility.SetDirty(intro);
+                changed = true;
+            }
+            var introDialogue = canvas.GetComponentInChildren<OfficeIntroDialogue>(true);
+            bool hasIntroTrigger = false;
+            foreach (var root in scene.GetRootGameObjects())
+                if (root.GetComponentInChildren<OfficeIntroTrigger>(true) != null) hasIntroTrigger = true;
+            if (!hasIntroTrigger)
+            {
+                var trigger = OfficeIntroTrigger.Install(introDialogue);
+                Undo.RegisterCreatedObjectUndo(trigger.gameObject, "Create intro dialogue trigger");
+                EditorUtility.SetDirty(trigger);
+                changed = true;
+            }
+            foreach (var root in scene.GetRootGameObjects())
+                foreach (var chair in root.GetComponentsInChildren<ChairInteractable>(true))
+                    if (chair.unlockTrigger != null)
+                    {
+                        Undo.RecordObject(chair, "Replace chair trigger gate with intro dialogue");
+                        chair.unlockTrigger = null;
+                        EditorUtility.SetDirty(chair);
+                        PrefabUtility.RecordPrefabInstancePropertyModifications(chair);
+                        changed = true;
+                    }
+            if (changed) EditorSceneManager.MarkSceneDirty(scene);
         }
     }
 }

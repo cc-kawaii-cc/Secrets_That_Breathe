@@ -1,4 +1,6 @@
 using TMPro;
+using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -15,6 +17,29 @@ namespace SecretsThatBreathe
         [Header("Eating prompt")]
         public GameObject eatPanel;
         public TMP_Text eatLabel;
+
+        private void Start()
+        {
+            if (GetComponent<CanvasTextStackLayout>() == null) gameObject.AddComponent<CanvasTextStackLayout>();
+            // Prepare dynamic font atlases before an interaction first makes text visible.
+            // Include inactive panels, without changing their text or visibility.
+            var labels = GetComponentsInChildren<TMP_Text>(true);
+            var fontCharacters = new Dictionary<TMP_FontAsset, StringBuilder>();
+            foreach (var label in labels)
+            {
+                if (label.font == null || string.IsNullOrEmpty(label.text)) continue;
+                if (!fontCharacters.TryGetValue(label.font, out var characters))
+                {
+                    characters = new StringBuilder();
+                    fontCharacters.Add(label.font, characters);
+                }
+                characters.Append(label.text);
+            }
+            foreach (var pair in fontCharacters)
+                if (pair.Key.atlasPopulationMode == AtlasPopulationMode.Dynamic)
+                    pair.Key.TryAddCharacters(pair.Value.ToString(), out string missingCharacters);
+            foreach (var label in labels) label.ForceMeshUpdate(true, true);
+        }
 
         public void ShowRoomThought(TMP_Text text)
         {
@@ -36,6 +61,14 @@ namespace SecretsThatBreathe
             float y, width, height = 90f;
             switch (panelName)
             {
+                case "TestSkipPhoneHint": text = "[F1] Skip ไปรับโทรศัพท์"; y = 0.96f; width = 900f; height = 60f; break;
+                case "PhoneRingThought": text = "หือ ใครโทรมา"; y = 0.16f; width = 1400f; height = 120f; break;
+                case "PhoneAnswerPrompt": text = "[E] รับโทรศัพท์"; y = 0.16f; width = 800f; break;
+                case "OfficeIntroLine1": text = "ตอนนี้กี่โมงแล้วเนี่ย"; y = 0.16f; width = 1400f; height = 120f; break;
+                case "OfficeIntroLine2": text = "ทำไมไม่มีใครอยู่ออฟฟิศเลย"; y = 0.16f; width = 1400f; height = 120f; break;
+                case "OfficeIntroLine3": text = "กลับกันหมดแล้วเหรอ"; y = 0.16f; width = 1400f; height = 120f; break;
+                case "OfficeIntroLine4": text = "ทำไมห้องมันมืดๆแปลกๆจัง"; y = 0.16f; width = 1400f; height = 120f; break;
+                case "OfficeIntroLine5": text = "[F] เพื่อเปิดไฟฉาย"; y = 0.16f; width = 1400f; height = 120f; break;
                 case "MicrowavePrompt": text = "[E] อะไรน่ะ"; y = 0.16f; width = 700f; break;
                 case "MicrowaveMessage": text = "ใครเวฟไก่ทิ้งไว้เนี่ย ไหม้หมดแล้วมั้ง"; y = 0.16f; width = 1400f; height = 120f; break;
                 case "DrawerObjective": text = "เอกสารที่ต้องเซ็นต์อยู่ลิ้นชักฝั่งซ้าย"; y = 0.84f; width = 900f; break;
