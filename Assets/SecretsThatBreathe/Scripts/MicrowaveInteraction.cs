@@ -13,16 +13,18 @@ namespace SecretsThatBreathe
         public PlayerSeatController player;
         [Header("Interaction area (resize the Box Collider in Scene view)")]
         public BoxCollider interactionZone;
-        [Range(1f, 80f)] public float lookAngle = 35f;
+        [Header("Crosshair target (resize this separate Box Collider)")]
+        public BoxCollider lookTarget;
         [Min(0.1f)] public float messageDuration = 4f;
         public bool interactOnce = true;
+        [HideInInspector] public int restoredInteractionSettingsVersion;
+        [Header("Play Mode interaction status")]
+        [SerializeField] private string interactionStatus;
         public bool HasInteracted { get; private set; }
-        private Renderer[] meshes;
         private float remaining;
 
         private void Awake()
         {
-            meshes = GetComponentsInChildren<Renderer>(true);
             Hide();
         }
         private void Update()
@@ -32,29 +34,20 @@ namespace SecretsThatBreathe
                 remaining -= Time.deltaTime;
                 if (remaining <= 0f && messagePanel != null) messagePanel.SetActive(false);
             }
-            if (playerCamera == null) playerCamera = Camera.main;
+            if (playerCamera == null) playerCamera = player != null && player.playerCamera != null ? player.playerCamera : Camera.main;
+            bool inZone = IsPlayerInZone();
+            bool onTarget = IsCrosshairOnTarget();
             bool available = Time.timeScale > 0f && remaining <= 0f && (!interactOnce || !HasInteracted)
+                && !DocumentSearchSequence.BlocksRoomInteractions(gameObject.scene)
                 && (player == null || player.CanExplore)
-                && IsPlayerInZone()
-                && InteractionLook.IsLookingAt(playerCamera, meshes, lookAngle, float.MaxValue);
-            if (available)
-            {
-                // Prevent inspection through solid walls, while ignoring the player's own colliders.
-                var ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
-                Bounds bounds = default;
-                bool found = false;
-                foreach (var mesh in meshes)
-                    if (mesh != null && mesh.enabled && mesh.gameObject.activeInHierarchy)
-                    {
-                        if (!found) { bounds = mesh.bounds; found = true; }
-                        else bounds.Encapsulate(mesh.bounds);
-                    }
-                float distance = Vector3.Distance(ray.origin, bounds.center);
-                if (bounds.IntersectRay(ray, out float entry)) distance = entry;
-                foreach (var hit in Physics.RaycastAll(ray, distance, ~0, QueryTriggerInteraction.Ignore))
-                    if (!hit.transform.IsChildOf(transform) && !hit.transform.IsChildOf(playerCamera.transform.root)
-                        && !bounds.Contains(hit.point)) { available = false; break; }
-            }
+                && inZone && onTarget;
+            interactionStatus = playerCamera == null ? "No player camera"
+                : interactOnce && HasInteracted ? "Already interacted"
+                : remaining > 0f ? "Showing message"
+                : player != null && !player.CanExplore ? "Player controls locked"
+                : !inZone ? "Player outside InteractionZone"
+                : !onTarget ? "Crosshair outside LookTarget"
+                : "Ready: press E";
             if (hintPanel != null) hintPanel.SetActive(available);
             if (available && messagePanel != null && Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
             {
@@ -63,6 +56,20 @@ namespace SecretsThatBreathe
                 messagePanel.SetActive(true);
                 remaining = messageDuration;
             }
+        }
+        private bool IsCrosshairOnTarget()
+        {
+            if (playerCamera == null || lookTarget == null || !lookTarget.enabled
+                || !lookTarget.gameObject.activeInHierarchy) return false;
+            // The centre of the camera viewport matches the centred crosshair. No angle/distance gate:
+            // InteractionZone alone controls proximity, LookTarget alone controls aiming.
+            Ray ray = playerCamera.ViewportPointToRay(new Vector3(.5f, .5f, 0f));
+            // Test only the configured box in its own coordinate space. Unrelated oversized
+            // room/counter colliders cannot invalidate the target from particular view angles.
+            var localRay = new Ray(lookTarget.transform.InverseTransformPoint(ray.origin),
+                lookTarget.transform.InverseTransformVector(ray.direction));
+            var box = new Bounds(lookTarget.center, lookTarget.size);
+            return box.Contains(localRay.origin) || box.IntersectRay(localRay, out _);
         }
         private bool IsPlayerInZone()
         {

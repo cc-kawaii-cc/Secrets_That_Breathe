@@ -84,14 +84,21 @@ namespace SecretsThatBreathe
 
         [Header("Fast camera turn and zoom")]
         [Min(0.05f)] public float snapDuration = 0.18f;
+        [Tooltip("Start zooming after this fraction of the camera turn. 0 = immediately, 1 = after fully facing the aunt.")]
+        [Range(0f, 1f)] public float zoomStartTurnFraction = .65f;
+        [Tooltip("Smooth zoom duration, independent of the camera turn duration.")]
+        [Min(.05f)] public float scareZoomDuration = .6f;
         [Range(10f, 90f)] public float scareFieldOfView = 30f;
         [Tooltip("Time to return to normal FOV after the thank-you line, while still facing the aunt.")]
         [Min(0.05f)] public float returnDuration = 0.6f;
 
-        [Header("Scare sound")]
+        [Header("Sound when turning to the aunt")]
+        [InspectorName("Turn To Aunt Audio Source")]
         public AudioSource scareAudioSource;
+        [HideInInspector]
         public AudioClip scareSound;
-        [Range(0f, 1f)] public float scareVolume = 1f;
+        [HideInInspector] public float scareVolume = 1f;
+        [HideInInspector] public int auntTurnAudioRevision;
 
         [Header("Events for the next story step")]
         public UnityEvent onSearchStarted = new UnityEvent();
@@ -392,19 +399,28 @@ namespace SecretsThatBreathe
             searchMotionActive = false;
             Vector3 scareStartPosition = capturedCamera.transform.position;
             Quaternion scareStartRotation = capturedCamera.transform.rotation;
-            if (scareSound != null)
+            if (scareAudioSource == null)
             {
+                var soundObject = transform.Find("AuntTurnAudio");
+                if (soundObject == null)
+                {
+                    soundObject = new GameObject("AuntTurnAudio").transform;
+                    soundObject.SetParent(transform, false);
+                }
+                scareAudioSource = soundObject.GetComponent<AudioSource>();
                 if (scareAudioSource == null)
                 {
-                    scareAudioSource = gameObject.AddComponent<AudioSource>();
+                    scareAudioSource = soundObject.gameObject.AddComponent<AudioSource>();
                     scareAudioSource.playOnAwake = false;
                     scareAudioSource.spatialBlend = 0f;
+                    scareAudioSource.dopplerLevel = 0f;
+                    scareAudioSource.clip = scareSound;
+                    scareAudioSource.volume = Mathf.Clamp01(scareVolume);
                 }
-                scareAudioSource.PlayOneShot(scareSound, scareVolume);
             }
             onScareStarted.Invoke();
             Quaternion faceRotation = Quaternion.LookRotation(auntFaceTarget.position - cameraPosition);
-            yield return CameraTransition(scareStartPosition, cameraPosition, scareStartRotation, faceRotation, originalFov, scareFieldOfView, snapDuration);
+            yield return TurnThenZoomAtAunt(scareStartPosition, scareStartRotation, faceRotation);
             yield return new WaitForSeconds(Mathf.Max(0f, dialogueStartDelay));
             ShowDialogueLine(0);
             sequence = null;
@@ -539,6 +555,37 @@ namespace SecretsThatBreathe
             Vector3 shake = new Vector3(x, y, 0f) * (Mathf.Max(0f, searchShakePosition) * searchShakeBlend);
             Vector3 angles = new Vector3(y, x, -x * 0.35f) * (Mathf.Max(0f, searchShakeRotation) * searchShakeBlend);
             cameraAnimation.SetPose(searchBasePosition + searchBaseRotation * shake, searchBaseRotation * Quaternion.Euler(angles));
+        }
+
+        private IEnumerator TurnThenZoomAtAunt(Vector3 fromPosition, Quaternion from, Quaternion to)
+        {
+            float turnDuration = Mathf.Max(.05f, snapDuration);
+            float zoomDelay = turnDuration * Mathf.Clamp01(zoomStartTurnFraction);
+            float zoomDuration = Mathf.Max(.05f, scareZoomDuration);
+            float duration = Mathf.Max(turnDuration, zoomDelay + zoomDuration);
+            bool soundStarted = false;
+            for (float time = 0f; time < duration; time += Time.deltaTime)
+            {
+                if (!soundStarted && time >= zoomDelay)
+                {
+                    soundStarted = true;
+                    PlayAuntZoomSound();
+                }
+                float turn = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(time / turnDuration));
+                float zoom = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((time - zoomDelay) / zoomDuration));
+                cameraAnimation.SetPose(Vector3.Lerp(fromPosition, cameraPosition, turn), Quaternion.Slerp(from, to, turn));
+                capturedCamera.fieldOfView = Mathf.Lerp(originalFov, scareFieldOfView, zoom);
+                yield return null;
+            }
+            cameraAnimation.SetPose(cameraPosition, to);
+            capturedCamera.fieldOfView = scareFieldOfView;
+            if (!soundStarted) PlayAuntZoomSound();
+        }
+
+        private void PlayAuntZoomSound()
+        {
+            if (scareAudioSource != null && scareAudioSource.clip != null)
+                scareAudioSource.PlayOneShot(scareAudioSource.clip);
         }
 
         private IEnumerator CameraTransition(Vector3 fromPosition, Vector3 toPosition, Quaternion from, Quaternion to, float fromFov, float toFov, float duration)

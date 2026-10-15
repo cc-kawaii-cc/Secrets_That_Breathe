@@ -1,5 +1,9 @@
 Low polygon kraft document envelopes
 
+KraftEnvelope_Open_WithA4.prefab: original A4 document inserted 70% into
+an open envelope, with 30% (89.1 mm) protruding. Flap folds behind paper.
+One mesh, 124 triangles, original envelope/document materials, lightmap UV2.
+
 KraftEnvelopes_MessyStack.prefab: five envelopes, two unfolded flaps,
 irregular positions and rotations, 260 triangles total.
 KraftEnvelope_Closed.prefab: single closed envelope, 12 triangles.

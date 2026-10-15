@@ -11,18 +11,20 @@ namespace SecretsThatBreathe
         public GameObject messagePanel;
         [Header("Interaction area (drag its green handles in Scene view)")]
         public BoxCollider interactionZone;
+        [Header("Crosshair target (resize this separate Box Collider)")]
+        public BoxCollider lookTarget;
         public Transform playerBody;
         public Camera playerCamera;
         [Min(.1f)] public float messageDuration = 6f;
 
         public bool HasInteracted { get; private set; }
         public bool InteractionLocked { get; private set; }
-        Renderer[] meshes;
+        [Header("Play Mode interaction status")]
+        [SerializeField] private string interactionStatus;
         float messageTime;
 
         void Awake()
         {
-            meshes = GetComponentsInChildren<Renderer>(true);
             if (hintPanel) hintPanel.SetActive(false);
             if (messagePanel) messagePanel.SetActive(false);
         }
@@ -41,36 +43,31 @@ namespace SecretsThatBreathe
         }
         public bool CanInteract()
         {
-            if (PhoneCallInteraction.IsBusy(gameObject.scene)) return false;
-            if (InteractionLocked || HasInteracted || !isActiveAndEnabled || Time.timeScale <= 0) return false;
+            if (DocumentSearchSequence.BlocksRoomInteractions(gameObject.scene)) { interactionStatus = "Document search in progress"; return false; }
+            if (PhoneCallInteraction.IsBusy(gameObject.scene)) { interactionStatus = "Player controls locked"; return false; }
+            if (InteractionLocked) { interactionStatus = "Interaction locked after aunt dialogue"; return false; }
+            if (HasInteracted) { interactionStatus = "Already interacted"; return false; }
+            if (!isActiveAndEnabled || Time.timeScale <= 0) { interactionStatus = "Disabled or paused"; return false; }
             if (!playerCamera) playerCamera = Camera.main;
-            if (!playerCamera || playerCamera.gameObject.scene != gameObject.scene) return false;
+            if (!playerCamera || playerCamera.gameObject.scene != gameObject.scene) { interactionStatus = "No player camera"; return false; }
             if (!playerBody)
             {
                 var controller = playerCamera.transform.root.GetComponentInChildren<CharacterController>();
                 playerBody = controller ? controller.transform : playerCamera.transform;
             }
-            if (!IsPlayerInZone()) return false;
-            Bounds bounds = default;
-            bool found = false;
-            foreach (var mesh in meshes)
-            {
-                if (!mesh || !mesh.enabled || !mesh.gameObject.activeInHierarchy) continue;
-                if (!found) { bounds = mesh.bounds; found = true; }
-                else bounds.Encapsulate(mesh.bounds);
-            }
-            if (!found) return false;
-            var ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
-            if (!bounds.IntersectRay(ray, out float distance)) return false;
-            // The imported machine has no collider. Use its visible bounds as the target,
-            // but reject solid objects in front so E cannot inspect through a wall.
-            foreach (var hit in Physics.RaycastAll(ray, distance, ~0, QueryTriggerInteraction.Ignore))
-            {
-                if (hit.transform.IsChildOf(transform) || hit.transform.IsChildOf(playerCamera.transform.root)) continue;
-                if (bounds.Contains(hit.point + ray.direction * .02f)) continue;
-                return false;
-            }
+            if (!IsPlayerInZone()) { interactionStatus = "Player outside InteractionZone"; return false; }
+            if (!IsCrosshairOnTarget()) { interactionStatus = "Crosshair outside LookTarget"; return false; }
+            interactionStatus = "Ready: press E";
             return true;
+        }
+        private bool IsCrosshairOnTarget()
+        {
+            if (!lookTarget || !lookTarget.enabled || !lookTarget.gameObject.activeInHierarchy) return false;
+            Ray ray = playerCamera.ViewportPointToRay(new Vector3(.5f, .5f, 0f));
+            var localRay = new Ray(lookTarget.transform.InverseTransformPoint(ray.origin),
+                lookTarget.transform.InverseTransformVector(ray.direction));
+            var box = new Bounds(lookTarget.center, lookTarget.size);
+            return box.Contains(localRay.origin) || box.IntersectRay(localRay, out _);
         }
         public bool IsPlayerInZone()
         {

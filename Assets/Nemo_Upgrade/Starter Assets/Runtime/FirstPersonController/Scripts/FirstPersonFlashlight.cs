@@ -34,11 +34,15 @@ namespace StarterAssets
         [Tooltip("Time after turning the flashlight off before it can be turned on again.")]
         [SerializeField, Min(0f)] private float delayAfterTurningOff = 0.6f;
 
-        [Header("Sound")]
+        [Header("Sound when the flashlight actually turns on/off")]
+        [Tooltip("Both on and off use this source's clip, volume, pitch and 3D settings. Edit FlashlightAudio before Play.")]
         [SerializeField] private AudioSource audioSource;
-        [SerializeField] private AudioClip turnOnSound;
-        [SerializeField] private AudioClip turnOffSound;
-        [SerializeField, Range(0f, 1f)] private float soundVolume = 1f;
+        [SerializeField, HideInInspector] private AudioSource turnOnAudioSource;
+        [SerializeField, HideInInspector] private AudioSource turnOffAudioSource;
+        [SerializeField, HideInInspector] private int sharedSwitchAudioRevision;
+        [SerializeField, HideInInspector] private AudioClip turnOnSound;
+        [SerializeField, HideInInspector] private AudioClip turnOffSound;
+        [SerializeField, HideInInspector] private float soundVolume = 1f;
 
         private float nextToggleTime;
         private bool isOn;
@@ -59,12 +63,26 @@ namespace StarterAssets
             if (Phone != null) ForceOff();
 
             if (audioSource == null)
+                audioSource = CreateSwitchSource("FlashlightAudio", turnOnSound != null ? turnOnSound : turnOffSound);
+        }
+
+        private AudioSource CreateSwitchSource(string name, AudioClip clip)
+        {
+            var child = transform.Find(name);
+            if (child == null)
             {
-                audioSource = GetComponent<AudioSource>();
-                if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
+                child = new GameObject(name).transform;
+                child.SetParent(transform, false);
             }
-            audioSource.playOnAwake = false;
-            audioSource.spatialBlend = 0f;
+            var source = child.GetComponent<AudioSource>();
+            if (source != null) return source;
+            source = child.gameObject.AddComponent<AudioSource>();
+            source.playOnAwake = false;
+            source.spatialBlend = 0f;
+            source.dopplerLevel = 0f;
+            source.clip = clip;
+            source.volume = (audioSource != null ? audioSource.volume : 1f) * Mathf.Clamp01(soundVolume);
+            return source;
         }
 
         private void Update()
@@ -100,9 +118,7 @@ namespace StarterAssets
             nextToggleTime = Time.unscaledTime + delay;
             flashlightSource.enabled = isOn;
 
-            AudioClip clip = isOn ? turnOnSound : turnOffSound;
-            if (clip != null && audioSource != null)
-                audioSource.PlayOneShot(clip, soundVolume);
+            PlaySwitchSound();
         }
 
         private IEnumerator OpenPhone()
@@ -124,8 +140,12 @@ namespace StarterAssets
         {
             isOn = value;
             flashlightSource.enabled = value;
-            AudioClip clip = value ? turnOnSound : turnOffSound;
-            if (clip != null && audioSource != null) audioSource.PlayOneShot(clip, soundVolume);
+            PlaySwitchSound();
+        }
+
+        private void PlaySwitchSound()
+        {
+            if (audioSource != null && audioSource.clip != null) audioSource.PlayOneShot(audioSource.clip);
         }
 
         // Clear the remembered on-state as well as the Light, so re-enabling input cannot switch it back on.

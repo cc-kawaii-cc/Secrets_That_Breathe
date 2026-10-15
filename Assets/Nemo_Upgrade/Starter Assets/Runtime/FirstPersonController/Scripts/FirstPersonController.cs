@@ -21,6 +21,10 @@ namespace StarterAssets
 		public float RotationSpeed = 1.0f;
 		[Tooltip("Acceleration and deceleration")]
 		public float SpeedChangeRate = 10.0f;
+		[Header("Mouse Look Smoothing")]
+		[Tooltip("Camera response time in seconds. 0 disables smoothing; higher values follow the mouse more slowly.")]
+		[Min(0f)] public float MouseLookSmoothTime = 0.04f;
+		private Vector2 _pendingMouseRotation;
 
 		[Space(10)]
 		[Tooltip("Enable or disable jumping without affecting movement or gravity")]
@@ -134,30 +138,39 @@ namespace StarterAssets
 
 		private void CameraRotation()
 		{
-			// Mouse deltas are already scaled by the input binding. Don't discard slow,
-			// one-pixel movements; retain the existing small-input filter for gamepads.
-			bool mouseInput = IsCurrentDeviceMouse;
-			bool hasLookInput = mouseInput
-				? (_input.look.x != 0f || _input.look.y != 0f)
-				: _input.look.sqrMagnitude >= _threshold;
-			if (hasLookInput)
+			if (Time.timeScale <= 0f || !_input.cursorInputForLook)
 			{
-				//Don't multiply mouse input by Time.deltaTime
-				float deltaTimeMultiplier = mouseInput ? 1.0f : Time.deltaTime;
-				
-				_cinemachineTargetPitch += _input.look.y * RotationSpeed * deltaTimeMultiplier;
-				_rotationVelocity = _input.look.x * RotationSpeed * deltaTimeMultiplier;
-
-				// clamp our pitch rotation
-				_cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
-
-				// Update Cinemachine camera target pitch
-				CinemachineCameraTarget.transform.localRotation = Quaternion.Euler(_cinemachineTargetPitch, 0.0f, 0.0f);
-
-				// rotate the player left and right
-				transform.Rotate(Vector3.up * _rotationVelocity);
+				_pendingMouseRotation = Vector2.zero;
+				return;
 			}
+			bool mouseInput = IsCurrentDeviceMouse;
+			Vector2 rotation;
+			if (mouseInput)
+			{
+				// Accumulate angular displacement so smoothing doesn't lose slow mouse input
+				// or change sensitivity with frame rate. Consume the remainder after input stops.
+				_pendingMouseRotation += _input.look * RotationSpeed;
+				float response = MouseLookSmoothTime <= 0f ? 1f
+					: 1f - Mathf.Exp(-Time.unscaledDeltaTime / MouseLookSmoothTime);
+				rotation = _pendingMouseRotation * response;
+				_pendingMouseRotation -= rotation;
+			}
+			else
+			{
+				_pendingMouseRotation = Vector2.zero;
+				rotation = _input.look.sqrMagnitude >= _threshold
+					? _input.look * (RotationSpeed * Time.deltaTime) : Vector2.zero;
+			}
+			if (rotation.x == 0f && rotation.y == 0f) return;
+			float pitch = _cinemachineTargetPitch + rotation.y;
+			_cinemachineTargetPitch = ClampAngle(pitch, BottomClamp, TopClamp);
+			if (pitch != _cinemachineTargetPitch) _pendingMouseRotation.y = 0f;
+			_rotationVelocity = rotation.x;
+			CinemachineCameraTarget.transform.localRotation = Quaternion.Euler(_cinemachineTargetPitch, 0f, 0f);
+			transform.Rotate(Vector3.up * _rotationVelocity);
 		}
+
+		private void OnDisable() => _pendingMouseRotation = Vector2.zero;
 
 		private void Move()
 		{

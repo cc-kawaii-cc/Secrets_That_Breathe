@@ -16,10 +16,8 @@ namespace SecretsThatBreathe
         public MiddleRoomThoughtTrigger unlockTrigger;
         public bool IsUnlocked => unlockTrigger == null || unlockTrigger.HasFinishedShowing;
         [Header("Look at chair to sit")]
-        [Tooltip("Angle allowed away from the chair mesh centre, per side. 35 gives a broad 70-degree cone.")]
-        [Range(1f, 80f)] public float lookAngle = 35f;
-        [Min(0.1f)] public float lookDistance = 3f;
-        private Renderer[] lookRenderers;
+        public BoxCollider lookTarget;
+        [HideInInspector] public int lookTargetFitVersion;
         [Tooltip("Initial eye height used only when creating missing seat points. Adjust SeatedCameraPoint to change an existing seat.")]
         [Min(0.3f)] public float defaultEyeHeight = 1.1f;
 
@@ -32,11 +30,9 @@ namespace SecretsThatBreathe
 
         public bool IsLookingAtChair(Camera view)
         {
-            if (lookRenderers == null) lookRenderers = GetComponentsInChildren<Renderer>(true);
-            return InteractionLook.IsLookingAt(view, lookRenderers, lookAngle, lookDistance);
+            return InteractionLook.IsLookingAtBox(view, lookTarget);
         }
 
-        private void OnTransformChildrenChanged() { lookRenderers = null; }
 
         public bool IsPlayerInZone(Transform playerBody)
         {

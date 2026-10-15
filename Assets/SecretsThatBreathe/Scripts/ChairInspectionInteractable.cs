@@ -6,6 +6,8 @@ namespace SecretsThatBreathe
     {
         public ChairInteractable referenceChair;
         public BoxCollider interactionZone;
+        public BoxCollider lookTarget;
+        [HideInInspector] public int lookTargetFitVersion;
         [Tooltip("Drag this chair's TMP message from SeatingCanvas here. Edit the sentence on that Canvas text object.")]
         public TMPro.TMP_Text messageText;
         [SerializeField, HideInInspector] private int messageAssignmentVersion;
@@ -18,7 +20,6 @@ namespace SecretsThatBreathe
             messageAssignmentVersion = 1;
         }
         public bool HasInteracted { get; private set; }
-        private Renderer[] meshes;
 
         private void Awake()
         {
@@ -33,21 +34,20 @@ namespace SecretsThatBreathe
             Vector3 p = interactionZone.transform.InverseTransformPoint(player.playerBody.position) - interactionZone.center;
             Vector3 half = interactionZone.size * 0.5f;
             if (Mathf.Abs(p.x) > half.x || Mathf.Abs(p.y) > half.y || Mathf.Abs(p.z) > half.z) return false;
-            if (meshes == null) meshes = GetComponentsInChildren<Renderer>(true);
-            return InteractionLook.IsLookingAt(player.playerCamera, meshes, referenceChair.lookAngle, referenceChair.lookDistance);
+            return InteractionLook.IsLookingAtBox(player.playerCamera, lookTarget);
         }
 
         public bool TryInspect(PlayerSeatController player, ChairInspectionUI ui)
         {
             if (!CanInspect(player) || ui == null || !ui.ShowMessage(messageText)) return false;
             HasInteracted = true;
+            DocumentSearchSequence.NotifyChairInspection(gameObject.scene, messageText);
             return true;
         }
 
         public float DistanceSquared(Vector3 point)
         {
-            if (meshes == null) meshes = GetComponentsInChildren<Renderer>(true);
-            return meshes.Length > 0 ? (meshes[0].bounds.center - point).sqrMagnitude : (transform.position - point).sqrMagnitude;
+            return ((lookTarget != null ? lookTarget.transform.TransformPoint(lookTarget.center) : transform.position) - point).sqrMagnitude;
         }
 
         public void CreateZoneFromReference()

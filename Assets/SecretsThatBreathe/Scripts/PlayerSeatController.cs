@@ -17,7 +17,8 @@ namespace SecretsThatBreathe
         public bool CanExplore => isActiveAndEnabled && State == SeatState.Exploring && !standControlsHeld
             && !PhoneCallInteraction.IsBusy(gameObject.scene);
         public bool ChairInteractionsLocked { get; private set; }
-        public bool CanSit => CanExplore && !ChairInteractionsLocked && !OfficeIntroDialogue.IsBlocking(gameObject.scene);
+        public bool CanInteractWithRoom => CanExplore && !DocumentSearchSequence.BlocksRoomInteractions(gameObject.scene);
+        public bool CanSit => CanInteractWithRoom && !ChairInteractionsLocked && !OfficeIntroDialogue.IsBlocking(gameObject.scene);
         public bool SeatedLookLocked { get; set; }
 
         public void LockChairInteractions()
@@ -90,6 +91,7 @@ namespace SecretsThatBreathe
             controllerWasEnabled = characterController != null && characterController.enabled;
             captured = true;
             State = SeatState.SittingDown;
+            DocumentSearchSequence.NotifyOwnChairUsed(gameObject.scene);
             Suspend(firstPersonController);
             Suspend(playerCamera.GetComponent<CinemachineBrain>());
             foreach (Behaviour control in additionalControls) Suspend(control);

@@ -83,6 +83,7 @@ namespace SecretsThatBreathe
             rect.anchorMin = rect.anchorMax = new Vector2(0.5f, y);
             rect.anchoredPosition = Vector2.zero;
             rect.sizeDelta = new Vector2(1400f, 120f);
+            SeatPromptUI.PositionCommonTextPanel(rect);
             var background = panel.GetComponent<UnityEngine.UI.Image>();
             if (background != null) background.enabled = false;
             var label = panel.GetComponentInChildren<TMP_Text>(true);

@@ -31,10 +31,11 @@ namespace SecretsThatBreathe
         public GameObject emptyCupModel;
 
         [Header("Look at cup to eat")]
-        [Tooltip("Allowed angle from the camera forward direction to the cup centre. 35 allows a broad 70-degree cone.")]
-        [Range(1f, 80f)] public float lookAngle = 35f;
-        [Tooltip("Maximum camera-to-cup distance in metres.")]
-        [Min(0.1f)] public float lookDistance = 2.5f;
+        [Tooltip("Crosshair must aim inside this box to eat.")]
+        public BoxCollider lookTarget;
+        [Tooltip("The seated camera must be inside this box. Resize it to adjust eating range.")]
+        public BoxCollider interactionZone;
+        [HideInInspector] public float lookDistance = 2.5f;
 
         [Header("Cup position relative to camera (metres)")]
         [Tooltip("Position of the mesh centre, not the imported model pivot.")]
@@ -54,9 +55,15 @@ namespace SecretsThatBreathe
         [Min(0f)] public float holdDuration = 0.4f;
         [Min(0.05f)] public float lowerDuration = 1f;
 
-        [Header("Optional sound and events")]
+        [Header("Eating sound (loops until the eating animation ends)")]
         public AudioSource audioSource;
+        [Tooltip("Loops throughout Lift + Sip + Hold + Lower, then stops immediately. Leave empty for no sound.")]
         public AudioClip eatingSound;
+        [Tooltip("Volume multiplier during Lift. X: lift progress 0-1. Y: volume 0-1.")]
+        public AnimationCurve eatingSoundFadeIn = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
+        [Tooltip("Volume multiplier during Lower. X: lowering progress 0-1. Y: volume 0-1.")]
+        public AnimationCurve eatingSoundFadeOut = AnimationCurve.EaseInOut(0f, 1f, 1f, 0f);
+        [Header("Events")]
         public UnityEvent onEatingStarted = new UnityEvent();
         public UnityEvent onMealFinished = new UnityEvent();
 
@@ -71,8 +78,9 @@ namespace SecretsThatBreathe
         private Rigidbody[] bodies;
         private bool[] kinematicStates, collisionStates;
         private Transform mealObject;
-        private Transform cachedCup;
-        private Renderer[] cupRenderers;
+        private AudioSource playingEatingSource;
+        private bool previousAudioLoop;
+        private float eatingBaseVolume;
 
         private void Awake()
         {
@@ -118,6 +126,7 @@ namespace SecretsThatBreathe
             {
                 if (!seated || mealObject == null || player.playerCamera == null) { CancelEating(); return; }
                 elapsed += Time.deltaTime;
+                UpdateEatingSoundVolume();
                 if (elapsed >= TotalDuration) FinishEating();
                 return;
             }
@@ -157,12 +166,8 @@ namespace SecretsThatBreathe
         public bool IsLookingAtCup()
         {
             if (player == null || player.playerCamera == null || noodles == null || !noodles.gameObject.activeInHierarchy) return false;
-            if (cachedCup != noodles || cupRenderers == null)
-            {
-                cachedCup = noodles;
-                cupRenderers = noodles.GetComponentsInChildren<Renderer>(true);
-            }
-            return InteractionLook.IsLookingAt(player.playerCamera, cupRenderers, lookAngle, lookDistance);
+            return InteractionLook.IsPointInBox(player.playerCamera.transform.position, interactionZone)
+                && InteractionLook.IsLookingAtBox(player.playerCamera, lookTarget);
         }
 
         public bool TryEat()
@@ -200,7 +205,7 @@ namespace SecretsThatBreathe
             elapsed = 0f;
             State = MealState.Eating;
             if (promptCanvas != null) promptCanvas.SetEatVisible(false);
-            if (audioSource != null && eatingSound != null) { audioSource.clip = eatingSound; audioSource.Play(); }
+            StartEatingSound();
             onEatingStarted.Invoke();
             return true;
         }
@@ -277,6 +282,7 @@ namespace SecretsThatBreathe
 
         private void RestoreObject()
         {
+            StopEatingSound();
             if (!captured) return;
             if (mealObject != null)
             {
@@ -291,10 +297,69 @@ namespace SecretsThatBreathe
                 bodies[i].detectCollisions = collisionStates[i];
             }
             if (player != null) player.SeatedLookLocked = previousLookLock;
-            if (audioSource != null && eatingSound != null && audioSource.clip == eatingSound) audioSource.Stop();
             CurrentTiltDegrees = 0f;
             captured = false;
             mealObject = null;
+        }
+
+        private void StartEatingSound()
+        {
+            if (eatingSound == null) return;
+            if (audioSource == null)
+            {
+                var child = transform.Find("NoodleEatingAudio");
+                if (child == null)
+                {
+                    child = new GameObject("NoodleEatingAudio").transform;
+                    child.SetParent(transform, false);
+                }
+                audioSource = child.GetComponent<AudioSource>();
+                if (audioSource == null)
+                {
+                    audioSource = child.gameObject.AddComponent<AudioSource>();
+                    audioSource.playOnAwake = false;
+                    audioSource.spatialBlend = 0f;
+                    audioSource.dopplerLevel = 0f;
+                }
+            }
+            playingEatingSource = audioSource;
+            previousAudioLoop = audioSource.loop;
+            eatingBaseVolume = audioSource.volume;
+            audioSource.loop = true;
+            audioSource.clip = eatingSound;
+            UpdateEatingSoundVolume();
+            audioSource.Play();
+        }
+
+        private void UpdateEatingSoundVolume()
+        {
+            if (playingEatingSource == null) return;
+            float lift = Mathf.Max(.05f, liftDuration);
+            float lower = Mathf.Max(.05f, lowerDuration);
+            float lowerStart = lift + Mathf.Max(.05f, sipDuration) + Mathf.Max(0f, holdDuration);
+            float multiplier = 1f;
+            if (elapsed < lift)
+            {
+                float progress = Mathf.Clamp01(elapsed / lift);
+                multiplier = eatingSoundFadeIn != null && eatingSoundFadeIn.length > 0
+                    ? eatingSoundFadeIn.Evaluate(progress) : progress;
+            }
+            else if (elapsed >= lowerStart)
+            {
+                float progress = Mathf.Clamp01((elapsed - lowerStart) / lower);
+                multiplier = eatingSoundFadeOut != null && eatingSoundFadeOut.length > 0
+                    ? eatingSoundFadeOut.Evaluate(progress) : 1f - progress;
+            }
+            playingEatingSource.volume = eatingBaseVolume * Mathf.Clamp01(multiplier);
+        }
+
+        private void StopEatingSound()
+        {
+            if (playingEatingSource == null) return;
+            playingEatingSource.Stop();
+            playingEatingSource.loop = previousAudioLoop;
+            playingEatingSource.volume = eatingBaseVolume;
+            playingEatingSource = null;
         }
 
         private void OnDisable() { eat?.Disable(); CancelEating(); }

@@ -17,9 +17,18 @@ namespace SecretsThatBreathe
         [Header("Eating prompt")]
         public GameObject eatPanel;
         public TMP_Text eatLabel;
+        [HideInInspector] public int commonTextLayoutRevision;
+
+        public static void PositionCommonTextPanel(RectTransform panel)
+        {
+            panel.anchorMin = panel.anchorMax = new Vector2(.5f, .16f);
+            panel.pivot = new Vector2(.5f, .5f);
+            panel.anchoredPosition = new Vector2(0f, -40f);
+        }
 
         private void Start()
         {
+            CrosshairDotGraphic.Install(this);
             if (GetComponent<CanvasTextStackLayout>() == null) gameObject.AddComponent<CanvasTextStackLayout>();
             // Prepare dynamic font atlases before an interaction first makes text visible.
             // Include inactive panels, without changing their text or visibility.
@@ -27,6 +36,9 @@ namespace SecretsThatBreathe
             var fontCharacters = new Dictionary<TMP_FontAsset, StringBuilder>();
             foreach (var label in labels)
             {
+                var thai = label.GetComponent<ThaiTextDisplay>();
+                if (thai == null) thai = label.gameObject.AddComponent<ThaiTextDisplay>();
+                thai.Bind();
                 if (label.font == null || string.IsNullOrEmpty(label.text)) continue;
                 if (!fontCharacters.TryGetValue(label.font, out var characters))
                 {
@@ -34,10 +46,11 @@ namespace SecretsThatBreathe
                     fontCharacters.Add(label.font, characters);
                 }
                 characters.Append(label.text);
+                characters.Append(ThaiTextPreparation.Prepare(label.text));
             }
             foreach (var pair in fontCharacters)
                 if (pair.Key.atlasPopulationMode == AtlasPopulationMode.Dynamic)
-                    pair.Key.TryAddCharacters(pair.Value.ToString(), out string missingCharacters);
+                    pair.Key.TryAddCharacters(pair.Value.ToString(), out string missingCharacters, true);
             foreach (var label in labels) label.ForceMeshUpdate(true, true);
         }
 
@@ -90,6 +103,7 @@ namespace SecretsThatBreathe
             rect.anchorMin = rect.anchorMax = new Vector2(0.5f, y);
             rect.anchoredPosition = Vector2.zero;
             rect.sizeDelta = new Vector2(width, height);
+            if (panelName != "TestSkipPhoneHint") PositionCommonTextPanel(rect);
             var background = panel.GetComponent<Image>();
             if (background != null) background.enabled = false;
             var label = panel.GetComponentInChildren<TMP_Text>(true);
@@ -159,6 +173,7 @@ namespace SecretsThatBreathe
             var panelRect = panel.GetComponent<RectTransform>();
             panelRect.anchorMin = panelRect.anchorMax = new Vector2(0.5f, 0.25f);
             panelRect.sizeDelta = new Vector2(560f, 76f);
+            PositionCommonTextPanel(panelRect);
 
             var textObject = new GameObject("PromptText", typeof(RectTransform), typeof(TextMeshProUGUI));
             textObject.transform.SetParent(panel.transform, false);

@@ -10,12 +10,12 @@ namespace SecretsThatBreathe.Editor
     public static class PhoneCallSetup
     {
         private static readonly string[] Sentences = {
-            "สวัสดีครับ", "เข้มเหรอ", "ใช่ครับพี่ มีอะไรรึเปล่าครับ",
+            "สวัสดีครับ", "เข้มเหรอ", "นี่ใครเหรอครับ", "พี่ต้นเองเข้ม", "เอ้าพี่ มีอะไรรึเปล่าครับ",
             "พอดีพี่น่าจะลืมเอกสารไว้ที่ออฟฟิศน่ะ",
-            "พี่พยายามหาเอกสารที่บ้านแล้ว หาที่รถ หาในกระเป๋าก็ยังไม่เจอ",
+            "พี่พยายามหาเอกสารที่บ้านแล้ว\n<pos=-30>:<pos=0>หาที่รถ หาในกระเป๋าก็ยังไม่เจอ",
             "พี่ฝากเข้มหาในออฟฟิศให้พี่หน่อยได้ไหม", "ได้ครับพี่",
-            "มันน่าจะอยู่ที่โต๊ะเครื่องปริ้น ชั้นวางเอกสาร ไม่ก็ข้างบนลิ้นชักสักที่",
-            "ฝากหาให้พี่ด้วยนะ", "โอเคครับ"
+            "มันน่าจะอยู่ที่โต๊ะหน้าห้อง ลิ้นชักเอกสาร\n<pos=-30>:<pos=0>ไม่ก็ข้างบนเครื่องปริ้นนี้แหละ\n<pos=-30>:<pos=0>ฝากหาให้พี่ด้วยนะเข้ม",
+            "โอเคครับ"
         };
         static PhoneCallSetup()
         {
@@ -41,7 +41,11 @@ namespace SecretsThatBreathe.Editor
             }
             if (phone == null || player == null) return;
             var call = phone.GetComponent<PhoneCallInteraction>();
-            if (call != null && call.dialogueUI != null && call.interactionZone != null && call.intro != null) return;
+            if (call != null && call.dialogueUI != null && call.interactionZone != null && call.intro != null)
+            {
+                if (UpgradeDialogue(call.dialogueUI, SeatPromptUI.FindOrCreate(scene))) EditorSceneManager.MarkSceneDirty(scene);
+                return;
+            }
             var canvas = SeatPromptUI.FindOrCreate(scene);
             var intro = OfficeIntroDialogue.Install(canvas);
             var group = SeatingCanvasGroups.Group(canvas, "PhoneCallUI");
@@ -72,6 +76,7 @@ namespace SecretsThatBreathe.Editor
                 ui.Hide();
                 EditorUtility.SetDirty(ui);
             }
+            UpgradeDialogue(ui, canvas);
             if (call == null) call = Undo.AddComponent<PhoneCallInteraction>(phone);
             Undo.RecordObject(call, "Configure incoming phone call");
             call.player = player;
@@ -116,6 +121,54 @@ namespace SecretsThatBreathe.Editor
             go.transform.SetParent(parent, false);
             return go.GetComponent<RectTransform>();
         }
+        private static bool UpgradeDialogue(PhoneCallDialogueUI ui, SeatPromptUI canvas)
+        {
+            if (ui.dialogueRevision >= 2) return false;
+            Undo.RecordObject(ui, "Update phone dialogue to twelve sentences");
+            var templates = ui.transform.Find("Lines");
+            if (templates == null) templates = RectObject("Lines", ui.transform);
+            var lines = new TMP_Text[Sentences.Length];
+            for (int i = 0; i < Sentences.Length; i++)
+            {
+                var panel = templates.Find("Line" + (i + 1).ToString("00"));
+                if (panel == null) panel = RectObject("Line" + (i + 1).ToString("00"), templates);
+                var label = panel.GetComponentInChildren<TMP_Text>(true);
+                if (label == null) label = Label("Text", panel, Sentences[i], 0f, 900f, canvas, TextAlignmentOptions.TopLeft);
+                Undo.RecordObject(label, "Replace phone sentence");
+                label.text = Sentences[i];
+                EditorUtility.SetDirty(label);
+                lines[i] = label;
+            }
+            ui.sentences = lines;
+            for (int i = Sentences.Length; i < templates.childCount; i++) templates.GetChild(i).gameObject.SetActive(false);
+            templates.gameObject.SetActive(false);
+            var conversation = ui.conversationPanel.GetComponent<RectTransform>();
+            Undo.RecordObject(conversation, "Move phone dialogue to bottom centre");
+            conversation.anchorMin = conversation.anchorMax = new Vector2(.5f, .2f);
+            conversation.pivot = new Vector2(.5f, .5f);
+            conversation.sizeDelta = new Vector2(1100f, 360f);
+            conversation.anchoredPosition = Vector2.zero;
+            foreach (var label in new[] { ui.kemText, ui.tonText })
+            {
+                var row = label.transform.parent as RectTransform;
+                Undo.RecordObject(row, "Centre phone dialogue row");
+                row.anchorMin = row.anchorMax = new Vector2(.5f, .5f);
+                row.pivot = new Vector2(.5f, .5f);
+                row.sizeDelta = new Vector2(1020f, 180f);
+                row.anchoredPosition = new Vector2(0f, label == ui.kemText ? 90f : -20f);
+                foreach (var rowLabel in row.GetComponentsInChildren<TMP_Text>(true))
+                {
+                    Undo.RecordObject(rowLabel.rectTransform, "Allow multiline phone dialogue");
+                    rowLabel.rectTransform.sizeDelta = new Vector2(rowLabel.rectTransform.sizeDelta.x, 180f);
+                    EditorUtility.SetDirty(rowLabel.rectTransform);
+                }
+                EditorUtility.SetDirty(row);
+            }
+            ui.dialogueRevision = 2;
+            EditorUtility.SetDirty(conversation);
+            EditorUtility.SetDirty(ui);
+            return true;
+        }
         private static void Stretch(RectTransform rect)
         {
             rect.anchorMin = Vector2.zero; rect.anchorMax = Vector2.one;
@@ -127,7 +180,7 @@ namespace SecretsThatBreathe.Editor
             row.anchorMin = row.anchorMax = new Vector2(.05f, .5f);
             row.pivot = new Vector2(0f, .5f);
             row.anchoredPosition = new Vector2(0f, y);
-            row.sizeDelta = new Vector2(1020f, 100f);
+            row.sizeDelta = new Vector2(1020f, 180f);
             Label("Speaker", row, speaker, 0f, 90f, canvas, TextAlignmentOptions.TopRight);
             Label("Colon", row, ":", 100f, 20f, canvas, TextAlignmentOptions.TopLeft);
             return Label("Sentence", row, "", 130f, 870f, canvas, TextAlignmentOptions.TopLeft);

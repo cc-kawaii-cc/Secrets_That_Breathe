@@ -12,7 +12,7 @@ namespace SecretsThatBreathe.Editor
         {
             DrawDefaultInspector();
             var machine = (WaterVendingMachineInteraction)target;
-            EditorGUILayout.HelpBox("Select the machine and drag the green box handles in Scene view. You can also select InteractionZone and use Box Collider > Edit Collider.", MessageType.Info);
+            EditorGUILayout.HelpBox("InteractionZone controls where the player can stand. LookTarget controls where the crosshair must aim. Select either child and use Box Collider > Edit Collider.", MessageType.Info);
             if (machine.messagePanel && GUILayout.Button("Select Message Text in Canvas"))
             {
                 var text=machine.messagePanel.GetComponentInChildren<TMPro.TMP_Text>(true);
