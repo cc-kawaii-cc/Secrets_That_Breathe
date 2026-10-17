@@ -120,7 +120,8 @@ namespace SecretsThatBreathe
                     continue;
                 }
                 Rect candidate = original;
-                candidate.y += entry.offset;
+                // Reflow from the authored position every frame so dialogue drops back
+                // when a control prompt disappears, then rises again if it returns.
                 candidate = PlaceAbove(candidate, placed, spacing);
                 SetOffset(entry, candidate.y - original.y);
                 placed.Add(candidate);

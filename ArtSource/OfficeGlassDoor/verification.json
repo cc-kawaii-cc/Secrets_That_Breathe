@@ -1,0 +1,44 @@
+{
+  "overall_m": [
+    1.84,
+    0.09,
+    2.2
+  ],
+  "leaf_width_m": 0.857,
+  "center_gap_m": 0.006,
+  "leaf_frame_depth_m": 0.045,
+  "glass_thickness_m": 0.006,
+  "hinges_x_m": [
+    -0.86,
+    0.86
+  ],
+  "parts": {
+    "Frame": {
+      "triangles": 300,
+      "pivot": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "DoorLeft": {
+      "triangles": 324,
+      "pivot": [
+        -0.8600000143051147,
+        -0.03500000014901161,
+        0.0
+      ]
+    },
+    "DoorRight": {
+      "triangles": 380,
+      "pivot": [
+        0.8600000143051147,
+        -0.03500000014901161,
+        0.0
+      ]
+    }
+  },
+  "glass": "opaque supplied photograph, center crop with matching continuous UV, not transmissive",
+  "triangles": 1004,
+  "swing_check": "0..90 degrees outward, 15-degree samples: vertices within fixed-jamb depth stay in the opening. Not triangle intersection or physics simulation."
+}

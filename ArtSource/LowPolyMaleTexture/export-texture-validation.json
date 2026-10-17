@@ -1,0 +1,35 @@
+{
+  "LowPolyMale_IdleTalk": {
+    "vertices": 484,
+    "triangles": 964,
+    "bones": 22,
+    "material_name": [
+      "Material.001"
+    ],
+    "actions": [
+      "SlowWalkRig|IdleTalk"
+    ],
+    "loop_error": 0.0,
+    "texture_size": [
+      512,
+      512
+    ]
+  },
+  "LowPolyMale_SlowWalk": {
+    "vertices": 484,
+    "triangles": 964,
+    "bones": 22,
+    "material_name": [
+      "Material.001"
+    ],
+    "actions": [
+      "SlowWalkRig|SlowWalkRig|SlowWalk_Forward",
+      "SlowWalkRig|SlowWalkRig|SlowWalk_InPlace"
+    ],
+    "loop_error": 0.0,
+    "texture_size": [
+      512,
+      512
+    ]
+  }
+}

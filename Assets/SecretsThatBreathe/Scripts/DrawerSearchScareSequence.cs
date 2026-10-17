@@ -32,6 +32,13 @@ namespace SecretsThatBreathe
         public ScreenFadeUI screenFade;
         public SeatPromptUI promptCanvas;
 
+        [Header("Aunt character animation")]
+        public Animator auntAnimator;
+        public RuntimeAnimatorController auntIdleController;
+        public RuntimeAnimatorController auntWalkController;
+        [Min(.01f)] public float auntIdleAnimationSpeed = 1f;
+        [Min(.01f)] public float auntWalkAnimationSpeed = 1f;
+
         [Header("Aunt exit")]
         [Min(0.1f)] public float exitWalkSpeed = 1.2f;
         [Min(0.1f)] public float exitTurnSpeed = 5f;
@@ -144,6 +151,7 @@ namespace SecretsThatBreathe
         private void Start()
         {
             ConfigureScene();
+            SetAuntWalking(false);
             moneyChoiceUI.acceptButton.onClick.AddListener(ChooseAcceptMoney);
             moneyChoiceUI.refuseButton.onClick.AddListener(ChooseRefuseMoney);
             HideAllText();
@@ -380,6 +388,7 @@ namespace SecretsThatBreathe
             yield return new WaitForSeconds(Mathf.Max(0.1f, searchDuration));
             Stage = StoryStage.AuntApproaching;
             auntObject.SetActive(true);
+            SetAuntWalking(true);
             npcColliders = auntObject.GetComponentsInChildren<Collider>(true);
             npcColliderStates = new bool[npcColliders.Length];
             for (int i = 0; i < npcColliders.Length; i++) { npcColliderStates[i] = npcColliders[i].enabled; npcColliders[i].enabled = false; }
@@ -393,6 +402,7 @@ namespace SecretsThatBreathe
                 yield return null;
             }
             auntObject.transform.SetPositionAndRotation(auntStandPoint.position, auntStandPoint.rotation);
+            SetAuntWalking(false);
             RestoreNpcColliders();
             HideAllText();
             Stage = StoryStage.JumpScare;
@@ -492,6 +502,7 @@ namespace SecretsThatBreathe
             if (auntObject != null && auntExitPoint != null)
             {
                 SuspendNpcColliders();
+                SetAuntWalking(true);
                 auntExitRoutine = StartCoroutine(WalkAuntAway());
             }
             else Debug.LogWarning("[Aunt exit] Assign Main Door / Aunt Exit Point to let the aunt leave.", this);
@@ -517,7 +528,26 @@ namespace SecretsThatBreathe
             foreach (Transform waypoint in auntExitWaypoints)
                 if (waypoint != null) yield return WalkAuntTo(waypoint);
             yield return WalkAuntTo(auntExitPoint);
+            SetAuntWalking(false);
             auntExitRoutine = null;
+        }
+
+        private void SetAuntWalking(bool walking)
+        {
+            if (auntAnimator == null && auntObject != null)
+                auntAnimator = auntObject.GetComponentInChildren<Animator>(true);
+            if (auntAnimator == null) return;
+            var controller = walking ? auntWalkController : auntIdleController;
+            if (controller == null) return;
+            auntAnimator.applyRootMotion = false; // The story sequence owns position and path.
+            auntAnimator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+            if (auntAnimator.runtimeAnimatorController != controller)
+            {
+                auntAnimator.runtimeAnimatorController = controller;
+                auntAnimator.Rebind();
+                if (auntAnimator.isActiveAndEnabled) auntAnimator.Update(0f);
+            }
+            auntAnimator.speed = Mathf.Max(.01f, walking ? auntWalkAnimationSpeed : auntIdleAnimationSpeed);
         }
 
         private void SuspendNpcColliders()
@@ -634,6 +664,7 @@ namespace SecretsThatBreathe
         {
             if (sequence != null) { StopCoroutine(sequence); sequence = null; }
             if (auntExitRoutine != null) { StopCoroutine(auntExitRoutine); auntExitRoutine = null; }
+            SetAuntWalking(false);
             RestoreCamera(); RestoreNpcColliders(); HideAllText();
             if (screenFade != null) screenFade.Clear();
             if (player != null && player.State == PlayerSeatController.SeatState.Exploring) player.ResumeAfterStand();
