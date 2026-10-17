@@ -1,0 +1,1119 @@
+{
+  "scene": "Assets/Tonpalm/Lawyer Room.unity",
+  "rootIdPreserved": true,
+  "originalTransformPreserved": true,
+  "originalCollidersPreserved": true,
+  "originalColliderCount": 2,
+  "saved": false,
+  "dirty": true,
+  "inverseLocalScale": [
+    0.5,
+    0.4,
+    10.0
+  ],
+  "model": {
+    "name": "MainDoor_LowPoly",
+    "meshObjects": 12,
+    "renderers": 12,
+    "triangles": 3952,
+    "vertices": 8212,
+    "boundsCenter": [
+      1.95158017,
+      1.42099988,
+      10.01302
+    ],
+    "boundsSize": [
+      2.21500015,
+      2.59999943,
+      0.227981567
+    ],
+    "meshes": [
+      {
+        "name": "Frame_Fixed_DarkMetal",
+        "mesh": "Frame_Fixed_DarkMetal",
+        "vertices": 320,
+        "subMeshes": 1,
+        "uv0": 2,
+        "uv2": 2
+      },
+      {
+        "name": "Frame_Fixed_PanelInset",
+        "mesh": "Frame_Fixed_PanelInset",
+        "vertices": 292,
+        "subMeshes": 1,
+        "uv0": 2,
+        "uv2": 2
+      },
+      {
+        "name": "Frame_Fixed_Wood",
+        "mesh": "Frame_Fixed_Wood",
+        "vertices": 294,
+        "subMeshes": 1,
+        "uv0": 2,
+        "uv2": 2
+      },
+      {
+        "name": "LeftLeaf_Pivot_Brass",
+        "mesh": "LeftLeaf_Pivot_Brass",
+        "vertices": 1228,
+        "subMeshes": 1,
+        "uv0": 2,
+        "uv2": 2
+      },
+      {
+        "name": "LeftLeaf_Pivot_DarkMetal",
+        "mesh": "LeftLeaf_Pivot_DarkMetal",
+        "vertices": 578,
+        "subMeshes": 1,
+        "uv0": 2,
+        "uv2": 2
+      },
+      {
+        "name": "LeftLeaf_Pivot_PanelInset",
+        "mesh": "LeftLeaf_Pivot_PanelInset",
+        "vertices": 488,
+        "subMeshes": 1,
+        "uv0": 2,
+        "uv2": 2
+      },
+      {
+        "name": "LeftLeaf_Pivot_Plaque",
+        "mesh": "LeftLeaf_Pivot_Plaque",
+        "vertices": 98,
+        "subMeshes": 1,
+        "uv0": 2,
+        "uv2": 2
+      },
+      {
+        "name": "LeftLeaf_Pivot_Wood",
+        "mesh": "LeftLeaf_Pivot_Wood",
+        "vertices": 1354,
+        "subMeshes": 1,
+        "uv0": 2,
+        "uv2": 2
+      },
+      {
+        "name": "RightLeaf_Pivot_Brass",
+        "mesh": "RightLeaf_Pivot_Brass",
+        "vertices": 1142,
+        "subMeshes": 1,
+        "uv0": 2,
+        "uv2": 2
+      },
+      {
+        "name": "RightLeaf_Pivot_DarkMetal",
+        "mesh": "RightLeaf_Pivot_DarkMetal",
+        "vertices": 576,
+        "subMeshes": 1,
+        "uv0": 2,
+        "uv2": 2
+      },
+      {
+        "name": "RightLeaf_Pivot_PanelInset",
+        "mesh": "RightLeaf_Pivot_PanelInset",
+        "vertices": 488,
+        "subMeshes": 1,
+        "uv0": 2,
+        "uv2": 2
+      },
+      {
+        "name": "RightLeaf_Pivot_Wood",
+        "mesh": "RightLeaf_Pivot_Wood",
+        "vertices": 1354,
+        "subMeshes": 1,
+        "uv0": 2,
+        "uv2": 2
+      }
+    ]
+  },
+  "before": {
+    "name": "Main Door",
+    "path": "Object Can Interact/Main Door",
+    "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-1457596038-0",
+    "instanceId": 181432,
+    "layer": 0,
+    "active": true,
+    "staticFlags": 2147483647,
+    "localPosition": [
+      1.16,
+      1.251,
+      15.921
+    ],
+    "localRotation": [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "localScale": [
+      2.0,
+      2.5,
+      0.1
+    ],
+    "worldPosition": [
+      1.95158,
+      1.371,
+      10.01302
+    ],
+    "worldRotation": [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "lossyScale": [
+      2.0,
+      2.5,
+      0.1
+    ],
+    "components": [
+      {
+        "type": "UnityEngine.Transform",
+        "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-1457596042-0",
+        "instanceId": 181440,
+        "json": "{\"Transform\":{\"serializedVersion\":\"2\",\"m_LocalRotation\":{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":1.0},\"m_LocalPosition\":{\"x\":1.159999966621399,\"y\":1.2510000467300416,\"z\":15.920999526977539},\"m_LocalScale\":{\"x\":2.0,\"y\":2.5,\"z\":0.10000000149011612},\"m_ConstrainProportionsScale\":false,\"m_LocalEulerAnglesHint\":{\"x\":0.0,\"y\":0.0,\"z\":0.0}}}"
+      },
+      {
+        "type": "UnityEngine.MeshFilter",
+        "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-1457596041-0",
+        "instanceId": 181438,
+        "json": "{\"MeshFilter\":{\"m_Mesh\":{\"fileID\":10202,\"guid\":\"0000000000000000e000000000000000\",\"type\":0}}}"
+      },
+      {
+        "type": "UnityEngine.MeshRenderer",
+        "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-1457596040-0",
+        "instanceId": 181436,
+        "json": "{\"MeshRenderer\":{\"m_Enabled\":true,\"m_CastShadows\":1,\"m_ReceiveShadows\":true,\"m_DynamicOccludee\":true,\"m_StaticShadowCaster\":false,\"m_MotionVectors\":1,\"m_LightProbeUsage\":1,\"m_ReflectionProbeUsage\":1,\"m_RayTracingMode\":2,\"m_RayTraceProcedural\":false,\"m_RayTracingAccelStructBuildFlagsOverride\":false,\"m_RayTracingAccelStructBuildFlags\":1,\"m_SmallMeshCulling\":true,\"m_ForceMeshLod\":-1,\"m_MeshLodSelectionBias\":0.0,\"m_RenderingLayerMask\":1,\"m_RendererPriority\":0,\"m_Materials\":[{\"fileID\":2100000,\"guid\":\"cdb516d09b3fbd14ca2fd52d7f7bf874\",\"type\":2}],\"m_StaticBatchInfo\":{\"firstSubMesh\":0,\"subMeshCount\":0},\"m_StaticBatchRoot\":{\"instanceID\":0},\"m_ProbeAnchor\":{\"instanceID\":0},\"m_LightProbeVolumeOverride\":{\"instanceID\":0},\"m_ScaleInLightmap\":1.0,\"m_ReceiveGI\":1,\"m_PreserveUVs\":false,\"m_IgnoreNormalsForChartDetection\":false,\"m_ImportantGI\":false,\"m_StitchLightmapSeams\":true,\"m_SelectedEditorRenderState\":3,\"m_MinimumChartSize\":4,\"m_AutoUVMaxDistance\":0.5,\"m_AutoUVMaxAngle\":89.0,\"m_LightmapParameters\":{\"instanceID\":0},\"m_GlobalIlluminationMeshLod\":0,\"m_SortingLayerID\":0,\"m_SortingLayer\":0,\"m_SortingOrder\":0,\"m_MaskInteraction\":0,\"m_AdditionalVertexStreams\":{\"instanceID\":0}}}"
+      },
+      {
+        "type": "UnityEngine.BoxCollider",
+        "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-1457596039-0",
+        "instanceId": 181434,
+        "json": "{\"BoxCollider\":{\"m_Material\":{\"instanceID\":0},\"m_IncludeLayers\":{\"serializedVersion\":\"2\",\"m_Bits\":0},\"m_ExcludeLayers\":{\"serializedVersion\":\"2\",\"m_Bits\":0},\"m_LayerOverridePriority\":0,\"m_IsTrigger\":false,\"m_ProvidesContacts\":false,\"m_Enabled\":true,\"serializedVersion\":\"3\",\"m_Size\":{\"x\":1.0,\"y\":1.0,\"z\":1.0},\"m_Center\":{\"x\":0.0,\"y\":0.0,\"z\":0.0}}}"
+      }
+    ],
+    "descendants": [
+      {
+        "name": "LookTarget",
+        "path": "Object Can Interact/Main Door/LookTarget",
+        "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-1498843666-0",
+        "localPosition": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "localRotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "componentTypes": [
+          "UnityEngine.Transform",
+          "UnityEngine.BoxCollider"
+        ]
+      }
+    ],
+    "renderers": [
+      {
+        "name": "Main Door",
+        "enabled": true,
+        "boundsCenter": [
+          1.95158,
+          1.371,
+          10.01302
+        ],
+        "boundsSize": [
+          2.0,
+          2.5,
+          0.1
+        ],
+        "materials": [
+          {
+            "name": "New Material 1",
+            "asset": "Assets/Tonpalm/Prefab Lawyer Roomn/New Material 1.mat",
+            "shader": "Universal Render Pipeline/Lit"
+          }
+        ]
+      }
+    ]
+  },
+  "after": {
+    "name": "Main Door",
+    "path": "Object Can Interact/Main Door",
+    "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-1457596038-0",
+    "instanceId": 181432,
+    "layer": 0,
+    "active": true,
+    "staticFlags": 2147483647,
+    "localPosition": [
+      1.16,
+      1.251,
+      15.921
+    ],
+    "localRotation": [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "localScale": [
+      2.0,
+      2.5,
+      0.1
+    ],
+    "worldPosition": [
+      1.95158,
+      1.371,
+      10.01302
+    ],
+    "worldRotation": [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "lossyScale": [
+      2.0,
+      2.5,
+      0.1
+    ],
+    "components": [
+      {
+        "type": "UnityEngine.Transform",
+        "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-1457596042-0",
+        "instanceId": 181440,
+        "json": "{\"Transform\":{\"serializedVersion\":\"2\",\"m_LocalRotation\":{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":1.0},\"m_LocalPosition\":{\"x\":1.159999966621399,\"y\":1.2510000467300416,\"z\":15.920999526977539},\"m_LocalScale\":{\"x\":2.0,\"y\":2.5,\"z\":0.10000000149011612},\"m_ConstrainProportionsScale\":false,\"m_LocalEulerAnglesHint\":{\"x\":0.0,\"y\":0.0,\"z\":0.0}}}"
+      },
+      {
+        "type": "UnityEngine.MeshFilter",
+        "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-1457596041-0",
+        "instanceId": 181438,
+        "json": "{\"MeshFilter\":{\"m_Mesh\":{\"fileID\":10202,\"guid\":\"0000000000000000e000000000000000\",\"type\":0}}}"
+      },
+      {
+        "type": "UnityEngine.MeshRenderer",
+        "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-1457596040-0",
+        "instanceId": 181436,
+        "json": "{\"MeshRenderer\":{\"m_Enabled\":false,\"m_CastShadows\":1,\"m_ReceiveShadows\":true,\"m_DynamicOccludee\":true,\"m_StaticShadowCaster\":false,\"m_MotionVectors\":1,\"m_LightProbeUsage\":1,\"m_ReflectionProbeUsage\":1,\"m_RayTracingMode\":2,\"m_RayTraceProcedural\":false,\"m_RayTracingAccelStructBuildFlagsOverride\":false,\"m_RayTracingAccelStructBuildFlags\":1,\"m_SmallMeshCulling\":true,\"m_ForceMeshLod\":-1,\"m_MeshLodSelectionBias\":0.0,\"m_RenderingLayerMask\":1,\"m_RendererPriority\":0,\"m_Materials\":[{\"fileID\":2100000,\"guid\":\"cdb516d09b3fbd14ca2fd52d7f7bf874\",\"type\":2}],\"m_StaticBatchInfo\":{\"firstSubMesh\":0,\"subMeshCount\":0},\"m_StaticBatchRoot\":{\"instanceID\":0},\"m_ProbeAnchor\":{\"instanceID\":0},\"m_LightProbeVolumeOverride\":{\"instanceID\":0},\"m_ScaleInLightmap\":1.0,\"m_ReceiveGI\":1,\"m_PreserveUVs\":false,\"m_IgnoreNormalsForChartDetection\":false,\"m_ImportantGI\":false,\"m_StitchLightmapSeams\":true,\"m_SelectedEditorRenderState\":3,\"m_MinimumChartSize\":4,\"m_AutoUVMaxDistance\":0.5,\"m_AutoUVMaxAngle\":89.0,\"m_LightmapParameters\":{\"instanceID\":0},\"m_GlobalIlluminationMeshLod\":0,\"m_SortingLayerID\":0,\"m_SortingLayer\":0,\"m_SortingOrder\":0,\"m_MaskInteraction\":0,\"m_AdditionalVertexStreams\":{\"instanceID\":0}}}"
+      },
+      {
+        "type": "UnityEngine.BoxCollider",
+        "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-1457596039-0",
+        "instanceId": 181434,
+        "json": "{\"BoxCollider\":{\"m_Material\":{\"instanceID\":0},\"m_IncludeLayers\":{\"serializedVersion\":\"2\",\"m_Bits\":0},\"m_ExcludeLayers\":{\"serializedVersion\":\"2\",\"m_Bits\":0},\"m_LayerOverridePriority\":0,\"m_IsTrigger\":false,\"m_ProvidesContacts\":false,\"m_Enabled\":true,\"serializedVersion\":\"3\",\"m_Size\":{\"x\":1.0,\"y\":1.0,\"z\":1.0},\"m_Center\":{\"x\":0.0,\"y\":0.0,\"z\":0.0}}}"
+      }
+    ],
+    "descendants": [
+      {
+        "name": "LookTarget",
+        "path": "Object Can Interact/Main Door/LookTarget",
+        "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-1498843666-0",
+        "localPosition": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "localRotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "componentTypes": [
+          "UnityEngine.Transform",
+          "UnityEngine.BoxCollider"
+        ]
+      },
+      {
+        "name": "MainDoor_LowPoly",
+        "path": "Object Can Interact/Main Door/MainDoor_LowPoly",
+        "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-7193451823391263401-982979425",
+        "localPosition": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "localRotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "localScale": [
+          0.5,
+          0.4,
+          10.0
+        ],
+        "componentTypes": [
+          "UnityEngine.Transform"
+        ]
+      },
+      {
+        "name": "LawyerMainDoor",
+        "path": "Object Can Interact/Main Door/MainDoor_LowPoly/LawyerMainDoor",
+        "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-7024806042168714509-982979425",
+        "localPosition": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "localRotation": [
+          -5.960465E-08,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "componentTypes": [
+          "UnityEngine.Transform"
+        ]
+      },
+      {
+        "name": "LawyerMainDoor",
+        "path": "Object Can Interact/Main Door/MainDoor_LowPoly/LawyerMainDoor/LawyerMainDoor",
+        "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-4369874162107750333-982979425",
+        "localPosition": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "localRotation": [
+          0.7071068,
+          0.0,
+          0.0,
+          0.7071067
+        ],
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "componentTypes": [
+          "UnityEngine.Transform"
+        ]
+      },
+      {
+        "name": "Frame_Fixed",
+        "path": "Object Can Interact/Main Door/MainDoor_LowPoly/LawyerMainDoor/LawyerMainDoor/Frame_Fixed",
+        "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-7406973983837831718-982979425",
+        "localPosition": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "localRotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "componentTypes": [
+          "UnityEngine.Transform"
+        ]
+      },
+      {
+        "name": "Frame_Fixed_DarkMetal",
+        "path": "Object Can Interact/Main Door/MainDoor_LowPoly/LawyerMainDoor/LawyerMainDoor/Frame_Fixed/Frame_Fixed_DarkMetal",
+        "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-3572381487642211858-982979425",
+        "localPosition": [
+          -0.998,
+          0.025,
+          0.0
+        ],
+        "localRotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "componentTypes": [
+          "UnityEngine.Transform",
+          "UnityEngine.MeshFilter",
+          "UnityEngine.MeshRenderer"
+        ]
+      },
+      {
+        "name": "Frame_Fixed_PanelInset",
+        "path": "Object Can Interact/Main Door/MainDoor_LowPoly/LawyerMainDoor/LawyerMainDoor/Frame_Fixed/Frame_Fixed_PanelInset",
+        "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-5644714901198066657-982979425",
+        "localPosition": [
+          -1.078,
+          -0.074,
+          -0.028
+        ],
+        "localRotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "componentTypes": [
+          "UnityEngine.Transform",
+          "UnityEngine.MeshFilter",
+          "UnityEngine.MeshRenderer"
+        ]
+      },
+      {
+        "name": "Frame_Fixed_Wood",
+        "path": "Object Can Interact/Main Door/MainDoor_LowPoly/LawyerMainDoor/LawyerMainDoor/Frame_Fixed/Frame_Fixed_Wood",
+        "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-2750575913016374914-982979425",
+        "localPosition": [
+          -1.052,
+          0.0,
+          -0.025
+        ],
+        "localRotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "componentTypes": [
+          "UnityEngine.Transform",
+          "UnityEngine.MeshFilter",
+          "UnityEngine.MeshRenderer"
+        ]
+      },
+      {
+        "name": "LM_AxisFront",
+        "path": "Object Can Interact/Main Door/MainDoor_LowPoly/LawyerMainDoor/LawyerMainDoor/LM_AxisFront",
+        "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-1018218501065431008-982979425",
+        "localPosition": [
+          0.0,
+          -1.0,
+          0.0
+        ],
+        "localRotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "componentTypes": [
+          "UnityEngine.Transform"
+        ]
+      },
+      {
+        "name": "LM_AxisTop",
+        "path": "Object Can Interact/Main Door/MainDoor_LowPoly/LawyerMainDoor/LawyerMainDoor/LM_AxisTop",
+        "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-7971624131627766902-982979425",
+        "localPosition": [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        "localRotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "componentTypes": [
+          "UnityEngine.Transform"
+        ]
+      },
+      {
+        "name": "LeftLeaf_Pivot",
+        "path": "Object Can Interact/Main Door/MainDoor_LowPoly/LawyerMainDoor/LawyerMainDoor/LeftLeaf_Pivot",
+        "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-5801558940095312152-982979425",
+        "localPosition": [
+          -0.988,
+          0.0,
+          0.0
+        ],
+        "localRotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "componentTypes": [
+          "UnityEngine.Transform"
+        ]
+      },
+      {
+        "name": "LeftLeaf_Pivot_Brass",
+        "path": "Object Can Interact/Main Door/MainDoor_LowPoly/LawyerMainDoor/LawyerMainDoor/LeftLeaf_Pivot/LeftLeaf_Pivot_Brass",
+        "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-1502385505785088543-982979425",
+        "localPosition": [
+          0.886,
+          -0.052,
+          0.06
+        ],
+        "localRotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "componentTypes": [
+          "UnityEngine.Transform",
+          "UnityEngine.MeshFilter",
+          "UnityEngine.MeshRenderer"
+        ]
+      },
+      {
+        "name": "LeftLeaf_Pivot_DarkMetal",
+        "path": "Object Can Interact/Main Door/MainDoor_LowPoly/LawyerMainDoor/LawyerMainDoor/LeftLeaf_Pivot/LeftLeaf_Pivot_DarkMetal",
+        "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-7583175099758374332-982979425",
+        "localPosition": [
+          0.886,
+          -0.0554,
+          0.195
+        ],
+        "localRotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "componentTypes": [
+          "UnityEngine.Transform",
+          "UnityEngine.MeshFilter",
+          "UnityEngine.MeshRenderer"
+        ]
+      },
+      {
+        "name": "LeftLeaf_Pivot_PanelInset",
+        "path": "Object Can Interact/Main Door/MainDoor_LowPoly/LawyerMainDoor/LawyerMainDoor/LeftLeaf_Pivot/LeftLeaf_Pivot_PanelInset",
+        "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-5469148412909573080-982979425",
+        "localPosition": [
+          0.490999967,
+          0.0,
+          0.003
+        ],
+        "localRotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "componentTypes": [
+          "UnityEngine.Transform",
+          "UnityEngine.MeshFilter",
+          "UnityEngine.MeshRenderer"
+        ]
+      },
+      {
+        "name": "LeftLeaf_Pivot_Plaque",
+        "path": "Object Can Interact/Main Door/MainDoor_LowPoly/LawyerMainDoor/LawyerMainDoor/LeftLeaf_Pivot/LeftLeaf_Pivot_Plaque",
+        "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-3119779258290450741-982979425",
+        "localPosition": [
+          0.487999976,
+          -0.056,
+          -0.72
+        ],
+        "localRotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "componentTypes": [
+          "UnityEngine.Transform",
+          "UnityEngine.MeshFilter",
+          "UnityEngine.MeshRenderer"
+        ]
+      },
+      {
+        "name": "LeftLeaf_Pivot_Wood",
+        "path": "Object Can Interact/Main Door/MainDoor_LowPoly/LawyerMainDoor/LawyerMainDoor/LeftLeaf_Pivot/LeftLeaf_Pivot_Wood",
+        "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-6137156545689962269-982979425",
+        "localPosition": [
+          0.05699998,
+          -0.041,
+          0.003
+        ],
+        "localRotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "componentTypes": [
+          "UnityEngine.Transform",
+          "UnityEngine.MeshFilter",
+          "UnityEngine.MeshRenderer"
+        ]
+      },
+      {
+        "name": "RightLeaf_Pivot",
+        "path": "Object Can Interact/Main Door/MainDoor_LowPoly/LawyerMainDoor/LawyerMainDoor/RightLeaf_Pivot",
+        "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-3887230499348136348-982979425",
+        "localPosition": [
+          0.988,
+          0.0,
+          0.0
+        ],
+        "localRotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "componentTypes": [
+          "UnityEngine.Transform"
+        ]
+      },
+      {
+        "name": "RightLeaf_Pivot_Brass",
+        "path": "Object Can Interact/Main Door/MainDoor_LowPoly/LawyerMainDoor/LawyerMainDoor/RightLeaf_Pivot/RightLeaf_Pivot_Brass",
+        "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-8412559394969584770-982979425",
+        "localPosition": [
+          -0.886,
+          -0.052,
+          0.06
+        ],
+        "localRotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "componentTypes": [
+          "UnityEngine.Transform",
+          "UnityEngine.MeshFilter",
+          "UnityEngine.MeshRenderer"
+        ]
+      },
+      {
+        "name": "RightLeaf_Pivot_DarkMetal",
+        "path": "Object Can Interact/Main Door/MainDoor_LowPoly/LawyerMainDoor/LawyerMainDoor/RightLeaf_Pivot/RightLeaf_Pivot_DarkMetal",
+        "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-4102495859913300108-982979425",
+        "localPosition": [
+          -0.886,
+          -0.0554,
+          0.195
+        ],
+        "localRotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "componentTypes": [
+          "UnityEngine.Transform",
+          "UnityEngine.MeshFilter",
+          "UnityEngine.MeshRenderer"
+        ]
+      },
+      {
+        "name": "RightLeaf_Pivot_PanelInset",
+        "path": "Object Can Interact/Main Door/MainDoor_LowPoly/LawyerMainDoor/LawyerMainDoor/RightLeaf_Pivot/RightLeaf_Pivot_PanelInset",
+        "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-5722579074698904114-982979425",
+        "localPosition": [
+          -0.490999967,
+          0.0,
+          0.003
+        ],
+        "localRotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "componentTypes": [
+          "UnityEngine.Transform",
+          "UnityEngine.MeshFilter",
+          "UnityEngine.MeshRenderer"
+        ]
+      },
+      {
+        "name": "RightLeaf_Pivot_Wood",
+        "path": "Object Can Interact/Main Door/MainDoor_LowPoly/LawyerMainDoor/LawyerMainDoor/RightLeaf_Pivot/RightLeaf_Pivot_Wood",
+        "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-6415077596648854881-982979425",
+        "localPosition": [
+          -0.924999952,
+          -0.041,
+          0.003
+        ],
+        "localRotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "componentTypes": [
+          "UnityEngine.Transform",
+          "UnityEngine.MeshFilter",
+          "UnityEngine.MeshRenderer"
+        ]
+      }
+    ],
+    "renderers": [
+      {
+        "name": "Main Door",
+        "enabled": false,
+        "boundsCenter": [
+          1.95158,
+          1.371,
+          10.01302
+        ],
+        "boundsSize": [
+          2.0,
+          2.5,
+          0.1
+        ],
+        "materials": [
+          {
+            "name": "New Material 1",
+            "asset": "Assets/Tonpalm/Prefab Lawyer Roomn/New Material 1.mat",
+            "shader": "Universal Render Pipeline/Lit"
+          }
+        ]
+      },
+      {
+        "name": "Frame_Fixed_DarkMetal",
+        "enabled": true,
+        "boundsCenter": [
+          1.95158,
+          1.36850011,
+          10.0050192
+        ],
+        "boundsSize": [
+          2.01400018,
+          2.49499965,
+          0.127999991
+        ],
+        "materials": [
+          {
+            "name": "LM_DarkMetal",
+            "asset": "Assets/SecretsThatBreathe/Props/LawyerMainDoor/Materials/LM_DarkMetal.mat",
+            "shader": "Universal Render Pipeline/Lit"
+          }
+        ]
+      },
+      {
+        "name": "Frame_Fixed_PanelInset",
+        "enabled": true,
+        "boundsCenter": [
+          1.95158,
+          1.41925,
+          9.939019
+        ],
+        "boundsSize": [
+          2.215,
+          2.59649968,
+          0.0229999982
+        ],
+        "materials": [
+          {
+            "name": "LM_PanelInset",
+            "asset": "Assets/SecretsThatBreathe/Props/LawyerMainDoor/Materials/LM_PanelInset.mat",
+            "shader": "Universal Render Pipeline/Lit"
+          }
+        ]
+      },
+      {
+        "name": "Frame_Fixed_Wood",
+        "enabled": true,
+        "boundsCenter": [
+          1.95158,
+          1.421,
+          10.01302
+        ],
+        "boundsSize": [
+          2.20800018,
+          2.59999967,
+          0.147999987
+        ],
+        "materials": [
+          {
+            "name": "LM_Wood",
+            "asset": "Assets/SecretsThatBreathe/Props/LawyerMainDoor/Materials/LM_Wood.mat",
+            "shader": "Universal Render Pipeline/Lit"
+          }
+        ]
+      },
+      {
+        "name": "LeftLeaf_Pivot_Brass",
+        "enabled": true,
+        "boundsCenter": [
+          1.41708,
+          1.371,
+          10.01302
+        ],
+        "boundsSize": [
+          0.90199995,
+          1.87399983,
+          0.2279814
+        ],
+        "materials": [
+          {
+            "name": "LM_Brass",
+            "asset": "Assets/SecretsThatBreathe/Props/LawyerMainDoor/Materials/LM_Brass.mat",
+            "shader": "Universal Render Pipeline/Lit"
+          }
+        ]
+      },
+      {
+        "name": "LeftLeaf_Pivot_DarkMetal",
+        "enabled": true,
+        "boundsCenter": [
+          1.40438008,
+          1.2555,
+          10.01302
+        ],
+        "boundsSize": [
+          0.899599969,
+          2.109,
+          0.1121
+        ],
+        "materials": [
+          {
+            "name": "LM_DarkMetal",
+            "asset": "Assets/SecretsThatBreathe/Props/LawyerMainDoor/Materials/LM_DarkMetal.mat",
+            "shader": "Universal Render Pipeline/Lit"
+          }
+        ]
+      },
+      {
+        "name": "LeftLeaf_Pivot_PanelInset",
+        "enabled": true,
+        "boundsCenter": [
+          1.45458007,
+          1.368,
+          10.01302
+        ],
+        "boundsSize": [
+          0.982,
+          2.47399974,
+          0.07299999
+        ],
+        "materials": [
+          {
+            "name": "LM_PanelInset",
+            "asset": "Assets/SecretsThatBreathe/Props/LawyerMainDoor/Materials/LM_PanelInset.mat",
+            "shader": "Universal Render Pipeline/Lit"
+          }
+        ]
+      },
+      {
+        "name": "LeftLeaf_Pivot_Plaque",
+        "enabled": true,
+        "boundsCenter": [
+          1.45158,
+          2.091,
+          9.95702
+        ],
+        "boundsSize": [
+          0.63,
+          0.157499984,
+          0.008999999
+        ],
+        "materials": [
+          {
+            "name": "LM_Plaque",
+            "asset": "Assets/SecretsThatBreathe/Props/LawyerMainDoor/Materials/LM_Plaque.mat",
+            "shader": "Universal Render Pipeline/Lit"
+          }
+        ]
+      },
+      {
+        "name": "LeftLeaf_Pivot_Wood",
+        "enabled": true,
+        "boundsCenter": [
+          1.45458007,
+          1.37,
+          10.01302
+        ],
+        "boundsSize": [
+          0.981999934,
+          2.47599959,
+          0.1
+        ],
+        "materials": [
+          {
+            "name": "LM_Wood",
+            "asset": "Assets/SecretsThatBreathe/Props/LawyerMainDoor/Materials/LM_Wood.mat",
+            "shader": "Universal Render Pipeline/Lit"
+          }
+        ]
+      },
+      {
+        "name": "RightLeaf_Pivot_Brass",
+        "enabled": true,
+        "boundsCenter": [
+          2.48608017,
+          1.371,
+          10.01302
+        ],
+        "boundsSize": [
+          0.90199995,
+          1.87399983,
+          0.2279814
+        ],
+        "materials": [
+          {
+            "name": "LM_Brass",
+            "asset": "Assets/SecretsThatBreathe/Props/LawyerMainDoor/Materials/LM_Brass.mat",
+            "shader": "Universal Render Pipeline/Lit"
+          }
+        ]
+      },
+      {
+        "name": "RightLeaf_Pivot_DarkMetal",
+        "enabled": true,
+        "boundsCenter": [
+          2.49878,
+          1.2555,
+          10.01302
+        ],
+        "boundsSize": [
+          0.899599969,
+          2.109,
+          0.1121
+        ],
+        "materials": [
+          {
+            "name": "LM_DarkMetal",
+            "asset": "Assets/SecretsThatBreathe/Props/LawyerMainDoor/Materials/LM_DarkMetal.mat",
+            "shader": "Universal Render Pipeline/Lit"
+          }
+        ]
+      },
+      {
+        "name": "RightLeaf_Pivot_PanelInset",
+        "enabled": true,
+        "boundsCenter": [
+          2.44858,
+          1.368,
+          10.01302
+        ],
+        "boundsSize": [
+          0.982,
+          2.47399974,
+          0.07299999
+        ],
+        "materials": [
+          {
+            "name": "LM_PanelInset",
+            "asset": "Assets/SecretsThatBreathe/Props/LawyerMainDoor/Materials/LM_PanelInset.mat",
+            "shader": "Universal Render Pipeline/Lit"
+          }
+        ]
+      },
+      {
+        "name": "RightLeaf_Pivot_Wood",
+        "enabled": true,
+        "boundsCenter": [
+          2.44858,
+          1.37,
+          10.01302
+        ],
+        "boundsSize": [
+          0.981999934,
+          2.47599959,
+          0.1
+        ],
+        "materials": [
+          {
+            "name": "LM_Wood",
+            "asset": "Assets/SecretsThatBreathe/Props/LawyerMainDoor/Materials/LM_Wood.mat",
+            "shader": "Universal Render Pipeline/Lit"
+          }
+        ]
+      }
+    ]
+  }
+}

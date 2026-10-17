@@ -270,6 +270,19 @@ namespace SecretsThatBreathe
                 !empty.IsChildOf(transform.root) && !transform.IsChildOf(empty);
         }
 
+        public void ResetForTesting()
+        {
+            RestoreObject();
+            State = MealState.Ready;
+            introTime = 0f;
+            introFinished = false;
+            wasSeated = false;
+            awaitingRelease = true;
+            ShowBeforeEatingText(false);
+            if (promptCanvas != null) promptCanvas.SetEatVisible(false);
+            if (noodles != null) noodles.gameObject.SetActive(true);
+            if (HasValidEmptyCup()) emptyCupModel.SetActive(false);
+        }
         public void CancelEating()
         {
             ShowBeforeEatingText(false);

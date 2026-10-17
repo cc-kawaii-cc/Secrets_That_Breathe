@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace SecretsThatBreathe
@@ -43,6 +43,7 @@ namespace SecretsThatBreathe
         }
         public bool CanInteract()
         {
+            if (ItemInspectionInteraction.IsBusy(gameObject.scene)) return false;
             if (DocumentSearchSequence.BlocksRoomInteractions(gameObject.scene)) { interactionStatus = "Document search in progress"; return false; }
             if (PhoneCallInteraction.IsBusy(gameObject.scene)) { interactionStatus = "Player controls locked"; return false; }
             if (InteractionLocked) { interactionStatus = "Interaction locked after aunt dialogue"; return false; }

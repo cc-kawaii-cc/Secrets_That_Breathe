@@ -68,6 +68,10 @@ namespace SecretsThatBreathe
             if (!intro.SkippedForTesting)
                 yield return new WaitForSeconds(afterFlashlightHintDelay);
             if (skipIncoming) yield break;
+            yield return BeginRinging();
+        }
+        private IEnumerator BeginRinging()
+        {
             ringing = true;
             ringStarted = Time.time;
             if (ringSource.clip != null) ringSource.Play();
@@ -205,12 +209,24 @@ namespace SecretsThatBreathe
             if (intro != null) intro.SkipToPhoneCall();
             ringing = false;
             HasAnswered = true;
+            callingBack = false;
+            thoughtRemaining = 0f;
             if (handsetPickup != null) handsetPickup.Restore();
             if (ringSource != null) ringSource.Stop();
             if (effectSource != null) effectSource.Stop();
             if (indicatorLight != null) indicatorLight.enabled = false;
             if (dialogueUI != null) dialogueUI.Hide();
             ReleaseMovement();
+        }
+        public void RestartIncomingCallForTesting()
+        {
+            SkipToDocumentSearch();
+            ringSource = ResolveSource(ringSource, "PhoneRingAudio", 1f);
+            ringSource.loop = true;
+            effectSource = ResolveSource(effectSource, "PhoneButtonAudio", 0f);
+            skipIncoming = false;
+            HasAnswered = false;
+            StartCoroutine(BeginRinging());
         }
         private void ReleaseMovement()
         {

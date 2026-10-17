@@ -7,6 +7,7 @@ namespace StarterAssets
     public interface IPhoneFlashlightPresentation
     {
         bool CanToggle { get; }
+        void OnFlashlightActivationRequested();
         void ShowOn();
         void ShowOff();
         void HidePhone();
@@ -15,7 +16,7 @@ namespace StarterAssets
     public class FirstPersonFlashlight : MonoBehaviour
     {
         [Header("Flashlight")]
-        [Tooltip("The Spot Light child of PlayerCameraRoot. Edit color, intensity, range, angle, and cookie on the Light itself.")]
+        [Tooltip("PhoneFlashlightView assigns HeldPhone/FlashlightAnchor when the phone is created. Edit that light in the phone prefab.")]
         [SerializeField] private Light flashlightSource;
         [SerializeField] private bool startOn;
 
@@ -26,6 +27,13 @@ namespace StarterAssets
         private Coroutine phoneTransition;
         private IPhoneFlashlightPresentation Phone => phonePresentation as IPhoneFlashlightPresentation;
         public void ConfigurePhone(MonoBehaviour presentation) { phonePresentation = presentation; }
+        public void ConfigureLightSource(Light source)
+        {
+            if (source == null) return;
+            if (flashlightSource != null && flashlightSource != source) flashlightSource.enabled = false;
+            flashlightSource = source;
+            flashlightSource.enabled = isOn;
+        }
 
         [Header("Input")]
         [SerializeField] private Key toggleKey = Key.F;
@@ -107,6 +115,7 @@ namespace StarterAssets
                 }
                 else
                 {
+                    Phone.OnFlashlightActivationRequested();
                     Phone.ShowOff();
                     phoneTransition = StartCoroutine(OpenPhone());
                 }

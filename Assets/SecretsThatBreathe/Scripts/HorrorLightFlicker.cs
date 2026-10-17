@@ -20,6 +20,10 @@ namespace SecretsThatBreathe
         public bool flickerEmission = true;
         [Tooltip("Use this material on the glowing tubes during each interruption. Leave empty to only dim emission.")]
         public Material offMaterial;
+        [Header("Flicker sound")]
+        [Tooltip("Assign the clip and adjust volume, pitch and audible distance on the FlickerAudio child. Plays once per flicker burst.")]
+        public AudioSource flickerAudioSource;
+        [Min(0f)] public float startupSoundDelay = 2f;
 
         private static readonly int Emission = Shader.PropertyToID("_EmissionColor");
         private float[] intensities;
@@ -66,7 +70,14 @@ namespace SecretsThatBreathe
                         slots.Add(new EmissionSlot { renderer = renderer, index = i, emission = emission, litMaterial = material, original = original, working = working });
                     }
                 }
+            StartCoroutine(PlayStartupSound());
             routine = StartCoroutine(Flicker());
+        }
+
+        private IEnumerator PlayStartupSound()
+        {
+            yield return new WaitForSeconds(Mathf.Max(0f, startupSoundDelay));
+            PlayFlickerSound();
         }
 
         private IEnumerator Flicker()
@@ -76,6 +87,7 @@ namespace SecretsThatBreathe
                 yield return new WaitForSeconds(Sample(quietInterval));
                 int minimum = Mathf.Clamp(interruptions.x, 1, 10);
                 int count = Random.Range(minimum, Mathf.Clamp(interruptions.y, minimum, 10) + 1);
+                PlayFlickerSound();
                 for (int i = 0; i < count; i++)
                 {
                     SetBrightness(dimBrightness);
@@ -84,6 +96,12 @@ namespace SecretsThatBreathe
                     if (i + 1 < count) yield return new WaitForSeconds(Sample(litDuration));
                 }
             }
+        }
+
+        private void PlayFlickerSound()
+        {
+            if (flickerAudioSource != null && flickerAudioSource.clip != null)
+                flickerAudioSource.PlayOneShot(flickerAudioSource.clip);
         }
 
         private static float Sample(Vector2 range)
@@ -135,6 +153,8 @@ namespace SecretsThatBreathe
 
         private void OnDisable()
         {
+            StopAllCoroutines();
+            if (flickerAudioSource != null) flickerAudioSource.Stop();
             if (routine != null) StopCoroutine(routine);
             routine = null;
             if (intensities != null)

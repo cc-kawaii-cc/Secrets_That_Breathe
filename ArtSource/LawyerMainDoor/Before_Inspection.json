@@ -1,0 +1,1671 @@
+{
+  "scene": "Assets/Tonpalm/Lawyer Room.unity",
+  "sceneName": "Lawyer Room",
+  "dirtyBefore": false,
+  "dirtyAfter": false,
+  "selection": [
+    {
+      "name": "Main Door",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-1457596038-0"
+    }
+  ],
+  "door": {
+    "name": "Main Door",
+    "path": "Object Can Interact/Main Door",
+    "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-1457596038-0",
+    "instanceId": 181432,
+    "layer": 0,
+    "active": true,
+    "staticFlags": 2147483647,
+    "localPosition": [
+      1.16,
+      1.251,
+      15.921
+    ],
+    "localRotation": [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "localScale": [
+      2.0,
+      2.5,
+      0.1
+    ],
+    "worldPosition": [
+      1.95158,
+      1.371,
+      10.01302
+    ],
+    "worldRotation": [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "lossyScale": [
+      2.0,
+      2.5,
+      0.1
+    ],
+    "components": [
+      {
+        "type": "UnityEngine.Transform",
+        "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-1457596042-0",
+        "instanceId": 181440,
+        "json": "{\"Transform\":{\"serializedVersion\":\"2\",\"m_LocalRotation\":{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":1.0},\"m_LocalPosition\":{\"x\":1.159999966621399,\"y\":1.2510000467300416,\"z\":15.920999526977539},\"m_LocalScale\":{\"x\":2.0,\"y\":2.5,\"z\":0.10000000149011612},\"m_ConstrainProportionsScale\":false,\"m_LocalEulerAnglesHint\":{\"x\":0.0,\"y\":0.0,\"z\":0.0}}}"
+      },
+      {
+        "type": "UnityEngine.MeshFilter",
+        "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-1457596041-0",
+        "instanceId": 181438,
+        "json": "{\"MeshFilter\":{\"m_Mesh\":{\"fileID\":10202,\"guid\":\"0000000000000000e000000000000000\",\"type\":0}}}"
+      },
+      {
+        "type": "UnityEngine.MeshRenderer",
+        "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-1457596040-0",
+        "instanceId": 181436,
+        "json": "{\"MeshRenderer\":{\"m_Enabled\":true,\"m_CastShadows\":1,\"m_ReceiveShadows\":true,\"m_DynamicOccludee\":true,\"m_StaticShadowCaster\":false,\"m_MotionVectors\":1,\"m_LightProbeUsage\":1,\"m_ReflectionProbeUsage\":1,\"m_RayTracingMode\":2,\"m_RayTraceProcedural\":false,\"m_RayTracingAccelStructBuildFlagsOverride\":false,\"m_RayTracingAccelStructBuildFlags\":1,\"m_SmallMeshCulling\":true,\"m_ForceMeshLod\":-1,\"m_MeshLodSelectionBias\":0.0,\"m_RenderingLayerMask\":1,\"m_RendererPriority\":0,\"m_Materials\":[{\"fileID\":2100000,\"guid\":\"cdb516d09b3fbd14ca2fd52d7f7bf874\",\"type\":2}],\"m_StaticBatchInfo\":{\"firstSubMesh\":0,\"subMeshCount\":0},\"m_StaticBatchRoot\":{\"instanceID\":0},\"m_ProbeAnchor\":{\"instanceID\":0},\"m_LightProbeVolumeOverride\":{\"instanceID\":0},\"m_ScaleInLightmap\":1.0,\"m_ReceiveGI\":1,\"m_PreserveUVs\":false,\"m_IgnoreNormalsForChartDetection\":false,\"m_ImportantGI\":false,\"m_StitchLightmapSeams\":true,\"m_SelectedEditorRenderState\":3,\"m_MinimumChartSize\":4,\"m_AutoUVMaxDistance\":0.5,\"m_AutoUVMaxAngle\":89.0,\"m_LightmapParameters\":{\"instanceID\":0},\"m_GlobalIlluminationMeshLod\":0,\"m_SortingLayerID\":0,\"m_SortingLayer\":0,\"m_SortingOrder\":0,\"m_MaskInteraction\":0,\"m_AdditionalVertexStreams\":{\"instanceID\":0}}}"
+      },
+      {
+        "type": "UnityEngine.BoxCollider",
+        "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-1457596039-0",
+        "instanceId": 181434,
+        "json": "{\"BoxCollider\":{\"m_Material\":{\"instanceID\":0},\"m_IncludeLayers\":{\"serializedVersion\":\"2\",\"m_Bits\":0},\"m_ExcludeLayers\":{\"serializedVersion\":\"2\",\"m_Bits\":0},\"m_LayerOverridePriority\":0,\"m_IsTrigger\":false,\"m_ProvidesContacts\":false,\"m_Enabled\":true,\"serializedVersion\":\"3\",\"m_Size\":{\"x\":1.0,\"y\":1.0,\"z\":1.0},\"m_Center\":{\"x\":0.0,\"y\":0.0,\"z\":0.0}}}"
+      }
+    ],
+    "descendants": [
+      {
+        "name": "LookTarget",
+        "path": "Object Can Interact/Main Door/LookTarget",
+        "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-1498843666-0",
+        "localPosition": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "localRotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "componentTypes": [
+          "UnityEngine.Transform",
+          "UnityEngine.BoxCollider"
+        ]
+      }
+    ],
+    "renderers": [
+      {
+        "name": "Main Door",
+        "enabled": true,
+        "boundsCenter": [
+          1.95158,
+          1.371,
+          10.01302
+        ],
+        "boundsSize": [
+          2.0,
+          2.5,
+          0.1
+        ],
+        "materials": [
+          {
+            "name": "New Material 1",
+            "asset": "Assets/Tonpalm/Prefab Lawyer Roomn/New Material 1.mat",
+            "shader": "Universal Render Pipeline/Lit"
+          }
+        ]
+      }
+    ]
+  },
+  "nearby": [
+    {
+      "path": "Object Can Interact/Main Door",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-1457596038-0",
+      "boundsCenter": [
+        1.95158,
+        1.371,
+        10.01302
+      ],
+      "boundsSize": [
+        2.0,
+        2.5,
+        0.1
+      ],
+      "materials": [
+        {
+          "name": "New Material 1",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/Tonpalm/Prefab Lawyer Roomn/New Material 1.mat"
+        }
+      ]
+    },
+    {
+      "path": "Room/Wall/Wall 5",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-1662914915-0",
+      "boundsCenter": [
+        1.94009,
+        1.62,
+        10.05
+      ],
+      "boundsSize": [
+        9.0,
+        4.0,
+        0.1
+      ],
+      "materials": [
+        {
+          "name": "พื้นผิวผนังปูนสีขาวละเอียด",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/Tonpalm/Assets Lawyer Room/พื้นผิวผนังปูนสีขาวละเอียด.mat"
+        }
+      ]
+    },
+    {
+      "path": "Room/Window/window/Cube.001",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-2159320869700325433-1674449099",
+      "boundsCenter": [
+        3.873486,
+        1.463,
+        9.99397
+      ],
+      "boundsSize": [
+        1.0,
+        1.5,
+        0.08
+      ],
+      "materials": [
+        {
+          "name": "Material.004",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/window/Materials/Material.004.mat"
+        },
+        {
+          "name": "Material.003",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/window/Materials/Material.003.mat"
+        },
+        {
+          "name": "Material.005",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/window/Materials/Material.005.mat"
+        }
+      ]
+    },
+    {
+      "path": "Room/Window/window/Cube",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-4169033100447744442-1674449099",
+      "boundsCenter": [
+        0.00408983231,
+        1.463,
+        9.99397
+      ],
+      "boundsSize": [
+        1.0,
+        1.5,
+        0.08
+      ],
+      "materials": [
+        {
+          "name": "Material.001",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/window/Materials/Material.001.mat"
+        },
+        {
+          "name": "Material",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/window/Materials/Material.mat"
+        },
+        {
+          "name": "Material.002",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/window/Materials/Material.002.mat"
+        }
+      ]
+    },
+    {
+      "path": "Room/Wall/Main Floor 2",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-584897565-0",
+      "boundsCenter": [
+        1.93009,
+        0.120000005,
+        8.056567
+      ],
+      "boundsSize": [
+        9.0,
+        2.220446E-16,
+        4.11313438
+      ],
+      "materials": [
+        {
+          "name": "พื้นหินขัดโทนอบอุ่นแบบไร้รอยต่อ",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/Tonpalm/Assets Lawyer Room/พื้นหินขัดโทนอบอุ่นแบบไร้รอยต่อ.mat"
+        }
+      ]
+    },
+    {
+      "path": "Room/Lamp/LouveredLight_T8_2x36W (3)/Fixture/Reflector_Chrome",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-4273652330240362159-1158263859",
+      "boundsCenter": [
+        3.81,
+        3.45520735,
+        8.05
+      ],
+      "boundsSize": [
+        0.28,
+        0.06300013,
+        1.15499985
+      ],
+      "materials": [
+        {
+          "name": "Reflector_Chrome",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/SecretsThatBreathe/Props/LouveredLight/Materials/Reflector_Chrome.mat"
+        }
+      ]
+    },
+    {
+      "path": "Room/Lamp/LouveredLight_T8_2x36W (3)/Fixture/Housing_White",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-294579885626343004-1158263859",
+      "boundsCenter": [
+        3.81,
+        3.460457,
+        8.05
+      ],
+      "boundsSize": [
+        0.319,
+        0.0785001442,
+        1.23999989
+      ],
+      "materials": [
+        {
+          "name": "Housing_White",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/SecretsThatBreathe/Props/LouveredLight/Materials/Housing_White.mat"
+        }
+      ]
+    },
+    {
+      "path": "Room/Lamp/LouveredLight_T8_2x36W (3)/Fixture/Tube_Emission",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-79757033175973508-1158263859",
+      "boundsCenter": [
+        3.81,
+        3.46070719,
+        8.05
+      ],
+      "boundsSize": [
+        0.174,
+        0.0260001775,
+        1.0999999
+      ],
+      "materials": [
+        {
+          "name": "Tube_Emission",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/SecretsThatBreathe/Props/LouveredLight/Materials/Tube_Emission.mat"
+        }
+      ]
+    },
+    {
+      "path": "Room/Lamp/LouveredLight_T8_2x36W (3)/Fixture/Sockets_Ivory",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-1871253880558280150-1158263859",
+      "boundsCenter": [
+        3.81,
+        3.46970725,
+        8.05
+      ],
+      "boundsSize": [
+        0.182,
+        0.0470001325,
+        1.168132
+      ],
+      "materials": [
+        {
+          "name": "Sockets_Ivory",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/SecretsThatBreathe/Props/LouveredLight/Materials/Sockets_Ivory.mat"
+        }
+      ]
+    },
+    {
+      "path": "Room/Lamp/LouveredLight_T8_2x36W_Off (4)/Fixture/Reflector_Chrome",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-6725737724665228198-928134761",
+      "boundsCenter": [
+        -0.08099973,
+        3.45550013,
+        8.05
+      ],
+      "boundsSize": [
+        0.28,
+        0.06300013,
+        1.15499985
+      ],
+      "materials": [
+        {
+          "name": "Reflector_Chrome",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/SecretsThatBreathe/Props/LouveredLight/Materials/Reflector_Chrome.mat"
+        }
+      ]
+    },
+    {
+      "path": "Room/Lamp/LouveredLight_T8_2x36W_Off (4)/Fixture/Housing_White",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-1461166030008426555-928134761",
+      "boundsCenter": [
+        -0.08099973,
+        3.46074986,
+        8.05
+      ],
+      "boundsSize": [
+        0.319,
+        0.0785001442,
+        1.23999989
+      ],
+      "materials": [
+        {
+          "name": "Housing_White",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/SecretsThatBreathe/Props/LouveredLight/Materials/Housing_White.mat"
+        }
+      ]
+    },
+    {
+      "path": "Room/Lamp/LouveredLight_T8_2x36W_Off (4)/Fixture/Tube_Emission",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-4610708588661241122-928134761",
+      "boundsCenter": [
+        -0.08099962,
+        3.461,
+        8.05
+      ],
+      "boundsSize": [
+        0.174,
+        0.0260001775,
+        1.0999999
+      ],
+      "materials": [
+        {
+          "name": "Tube_Off",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/SecretsThatBreathe/Props/LouveredLight/Materials/Tube_Off.mat"
+        }
+      ]
+    },
+    {
+      "path": "Room/Lamp/LouveredLight_T8_2x36W_Off (4)/Fixture/Sockets_Ivory",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-9108124196338839886-928134761",
+      "boundsCenter": [
+        -0.08099961,
+        3.47,
+        8.05
+      ],
+      "boundsSize": [
+        0.182,
+        0.0470001325,
+        1.168132
+      ],
+      "materials": [
+        {
+          "name": "Sockets_Ivory",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/SecretsThatBreathe/Props/LouveredLight/Materials/Sockets_Ivory.mat"
+        }
+      ]
+    },
+    {
+      "path": "Room/Lamp/LouveredLight_T8_2x36W (3)/Fixture/Fasteners",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-6659201172702146031-1158263859",
+      "boundsCenter": [
+        3.678,
+        3.42070723,
+        7.473
+      ],
+      "boundsSize": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "materials": [
+        {
+          "name": "Fasteners",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/SecretsThatBreathe/Props/LouveredLight/Materials/Fasteners.mat"
+        }
+      ]
+    },
+    {
+      "path": "Room/Lamp/LouveredLight_T8_2x36W (3)/Fixture/EndCaps_Aluminium",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-7991310947813723623-1158263859",
+      "boundsCenter": [
+        3.736,
+        3.46070719,
+        7.492
+      ],
+      "boundsSize": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "materials": [
+        {
+          "name": "EndCaps_Aluminium",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/SecretsThatBreathe/Props/LouveredLight/Materials/EndCaps_Aluminium.mat"
+        }
+      ]
+    },
+    {
+      "path": "Room/Lamp/LouveredLight_T8_2x36W_Off (4)/Fixture/EndCaps_Aluminium",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-6011338229174086872-928134761",
+      "boundsCenter": [
+        -0.154999614,
+        3.461,
+        7.492
+      ],
+      "boundsSize": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "materials": [
+        {
+          "name": "EndCaps_Aluminium",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/SecretsThatBreathe/Props/LouveredLight/Materials/EndCaps_Aluminium.mat"
+        }
+      ]
+    },
+    {
+      "path": "Room/Lamp/LouveredLight_T8_2x36W_Off (4)/Fixture/Fasteners",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-1471605285241911049-928134761",
+      "boundsCenter": [
+        -0.2129997,
+        3.421,
+        7.473
+      ],
+      "boundsSize": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "materials": [
+        {
+          "name": "Fasteners",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/SecretsThatBreathe/Props/LouveredLight/Materials/Fasteners.mat"
+        }
+      ]
+    },
+    {
+      "path": "Object Can Interact/Water vending machine/ลูกบาศก์",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-5469505906633131798-1745743667",
+      "boundsCenter": [
+        -0.129874349,
+        1.94243371,
+        6.62795448
+      ],
+      "boundsSize": [
+        0.00324347266,
+        0.466267318,
+        0.26011622
+      ],
+      "materials": [
+        {
+          "name": "วัสดุ.003",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Water vending machine/Materials/วัสดุ.003.mat"
+        }
+      ]
+    },
+    {
+      "path": "Kitchen Room/Kitchen counter (5)",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-4032563294483958006-1903776601",
+      "boundsCenter": [
+        5.95263,
+        0.5591809,
+        9.327
+      ],
+      "boundsSize": [
+        0.780000269,
+        0.8783618,
+        1.30000019
+      ],
+      "materials": [
+        {
+          "name": "Material.002",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Kitchen counter/Materials/Material.002.mat"
+        },
+        {
+          "name": "Material.001",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Kitchen counter/Materials/Material.001.mat"
+        },
+        {
+          "name": "Material",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Kitchen counter/Materials/Material.mat"
+        }
+      ]
+    },
+    {
+      "path": "Kitchen Room/Glass (7)/Cylinder",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-948272221402660688-98095427",
+      "boundsCenter": [
+        4.387,
+        1.90654993,
+        6.41600037
+      ],
+      "boundsSize": [
+        0.173022777,
+        0.146999985,
+        0.172012061
+      ],
+      "materials": [
+        {
+          "name": "Material.002",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Glass/Materials/Material.002.mat"
+        }
+      ]
+    },
+    {
+      "path": "Kitchen Room/Fridge",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-1751248469455919816-1737905385",
+      "boundsCenter": [
+        4.48263,
+        0.98355,
+        6.442888
+      ],
+      "boundsSize": [
+        0.8400003,
+        1.7249999,
+        0.901775
+      ],
+      "materials": [
+        {
+          "name": "Material",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Fridge/Materials/Material.mat"
+        },
+        {
+          "name": "Material.001",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Fridge/Materials/Material.001.mat"
+        },
+        {
+          "name": "Material.002",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Fridge/Materials/Material.002.mat"
+        }
+      ]
+    },
+    {
+      "path": "Kitchen Room/Glass have Coffee (1)/Ceramic_Handle.001",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-1193532497838218390-225669638",
+      "boundsCenter": [
+        5.860999,
+        1.06513,
+        8.013771
+      ],
+      "boundsSize": [
+        0.0399959236,
+        0.09815305,
+        0.04439498
+      ],
+      "materials": [
+        {
+          "name": "Ceramic_White.001",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Glass/Materials/Ceramic_White.001.mat"
+        }
+      ]
+    },
+    {
+      "path": "Kitchen Room/Glass (7)/Ceramic_Handle",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-5568115210592596485-98095427",
+      "boundsCenter": [
+        4.34722757,
+        1.90613,
+        6.34796333
+      ],
+      "boundsSize": [
+        0.0356808156,
+        0.09815305,
+        0.0464093424
+      ],
+      "materials": [
+        {
+          "name": "Ceramic_White",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Glass/Materials/Ceramic_White.mat"
+        }
+      ]
+    },
+    {
+      "path": "Kitchen Room/Glass have Coffee (1)/Cylinder.001",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-6441951783557082810-225669638",
+      "boundsCenter": [
+        5.910602,
+        1.06555,
+        8.075011
+      ],
+      "boundsSize": [
+        0.1775599,
+        0.146999985,
+        0.177145481
+      ],
+      "materials": [
+        {
+          "name": "Material",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Glass/Materials/Material.mat"
+        },
+        {
+          "name": "Material.001",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Glass/Materials/Material.001.mat"
+        }
+      ]
+    },
+    {
+      "path": "Kitchen Room/Glass (6)/Cylinder",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-948272221402660688-1823553044",
+      "boundsCenter": [
+        4.61900043,
+        1.90555,
+        6.445
+      ],
+      "boundsSize": [
+        0.173022777,
+        0.146999985,
+        0.172012061
+      ],
+      "materials": [
+        {
+          "name": "Material.002",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Glass/Materials/Material.002.mat"
+        }
+      ]
+    },
+    {
+      "path": "Object Can Interact/Water vending machine/Cube",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-3959968946326400330-1745743667",
+      "boundsCenter": [
+        -0.7563701,
+        1.5179652,
+        6.42568
+      ],
+      "boundsSize": [
+        1.25265336,
+        2.452317,
+        0.811941564
+      ],
+      "materials": [
+        {
+          "name": "Material",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Water vending machine/Materials/Material.mat"
+        },
+        {
+          "name": "วัสดุ",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Water vending machine/Materials/วัสดุ.mat"
+        },
+        {
+          "name": "วัสดุ.001",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Water vending machine/Materials/วัสดุ.001.mat"
+        }
+      ]
+    },
+    {
+      "path": "Kitchen Room/Glass (6)/Ceramic_Handle",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-5568115210592596485-1823553044",
+      "boundsCenter": [
+        4.579228,
+        1.90513,
+        6.376963
+      ],
+      "boundsSize": [
+        0.0356808156,
+        0.09815305,
+        0.0464093424
+      ],
+      "materials": [
+        {
+          "name": "Ceramic_White",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Glass/Materials/Ceramic_White.mat"
+        }
+      ]
+    },
+    {
+      "path": "Kitchen Room/Kitchen counter (6)",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-4032563294483958006-1733309141",
+      "boundsCenter": [
+        5.95263052,
+        0.559181,
+        8.027
+      ],
+      "boundsSize": [
+        0.780000269,
+        0.8783618,
+        1.30000019
+      ],
+      "materials": [
+        {
+          "name": "Material.002",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Kitchen counter/Materials/Material.002.mat"
+        },
+        {
+          "name": "Material.001",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Kitchen counter/Materials/Material.001.mat"
+        },
+        {
+          "name": "Material",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Kitchen counter/Materials/Material.mat"
+        }
+      ]
+    },
+    {
+      "path": "Kitchen Room/Coffee kettle (2)/MokaPot_Base",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-2869305950835616454-467772841",
+      "boundsCenter": [
+        4.34063,
+        1.9013,
+        6.175
+      ],
+      "boundsSize": [
+        0.222589582,
+        0.1275,
+        0.222589582
+      ],
+      "materials": [
+        {
+          "name": "Material.004",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Coffee kettle/Materials/Material.004.mat"
+        }
+      ]
+    },
+    {
+      "path": "Kitchen Room/Coffee kettle (2)/Cube",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-9143226404501672769-467772841",
+      "boundsCenter": [
+        4.42156839,
+        2.064407,
+        6.250508
+      ],
+      "boundsSize": [
+        0.07124326,
+        0.06227783,
+        0.0684640259
+      ],
+      "materials": [
+        {
+          "name": "Material.001",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Coffee kettle/Materials/Material.001.mat"
+        }
+      ]
+    },
+    {
+      "path": "Kitchen Room/Coffee kettle (2)/MokaPot_Ring",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-5246292186229376709-467772841",
+      "boundsCenter": [
+        4.34063,
+        1.98005,
+        6.175
+      ],
+      "boundsSize": [
+        0.182311475,
+        0.0299999937,
+        0.182311475
+      ],
+      "materials": [
+        {
+          "name": "Material.005",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Coffee kettle/Materials/Material.005.mat"
+        }
+      ]
+    },
+    {
+      "path": "Kitchen Room/Coffee kettle (2)/MokaPot_TopChamber",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-5921083907780636973-467772841",
+      "boundsCenter": [
+        4.34063,
+        2.0588,
+        6.175
+      ],
+      "boundsSize": [
+        0.245908469,
+        0.127500013,
+        0.245908469
+      ],
+      "materials": [
+        {
+          "name": "Material.003",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Coffee kettle/Materials/Material.003.mat"
+        }
+      ]
+    },
+    {
+      "path": "Kitchen Room/Coffee kettle (2)/MokaPot_Lid",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-8440444977959800649-467772841",
+      "boundsCenter": [
+        4.34063,
+        2.13754988,
+        6.175
+      ],
+      "boundsSize": [
+        0.245908469,
+        0.0299999937,
+        0.245908469
+      ],
+      "materials": [
+        {
+          "name": "Material.006",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Coffee kettle/Materials/Material.006.mat"
+        }
+      ]
+    },
+    {
+      "path": "Kitchen Room/Coffee kettle (2)/MokaPot_Knob",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-8771386193228719837-467772841",
+      "boundsCenter": [
+        4.34063,
+        2.16005,
+        6.175
+      ],
+      "boundsSize": [
+        0.0593572259,
+        0.0299999937,
+        0.0593572259
+      ],
+      "materials": [
+        {
+          "name": "Material.007",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Coffee kettle/Materials/Material.007.mat"
+        }
+      ]
+    },
+    {
+      "path": "Kitchen Room/Glass (4)/Ceramic_Handle",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-5568115210592596485-116245049",
+      "boundsCenter": [
+        6.15385771,
+        1.06713,
+        8.092963
+      ],
+      "boundsSize": [
+        0.0356808156,
+        0.09815305,
+        0.0464093424
+      ],
+      "materials": [
+        {
+          "name": "Ceramic_White",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Glass/Materials/Ceramic_White.mat"
+        }
+      ]
+    },
+    {
+      "path": "Kitchen Room/Glass (4)/Cylinder",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-948272221402660688-116245049",
+      "boundsCenter": [
+        6.19363,
+        1.06755,
+        8.161
+      ],
+      "boundsSize": [
+        0.173022777,
+        0.146999985,
+        0.172012061
+      ],
+      "materials": [
+        {
+          "name": "Material.002",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Glass/Materials/Material.002.mat"
+        }
+      ]
+    },
+    {
+      "path": "Kitchen Room/Glass (5)/Cylinder",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-948272221402660688-789524489",
+      "boundsCenter": [
+        4.62563,
+        1.90555,
+        6.256
+      ],
+      "boundsSize": [
+        0.173022777,
+        0.146999985,
+        0.172012061
+      ],
+      "materials": [
+        {
+          "name": "Material.002",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Glass/Materials/Material.002.mat"
+        }
+      ]
+    },
+    {
+      "path": "Kitchen Room/Glass (2)/Ceramic_Handle",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-5568115210592596485-2003461899",
+      "boundsCenter": [
+        6.02885771,
+        1.06713,
+        7.786963
+      ],
+      "boundsSize": [
+        0.0356808156,
+        0.09815305,
+        0.0464093424
+      ],
+      "materials": [
+        {
+          "name": "Ceramic_White",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Glass/Materials/Ceramic_White.mat"
+        }
+      ]
+    },
+    {
+      "path": "Object Can Interact/Water vending machine/ทรงกระบอก",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-3687781344092587263-1745743667",
+      "boundsCenter": [
+        -0.7563701,
+        0.2051984,
+        6.41
+      ],
+      "boundsSize": [
+        0.9614996,
+        0.173216239,
+        0.642991841
+      ],
+      "materials": [
+        {
+          "name": "วัสดุ.002",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Water vending machine/Materials/วัสดุ.002.mat"
+        }
+      ]
+    },
+    {
+      "path": "Kitchen Room/Glass (2)/Cylinder",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-948272221402660688-2003461899",
+      "boundsCenter": [
+        6.06863,
+        1.06755,
+        7.855
+      ],
+      "boundsSize": [
+        0.173022777,
+        0.146999985,
+        0.172012061
+      ],
+      "materials": [
+        {
+          "name": "Material.002",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Glass/Materials/Material.002.mat"
+        }
+      ]
+    },
+    {
+      "path": "Kitchen Room/Glass (5)/Ceramic_Handle",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-5568115210592596485-789524489",
+      "boundsCenter": [
+        4.58585739,
+        1.90513,
+        6.187963
+      ],
+      "boundsSize": [
+        0.0356808156,
+        0.09815305,
+        0.0464093424
+      ],
+      "materials": [
+        {
+          "name": "Ceramic_White",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Glass/Materials/Ceramic_White.mat"
+        }
+      ]
+    },
+    {
+      "path": "Room/Object/Book/Book3 (2)",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-3755583697969556604-1519524200",
+      "boundsCenter": [
+        -0.123894453,
+        1.7601701,
+        5.83361959
+      ],
+      "boundsSize": [
+        0.294000059,
+        0.4135574,
+        0.123893306
+      ],
+      "materials": [
+        {
+          "name": "Material.013",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Book/Materials/Material.013.mat"
+        },
+        {
+          "name": "Material.012",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Book/Materials/Material.012.mat"
+        }
+      ]
+    },
+    {
+      "path": "Kitchen Room/Glass (3)/Ceramic_Handle",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-5568115210592596485-1407708326",
+      "boundsCenter": [
+        6.16085768,
+        1.06713,
+        7.934963
+      ],
+      "boundsSize": [
+        0.0356808156,
+        0.09815305,
+        0.0464093424
+      ],
+      "materials": [
+        {
+          "name": "Ceramic_White",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Glass/Materials/Ceramic_White.mat"
+        }
+      ]
+    },
+    {
+      "path": "Kitchen Room/Glass (3)/Cylinder",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-948272221402660688-1407708326",
+      "boundsCenter": [
+        6.20063,
+        1.06755,
+        8.003
+      ],
+      "boundsSize": [
+        0.173022777,
+        0.146999985,
+        0.172012061
+      ],
+      "materials": [
+        {
+          "name": "Material.002",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Glass/Materials/Material.002.mat"
+        }
+      ]
+    },
+    {
+      "path": "Room/Object/Book/Book2 (2)",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-2686619311490861369-1804331915",
+      "boundsCenter": [
+        -0.161498308,
+        1.69917,
+        5.78762
+      ],
+      "boundsSize": [
+        0.20720008,
+        0.293116152,
+        0.09077724
+      ],
+      "materials": [
+        {
+          "name": "Material.011",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Book/Materials/Material.011.mat"
+        },
+        {
+          "name": "Material.010",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Book/Materials/Material.010.mat"
+        }
+      ]
+    },
+    {
+      "path": "Room/Object/Book/Book1 (2)",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-1572930906047053010-461467563",
+      "boundsCenter": [
+        -0.178737938,
+        1.65517008,
+        5.75162
+      ],
+      "boundsSize": [
+        0.14700003,
+        0.20685041,
+        0.0652131662
+      ],
+      "materials": [
+        {
+          "name": "Material.002",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Book/Materials/Material.002.mat"
+        },
+        {
+          "name": "Material.001",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Book/Materials/Material.001.mat"
+        }
+      ]
+    },
+    {
+      "path": "Kitchen Room/Glass (1)/Ceramic_Handle",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-5568115210592596485-396160235",
+      "boundsCenter": [
+        6.14585733,
+        1.06713,
+        7.681963
+      ],
+      "boundsSize": [
+        0.0356808156,
+        0.09815305,
+        0.0464093424
+      ],
+      "materials": [
+        {
+          "name": "Ceramic_White",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Glass/Materials/Ceramic_White.mat"
+        }
+      ]
+    },
+    {
+      "path": "Kitchen Room/Glass (1)/Cylinder",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-948272221402660688-396160235",
+      "boundsCenter": [
+        6.18563,
+        1.06755,
+        7.75
+      ],
+      "boundsSize": [
+        0.173022777,
+        0.146999985,
+        0.172012061
+      ],
+      "materials": [
+        {
+          "name": "Material.002",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Glass/Materials/Material.002.mat"
+        }
+      ]
+    },
+    {
+      "path": "Room/KraftEnvelopes/KraftEnvelopes_MessyStack (6)",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-4898066567226993685-2029579882",
+      "boundsCenter": [
+        0.213224441,
+        1.580112,
+        5.47534275
+      ],
+      "boundsSize": [
+        0.3875576,
+        0.0556999967,
+        0.5051174
+      ],
+      "materials": [
+        {
+          "name": "KraftPaper",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/SecretsThatBreathe/Props/KraftEnvelopes/Materials/KraftPaper.mat"
+        }
+      ]
+    },
+    {
+      "path": "Kitchen Room/Coffee kettle (1)/MokaPot_Knob",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-8771386193228719837-1791712493",
+      "boundsCenter": [
+        6.16563,
+        1.34104991,
+        7.558
+      ],
+      "boundsSize": [
+        0.0593572259,
+        0.0299999937,
+        0.0593572259
+      ],
+      "materials": [
+        {
+          "name": "Material.007",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Coffee kettle/Materials/Material.007.mat"
+        }
+      ]
+    },
+    {
+      "path": "Kitchen Room/Coffee kettle (1)/MokaPot_Lid",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-8440444977959800649-1791712493",
+      "boundsCenter": [
+        6.16563,
+        1.31854987,
+        7.558
+      ],
+      "boundsSize": [
+        0.245908469,
+        0.0299999937,
+        0.245908469
+      ],
+      "materials": [
+        {
+          "name": "Material.006",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Coffee kettle/Materials/Material.006.mat"
+        }
+      ]
+    },
+    {
+      "path": "Kitchen Room/Coffee kettle (1)/MokaPot_TopChamber",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-5921083907780636973-1791712493",
+      "boundsCenter": [
+        6.16563,
+        1.2398,
+        7.558
+      ],
+      "boundsSize": [
+        0.245908469,
+        0.127500013,
+        0.245908469
+      ],
+      "materials": [
+        {
+          "name": "Material.003",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Coffee kettle/Materials/Material.003.mat"
+        }
+      ]
+    },
+    {
+      "path": "Kitchen Room/Coffee kettle (1)/MokaPot_Ring",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-5246292186229376709-1791712493",
+      "boundsCenter": [
+        6.16563,
+        1.16105,
+        7.558
+      ],
+      "boundsSize": [
+        0.182311475,
+        0.0299999937,
+        0.182311475
+      ],
+      "materials": [
+        {
+          "name": "Material.005",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Coffee kettle/Materials/Material.005.mat"
+        }
+      ]
+    },
+    {
+      "path": "Kitchen Room/Coffee kettle (1)/MokaPot_Base",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-2869305950835616454-1791712493",
+      "boundsCenter": [
+        6.16563,
+        1.0823,
+        7.558
+      ],
+      "boundsSize": [
+        0.222589582,
+        0.1275,
+        0.222589582
+      ],
+      "materials": [
+        {
+          "name": "Material.004",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Coffee kettle/Materials/Material.004.mat"
+        }
+      ]
+    },
+    {
+      "path": "Room/Cabinet/3-tier cabinet (22)/Cube.001",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-8820990438319669236-1467737265",
+      "boundsCenter": [
+        0.112624526,
+        0.847420931,
+        5.499586
+      ],
+      "boundsSize": [
+        0.757677,
+        1.40968239,
+        0.7756235
+      ],
+      "materials": [
+        {
+          "name": "Material.011",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/All model nine/NINE/Perfeb/Office_1/โต๊ะรับแจ้งความใหม่1_6_69.fbx"
+        }
+      ]
+    },
+    {
+      "path": "Kitchen Room/Coffee kettle (1)/Cube",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-9143226404501672769-1791712493",
+      "boundsCenter": [
+        6.246568,
+        1.2454071,
+        7.63350773
+      ],
+      "boundsSize": [
+        0.07124326,
+        0.06227783,
+        0.0684640259
+      ],
+      "materials": [
+        {
+          "name": "Material.001",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Coffee kettle/Materials/Material.001.mat"
+        }
+      ]
+    },
+    {
+      "path": "Room/Wall/Wall 6",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-1765862533-0",
+      "boundsCenter": [
+        4.90008974,
+        1.62,
+        5.95
+      ],
+      "boundsSize": [
+        3.0,
+        4.0,
+        0.1
+      ],
+      "materials": [
+        {
+          "name": "พื้นผิวผนังปูนสีขาวละเอียด",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/Tonpalm/Assets Lawyer Room/พื้นผิวผนังปูนสีขาวละเอียด.mat"
+        }
+      ]
+    },
+    {
+      "path": "Object Can Interact/microwave",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-1489429658238524469-1051289728",
+      "boundsCenter": [
+        6.015145,
+        1.20556176,
+        7.05550146
+      ],
+      "boundsSize": [
+        0.443618983,
+        0.4144,
+        0.6572133
+      ],
+      "materials": [
+        {
+          "name": "วัสดุ",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/microwave/Materials/วัสดุ.mat"
+        },
+        {
+          "name": "Material.001",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/microwave/Materials/Material.001.mat"
+        },
+        {
+          "name": "Material.002",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/microwave/Materials/Material.002.mat"
+        }
+      ]
+    },
+    {
+      "path": "Room/Wall/Wall 6 (1)",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-1976930271-0",
+      "boundsCenter": [
+        -1.05990994,
+        1.62,
+        5.94596958
+      ],
+      "boundsSize": [
+        3.0,
+        4.0,
+        0.1
+      ],
+      "materials": [
+        {
+          "name": "พื้นผิวผนังปูนสีขาวละเอียด",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/Tonpalm/Assets Lawyer Room/พื้นผิวผนังปูนสีขาวละเอียด.mat"
+        }
+      ]
+    },
+    {
+      "path": "Room/DocumentBinder/DocumentBinder (68)",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-8964828604038684524-1008149063",
+      "boundsCenter": [
+        -0.6878222,
+        1.63949943,
+        5.6301403
+      ],
+      "boundsSize": [
+        0.489669532,
+        0.192969352,
+        0.46646744
+      ],
+      "materials": [
+        {
+          "name": "Binder_Leather",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/SecretsThatBreathe/Props/DocumentBinder/Materials/Binder_Leather.mat"
+        },
+        {
+          "name": "Binder_Edge",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/SecretsThatBreathe/Props/DocumentBinder/Materials/Binder_Edge.mat"
+        }
+      ]
+    },
+    {
+      "path": "Room/DocumentBinder/DocumentBinder (67)",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-8964828604038684524-1397866819",
+      "boundsCenter": [
+        -0.7045015,
+        1.58036792,
+        5.62147236
+      ],
+      "boundsSize": [
+        0.488386154,
+        0.128181458,
+        0.462641269
+      ],
+      "materials": [
+        {
+          "name": "Binder_Leather",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/SecretsThatBreathe/Props/DocumentBinder/Materials/Binder_Leather.mat"
+        },
+        {
+          "name": "Binder_Edge",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/SecretsThatBreathe/Props/DocumentBinder/Materials/Binder_Edge.mat"
+        }
+      ]
+    },
+    {
+      "path": "Room/Cabinet/3-tier cabinet (21)/Cube.001",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-8820990438319669236-1151243635",
+      "boundsCenter": [
+        -0.6483754,
+        0.847420931,
+        5.499586
+      ],
+      "boundsSize": [
+        0.757677,
+        1.40968239,
+        0.7756235
+      ],
+      "materials": [
+        {
+          "name": "Material.011",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/All model nine/NINE/Perfeb/Office_1/โต๊ะรับแจ้งความใหม่1_6_69.fbx"
+        }
+      ]
+    },
+    {
+      "path": "Kitchen Room/Kitchen counter (7)",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-4032563294483958006-1464693555",
+      "boundsCenter": [
+        5.952631,
+        0.559181,
+        6.727
+      ],
+      "boundsSize": [
+        0.780000269,
+        0.8783618,
+        1.30000019
+      ],
+      "materials": [
+        {
+          "name": "Material.002",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Kitchen counter/Materials/Material.002.mat"
+        },
+        {
+          "name": "Material.001",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Kitchen counter/Materials/Material.001.mat"
+        },
+        {
+          "name": "Material",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Kitchen counter/Materials/Material.mat"
+        }
+      ]
+    },
+    {
+      "path": "Room/Object/BookShelf/Bookshelf (12)",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-2893958447329043755-2118913186",
+      "boundsCenter": [
+        5.04685974,
+        1.44,
+        5.61849
+      ],
+      "boundsSize": [
+        2.55,
+        2.65999985,
+        0.559999943
+      ],
+      "materials": [
+        {
+          "name": "Material.001",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/GUY/Model/Bookshelf/Materials/Material.001.mat"
+        }
+      ]
+    },
+    {
+      "path": "Top",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-1201029276-0",
+      "boundsCenter": [
+        1.89009,
+        3.508,
+        0.0
+      ],
+      "boundsSize": [
+        9.0,
+        0.02,
+        20.0
+      ],
+      "materials": [
+        {
+          "name": "ฝ้าเพดานอะคูสติกแบบตารางเรียบสะอาด",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/Tonpalm/Assets Lawyer Room/ฝ้าเพดานอะคูสติกแบบตารางเรียบสะอาด.mat"
+        }
+      ]
+    },
+    {
+      "path": "Room/Wall/Wall 2",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-502105417-0",
+      "boundsCenter": [
+        -2.50991,
+        1.62,
+        0.100000381
+      ],
+      "boundsSize": [
+        0.1,
+        4.0,
+        20.0
+      ],
+      "materials": [
+        {
+          "name": "พื้นผิวผนังปูนสีขาวละเอียด",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/Tonpalm/Assets Lawyer Room/พื้นผิวผนังปูนสีขาวละเอียด.mat"
+        }
+      ]
+    },
+    {
+      "path": "Room/Wall/Wall 3",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-781191645-0",
+      "boundsCenter": [
+        6.39009,
+        1.62,
+        0.0
+      ],
+      "boundsSize": [
+        0.1,
+        4.0,
+        20.0
+      ],
+      "materials": [
+        {
+          "name": "พื้นผิวผนังปูนสีขาวละเอียด",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/Tonpalm/Assets Lawyer Room/พื้นผิวผนังปูนสีขาวละเอียด.mat"
+        }
+      ]
+    },
+    {
+      "path": "Room/Wall/Main Floor",
+      "id": "GlobalObjectId_V1-2-e5904f7a76950954599b73bc52576fb7-1921542219-0",
+      "boundsCenter": [
+        1.94009,
+        0.120000005,
+        -2.0
+      ],
+      "boundsSize": [
+        9.0,
+        2.220446E-16,
+        16.0
+      ],
+      "materials": [
+        {
+          "name": "Floor_Lawyer_Room",
+          "shader": "Universal Render Pipeline/Lit",
+          "asset": "Assets/Tonpalm/Assets Lawyer Room/Floor_Lawyer_Room.mat"
+        }
+      ]
+    }
+  ],
+  "backup": "D:\\Unity\\ปี3\\Secrets_That_Breathe\\ArtSource/LawyerMainDoor\\LawyerRoom_Before_MainDoor.unity",
+  "beforeImage": "D:\\Unity\\ปี3\\Secrets_That_Breathe\\ArtSource/LawyerMainDoor\\Before_InScene.png"
+}

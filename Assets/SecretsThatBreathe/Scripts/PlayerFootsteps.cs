@@ -59,7 +59,7 @@ namespace SecretsThatBreathe
             float sprintStride = Mathf.Clamp(sprintStepDistance, .1f, walkStride);
             // Keep the cadence tied to real travel, including acceleration after Shift.
             float sprintBlend = 0f;
-            if (input != null && input.sprint)
+            if (input != null && input.sprint && (movement == null || movement.EnableSprint))
             {
                 float speed = distance / Mathf.Max(.00001f, Time.deltaTime);
                 sprintBlend = movement != null && movement.SprintSpeed > movement.MoveSpeed

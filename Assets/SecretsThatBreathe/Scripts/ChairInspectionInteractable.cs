@@ -20,6 +20,7 @@ namespace SecretsThatBreathe
             messageAssignmentVersion = 1;
         }
         public bool HasInteracted { get; private set; }
+        public void ResetForTesting() => HasInteracted = false;
 
         private void Awake()
         {

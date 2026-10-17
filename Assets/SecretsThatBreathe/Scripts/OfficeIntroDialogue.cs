@@ -19,7 +19,7 @@ namespace SecretsThatBreathe
         [Min(0f)] public float afterEveryoneLeftDelay = 10f;
         [Min(0.1f)] public float darkRoomLineDuration = 3f;
         [Min(0f)] public float beforeFlashlightHintDelay = 2f;
-        [Min(0.1f)] public float flashlightHintDuration = 3f;
+        [HideInInspector] public float flashlightHintDuration = 3f;
         [Header("Testing shortcut")]
         public bool enableF1Skip = true;
         public GameObject testSkipHint;
@@ -27,6 +27,7 @@ namespace SecretsThatBreathe
         public bool HasStarted { get; private set; }
         public bool SkippedForTesting { get; private set; }
         public bool FlashlightUnlocked { get; private set; }
+        private bool waitingForFlashlightPress;
         private static readonly Dictionary<int, OfficeIntroDialogue> Instances = new Dictionary<int, OfficeIntroDialogue>();
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -60,6 +61,14 @@ namespace SecretsThatBreathe
             IsBlocking(scene);
             return Instances.TryGetValue(scene.handle, out var intro) && intro != null && !intro.FlashlightUnlocked;
         }
+        public static void NotifyFlashlightActivationRequested(Scene scene)
+        {
+            if (!Instances.TryGetValue(scene.handle, out var intro) || intro == null || !intro.waitingForFlashlightPress) return;
+            intro.waitingForFlashlightPress = false;
+            if (intro.lines != null && intro.lines.Length > 4 && intro.lines[4] != null)
+                intro.lines[4].transform.parent.gameObject.SetActive(false);
+            intro.IsFinished = true;
+        }
 
         public void BeginFromTrigger()
         {
@@ -70,21 +79,24 @@ namespace SecretsThatBreathe
 
         private void Update()
         {
-            if (testSkipHint != null) testSkipHint.SetActive(enableF1Skip && !IsFinished);
-            if (enableF1Skip && !IsFinished && Time.timeScale > 0f && Keyboard.current != null
-                && Keyboard.current.f1Key.wasPressedThisFrame) SkipToPhoneCall();
+            if (testSkipHint != null) testSkipHint.SetActive(enableF1Skip);
+            if (enableF1Skip && Time.timeScale > 0f && Keyboard.current != null
+                && Keyboard.current.f1Key.wasPressedThisFrame)
+            {
+                if (!DocumentSearchSequence.TrySkipToIncomingCall(gameObject.scene)) SkipToPhoneCall();
+            }
         }
 
         public void SkipToPhoneCall()
         {
-            if (IsFinished) return;
             SkippedForTesting = true;
+            waitingForFlashlightPress = false;
             StopAllCoroutines();
             HideLines();
             HasStarted = true;
             FlashlightUnlocked = true;
             IsFinished = true; // The phone's existing waiting routine starts its ringing sequence.
-            if (testSkipHint != null) testSkipHint.SetActive(false);
+            if (testSkipHint != null) testSkipHint.SetActive(enableF1Skip);
         }
 
         private IEnumerator PlayDialogue()
@@ -93,10 +105,17 @@ namespace SecretsThatBreathe
             if (lines != null)
                 for (int i = 0; i < lines.Length; i++)
                 {
-                    if (i == 4) FlashlightUnlocked = true;
+                    if (i == 4)
+                    {
+                        FlashlightUnlocked = true;
+                        waitingForFlashlightPress = true;
+                    }
                     if (lines[i] != null) lines[i].transform.parent.gameObject.SetActive(true);
-                    float duration = i == 3 ? darkRoomLineDuration : i == 4 ? flashlightHintDuration : lineDuration;
-                    yield return new WaitForSeconds(duration);
+                    if (i == 4)
+                    {
+                        while (waitingForFlashlightPress) yield return null;
+                    }
+                    else yield return new WaitForSeconds(i == 3 ? darkRoomLineDuration : lineDuration);
                     if (lines[i] != null) lines[i].transform.parent.gameObject.SetActive(false);
                     if (i + 1 < lines.Length)
                         yield return new WaitForSeconds(i == 2 ? afterEveryoneLeftDelay

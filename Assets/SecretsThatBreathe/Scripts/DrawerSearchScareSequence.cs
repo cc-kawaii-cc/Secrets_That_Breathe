@@ -476,9 +476,6 @@ namespace SecretsThatBreathe
         {
             if (Stage != StoryStage.AuntDialogue || DialogueLineIndex != 5 || !moneyDecision.HasRefused || sequence != null) return;
             player.LockChairInteractions();
-            foreach (var root in gameObject.scene.GetRootGameObjects())
-                foreach (var machine in root.GetComponentsInChildren<WaterVendingMachineInteraction>(true))
-                    machine.LockInteraction();
             HideAllText();
             Stage = StoryStage.JumpScare;
             sequence = StartCoroutine(ReturnAfterDialogue());
@@ -620,6 +617,18 @@ namespace SecretsThatBreathe
             if (npcColliders == null) return;
             for (int i = 0; i < npcColliders.Length; i++) if (npcColliders[i] != null) npcColliders[i].enabled = npcColliderStates[i];
             npcColliders = null;
+        }
+        public void ResetForTesting()
+        {
+            CancelSequence();
+            Stage = StoryStage.WaitingForMeal;
+            auntDismissed = false;
+            if (npcCaptured && auntObject != null)
+            {
+                auntObject.transform.SetPositionAndRotation(npcPosition, npcRotation);
+                auntObject.SetActive(hideAuntUntilSearch ? false : oldNpcActive);
+            }
+            if (scareAudioSource != null) scareAudioSource.Stop();
         }
         public void CancelSequence()
         {

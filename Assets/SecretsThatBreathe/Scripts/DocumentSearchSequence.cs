@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -47,6 +47,16 @@ namespace SecretsThatBreathe
         private static void ResetInstances() => Instances.Clear();
         public static bool BlocksRoomInteractions(Scene scene) => Instances.TryGetValue(scene.handle, out var sequence)
             && sequence != null && sequence.isActiveAndEnabled && sequence.Stage != SearchStage.BeforeCall && sequence.Stage != SearchStage.Completed;
+        public static bool BlocksChairInteractions(Scene scene) => Instances.TryGetValue(scene.handle, out var sequence)
+            && sequence != null && sequence.Stage != SearchStage.Completed;
+        public static bool TrySkipToIncomingCall(Scene scene)
+        {
+            if (!Instances.TryGetValue(scene.handle, out var sequence) || sequence == null || !sequence.isActiveAndEnabled || sequence.phone == null) return false;
+            sequence.ResetCheckpointForTesting();
+            sequence.Stage = SearchStage.BeforeCall;
+            sequence.phone.RestartIncomingCallForTesting();
+            return true;
+        }
 
         public static void NotifyChairInspection(Scene scene, TMP_Text message)
         {
@@ -122,12 +132,12 @@ namespace SecretsThatBreathe
         }
         private void Update()
         {
-            if (testSkipHint != null) testSkipHint.SetActive(enableF2Skip && Stage < SearchStage.Searching);
-            if (testSkipAfterCallHint != null) testSkipAfterCallHint.SetActive(enableF3Skip && Stage < SearchStage.Completed);
+            if (testSkipHint != null) testSkipHint.SetActive(enableF2Skip);
+            if (testSkipAfterCallHint != null) testSkipAfterCallHint.SetActive(enableF3Skip);
             if (Time.timeScale <= 0f) return;
-            if (enableF3Skip && Stage < SearchStage.Completed && Keyboard.current != null && Keyboard.current.f3Key.wasPressedThisFrame)
+            if (enableF3Skip && Keyboard.current != null && Keyboard.current.f3Key.wasPressedThisFrame)
                 SkipToAfterCallBack();
-            if (enableF2Skip && Stage < SearchStage.Searching && Keyboard.current != null && Keyboard.current.f2Key.wasPressedThisFrame)
+            else if (enableF2Skip && Keyboard.current != null && Keyboard.current.f2Key.wasPressedThisFrame)
                 SkipToSearch();
             bool searching = Stage == SearchStage.Searching;
             if (documents != null) foreach (var item in documents) if (item != null) item.Pulse(searching);
@@ -174,25 +184,14 @@ namespace SecretsThatBreathe
         }
         public void SkipToSearch()
         {
-            if (Stage >= SearchStage.Searching || phone == null) return;
-            StopAllCoroutines();
-            showingMessage = false;
-            checkedItems.Clear();
-            if (documents != null) foreach (var item in documents) if (item != null) item.ResetForTesting();
-            phone.SkipToDocumentSearch();
+            if (phone == null) return;
+            ResetCheckpointForTesting();
             BeginSearch();
         }
         public void SkipToAfterCallBack()
         {
-            if (Stage >= SearchStage.Completed || phone == null) return;
-            StopAllCoroutines();
-            showingMessage = false;
-            phone.SkipToDocumentSearch();
-            HideSearchUI();
-            Panel(callBackThought, false);
-            Panel(callBackPrompt, false);
-            Panel(unfinishedWorkThought, false);
-            checkedItems.Clear();
+            if (phone == null) return;
+            ResetCheckpointForTesting();
             if (documents != null)
                 foreach (var item in documents)
                 {
@@ -201,8 +200,36 @@ namespace SecretsThatBreathe
                     checkedItems.Add(item);
                 }
             StartCoroutine(ReturnToDesk(true));
-            if (testSkipHint != null) testSkipHint.SetActive(false);
-            if (testSkipAfterCallHint != null) testSkipAfterCallHint.SetActive(false);
+            if (testSkipHint != null) testSkipHint.SetActive(enableF2Skip);
+            if (testSkipAfterCallHint != null) testSkipAfterCallHint.SetActive(enableF3Skip);
+        }
+        private void ResetCheckpointForTesting()
+        {
+            StopAllCoroutines();
+            showingMessage = false;
+            reachedOwnDesk = false;
+            deskReminderRevision++;
+            HideSearchUI();
+            Panel(callBackThought, false);
+            Panel(callBackPrompt, false);
+            Panel(unfinishedWorkThought, false);
+            Panel(returnToDeskMessage, false);
+            checkedItems.Clear();
+            if (documents != null) foreach (var item in documents) if (item != null) item.ResetForTesting();
+            phone.SkipToDocumentSearch();
+            foreach (var root in gameObject.scene.GetRootGameObjects())
+            {
+                foreach (var notebook in root.GetComponentsInChildren<ItemInspectionInteraction>(true)) notebook.CancelForTesting();
+                foreach (var chair in root.GetComponentsInChildren<ChairInspectionInteractable>(true)) chair.ResetForTesting();
+            }
+            if (phone.player != null)
+            {
+                var story = phone.player.GetComponent<DrawerSearchScareSequence>();
+                if (story != null) story.ResetForTesting();
+                var meal = phone.player.GetComponent<NoodleEatingController>();
+                if (meal != null) meal.ResetForTesting();
+                phone.player.ResetForTesting();
+            }
         }
         private void OnDisable()
         {

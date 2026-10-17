@@ -14,16 +14,27 @@ namespace SecretsThatBreathe
     {
         public enum SeatState { Exploring, SittingDown, Seated }
         public SeatState State { get; private set; }
-        public bool CanExplore => isActiveAndEnabled && State == SeatState.Exploring && !standControlsHeld
+        public bool ItemInspectionActive { get; set; }
+        public bool CanExplore => isActiveAndEnabled && State == SeatState.Exploring && !standControlsHeld && !ItemInspectionActive
             && !PhoneCallInteraction.IsBusy(gameObject.scene);
         public bool ChairInteractionsLocked { get; private set; }
         public bool CanInteractWithRoom => CanExplore && !DocumentSearchSequence.BlocksRoomInteractions(gameObject.scene);
-        public bool CanSit => CanInteractWithRoom && !ChairInteractionsLocked && !OfficeIntroDialogue.IsBlocking(gameObject.scene);
+        public bool CanSit => CanInteractWithRoom && !ChairInteractionsLocked && !OfficeIntroDialogue.IsBlocking(gameObject.scene)
+            && !DocumentSearchSequence.BlocksChairInteractions(gameObject.scene);
         public bool SeatedLookLocked { get; set; }
 
         public void LockChairInteractions()
         {
             ChairInteractionsLocked = true;
+            var interactor = GetComponent<SeatInteractor>();
+            if (interactor != null) interactor.ClearChairUI();
+        }
+        public void ResetForTesting()
+        {
+            CancelSeating();
+            ResumeAfterStand();
+            ChairInteractionsLocked = false;
+            ItemInspectionActive = false;
             var interactor = GetComponent<SeatInteractor>();
             if (interactor != null) interactor.ClearChairUI();
         }

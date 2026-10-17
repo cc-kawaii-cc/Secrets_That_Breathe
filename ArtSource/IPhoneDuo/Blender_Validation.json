@@ -1,0 +1,166 @@
+{
+  "asset": "IPhoneDuo",
+  "blender_version": "5.2.0 LTS",
+  "source_mesh_objects": 60,
+  "mesh_objects": 20,
+  "triangles_after_triangulation": 31926,
+  "materials": [
+    "DUO_PolishedTitanium",
+    "DUO_CeramicWhite",
+    "DUO_Graphite",
+    "DUO_Antenna",
+    "DUO_LensGlass",
+    "DUO_LensCoating",
+    "DUO_Flash",
+    "DUO_Logo",
+    "DUO_InnerDisplay",
+    "DUO_CoverDisplay"
+  ],
+  "topology_issues": [],
+  "objects": [
+    {
+      "name": "Left_TitaniumFrame",
+      "triangles": 1816,
+      "uv0": true,
+      "parent": "LeftLeaf"
+    },
+    {
+      "name": "Left_BackCeramic",
+      "triangles": 620,
+      "uv0": true,
+      "parent": "LeftLeaf"
+    },
+    {
+      "name": "LeftLeaf_Graphite",
+      "triangles": 2996,
+      "uv0": true,
+      "parent": "LeftLeaf"
+    },
+    {
+      "name": "Left_InnerDisplay",
+      "triangles": 236,
+      "uv0": true,
+      "parent": "LeftLeaf"
+    },
+    {
+      "name": "Right_TitaniumFrame",
+      "triangles": 1962,
+      "uv0": true,
+      "parent": "RightLeaf"
+    },
+    {
+      "name": "RightLeaf_CeramicWhite",
+      "triangles": 1524,
+      "uv0": true,
+      "parent": "RightLeaf"
+    },
+    {
+      "name": "RightLeaf_Graphite",
+      "triangles": 4244,
+      "uv0": true,
+      "parent": "RightLeaf"
+    },
+    {
+      "name": "Right_InnerDisplay",
+      "triangles": 236,
+      "uv0": true,
+      "parent": "RightLeaf"
+    },
+    {
+      "name": "LeftLeaf_PolishedTitanium",
+      "triangles": 3024,
+      "uv0": true,
+      "parent": "LeftLeaf"
+    },
+    {
+      "name": "LeftLeaf_Antenna",
+      "triangles": 1384,
+      "uv0": true,
+      "parent": "LeftLeaf"
+    },
+    {
+      "name": "RightLeaf_PolishedTitanium",
+      "triangles": 3584,
+      "uv0": true,
+      "parent": "RightLeaf"
+    },
+    {
+      "name": "RightLeaf_LensGlass",
+      "triangles": 1520,
+      "uv0": true,
+      "parent": "RightLeaf"
+    },
+    {
+      "name": "RightLeaf_LensCoating",
+      "triangles": 2296,
+      "uv0": true,
+      "parent": "RightLeaf"
+    },
+    {
+      "name": "RearFlash_Diffuser",
+      "triangles": 252,
+      "uv0": true,
+      "parent": "RightLeaf"
+    },
+    {
+      "name": "Right_AcousticAndAntennaDetails",
+      "triangles": 2600,
+      "uv0": true,
+      "parent": "RightLeaf"
+    },
+    {
+      "name": "CoverDisplay",
+      "triangles": 236,
+      "uv0": true,
+      "parent": "LeftLeaf"
+    },
+    {
+      "name": "CoverCamera_Lens",
+      "triangles": 252,
+      "uv0": true,
+      "parent": "LeftLeaf"
+    },
+    {
+      "name": "RightLeaf_Logo",
+      "triangles": 572,
+      "uv0": true,
+      "parent": "RightLeaf"
+    },
+    {
+      "name": "Left_AcousticAndAntennaDetails",
+      "triangles": 2240,
+      "uv0": true,
+      "parent": "LeftLeaf"
+    },
+    {
+      "name": "USBC_ContactTongue",
+      "triangles": 332,
+      "uv0": true,
+      "parent": "RightLeaf"
+    }
+  ],
+  "dimensions_source": "User reference sheet; camera bump/buttons exceed nominal chassis envelope",
+  "open_chassis_m": [
+    0.1646,
+    0.1178,
+    0.0052
+  ],
+  "closed_chassis_m": [
+    0.0841,
+    0.1178,
+    0.0113
+  ],
+  "fold_axis_blender": "local Y negative 0..180 degrees",
+  "hinge_pivot_blender_m": [
+    0,
+    0,
+    0.00305
+  ],
+  "closed_inner_glass_clearance_m": 0.0008350000000000007,
+  "uv_note": "Screen UV0 intentionally shares the complete lock-screen artwork across halves; other surfaces planar UV0 for solid material. Not a unique baked atlas or lightmap UV.",
+  "texture_files": [
+    "Inner_Display.png",
+    "Cover_Display.png"
+  ],
+  "scope": "Game inspection prop. No preexisting gameplay interaction replaced."
+}

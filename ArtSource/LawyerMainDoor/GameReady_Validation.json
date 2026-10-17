@@ -1,0 +1,79 @@
+{
+  "asset": "LawyerMainDoor",
+  "stage": "GameReady",
+  "triangles": 3952,
+  "mesh_objects": 12,
+  "issues": [],
+  "objects": [
+    {
+      "name": "Frame_Fixed_Wood",
+      "triangles": 132,
+      "UV0": true
+    },
+    {
+      "name": "Frame_Fixed_PanelInset",
+      "triangles": 132,
+      "UV0": true
+    },
+    {
+      "name": "Frame_Fixed_DarkMetal",
+      "triangles": 132,
+      "UV0": true
+    },
+    {
+      "name": "LeftLeaf_Pivot_PanelInset",
+      "triangles": 220,
+      "UV0": true
+    },
+    {
+      "name": "LeftLeaf_Pivot_Wood",
+      "triangles": 632,
+      "UV0": true
+    },
+    {
+      "name": "LeftLeaf_Pivot_Brass",
+      "triangles": 612,
+      "UV0": true
+    },
+    {
+      "name": "LeftLeaf_Pivot_DarkMetal",
+      "triangles": 320,
+      "UV0": true
+    },
+    {
+      "name": "RightLeaf_Pivot_PanelInset",
+      "triangles": 220,
+      "UV0": true
+    },
+    {
+      "name": "RightLeaf_Pivot_Wood",
+      "triangles": 632,
+      "UV0": true
+    },
+    {
+      "name": "RightLeaf_Pivot_Brass",
+      "triangles": 556,
+      "UV0": true
+    },
+    {
+      "name": "RightLeaf_Pivot_DarkMetal",
+      "triangles": 320,
+      "UV0": true
+    },
+    {
+      "name": "LeftLeaf_Pivot_Plaque",
+      "triangles": 44,
+      "UV0": true
+    }
+  ],
+  "opening_m": [
+    2,
+    2.5,
+    0.1
+  ],
+  "front": "Blender -Y / normalized Unity -Z",
+  "floor_clearance_m": 0.001,
+  "style": "Muted walnut, recessed panels, aged brass, restrained wear; low-poly facets on hardware.",
+  "UV": "Global wood UV0; plaque face UV0. Generate unique UV2 with Unity model importer.",
+  "integration": "Keep existing Main Door transform, collider, LookTarget trigger and scene references. Hide original cube renderer only. Current wall is solid; static opaque door, no new opening mechanics."
+}

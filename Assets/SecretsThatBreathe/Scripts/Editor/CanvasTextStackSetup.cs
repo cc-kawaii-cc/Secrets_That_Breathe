@@ -42,7 +42,7 @@ namespace SecretsThatBreathe.Editor
                 bool skip = false;
                 for (var ancestor = label.transform; ancestor != null && ancestor != canvas.transform; ancestor = ancestor.parent)
                     if (ancestor.name.StartsWith("TestSkip") || ancestor.name.StartsWith("CallRow")
-                        || ancestor.name == "Conversation" || ancestor.name == "CallBackLines"
+                        || ancestor.name == "Conversation" || ancestor.name == "CallBackLines" || ancestor.name == "SamudNoteCanvas" || ancestor.name == "RotateHint"
                         || (ancestor.name == "Lines" && ancestor.parent != null && ancestor.parent.name == "PhoneCallUI"))
                     { skip = true; break; }
                 if (skip) continue;

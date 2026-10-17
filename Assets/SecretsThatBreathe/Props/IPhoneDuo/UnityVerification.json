@@ -1,0 +1,38 @@
+{
+    "status": "PASS",
+    "unityVersion": "6000.3.8f1",
+    "colorSpace": "Linear",
+    "triangles": 31926,
+    "meshRenderers": 20,
+    "materialAssets": 10,
+    "leafColliders": 2,
+    "openSizeMetres": {
+        "x": 0.16565999388694764,
+        "y": 0.11836248636245728,
+        "z": 0.009042508900165558
+    },
+    "closedSizeMetres": {
+        "x": 0.08463999629020691,
+        "y": 0.11836248636245728,
+        "z": 0.014122499153017998
+    },
+    "halfOpenSizeMetres": {
+        "x": 0.09109248965978623,
+        "y": 0.11836248636245728,
+        "z": 0.08868998289108277
+    },
+    "hingePositionMetres": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.003049999475479126
+    },
+    "hingeLocalAxis": {
+        "x": 0.0,
+        "y": -1.0,
+        "z": -5.960465188081798e-8
+    },
+    "foldSamples": 13,
+    "normalAndUV0Attributes": true,
+    "displayEmissionVerified": true,
+    "notes": "FBX reimported; metre scale; +Y top / +Z open display; original source hierarchy retained. Fold 0..180 at 15-degree intervals checks pivot stability and inward-facing closed display. The two BoxColliders are interaction approximations. No physics collision simulation or gameplay pickup/input binding. No lightmap UV2 generated for this moving prop. Camera bump is included in reported overall thickness."
+}

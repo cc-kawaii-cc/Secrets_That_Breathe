@@ -11,13 +11,12 @@ GameObject:
   - component: {fileID: 5957755877438973821}
   - component: {fileID: 2261870015062892157}
   - component: {fileID: 6122765653547380225}
-  - component: {fileID: 1149443199755554485}
   m_Layer: 0
   m_Name: A4Documents_Stack20
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &5957755877438973821
 Transform:
@@ -92,24 +91,3 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &1149443199755554485
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4517545604319305252}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.23957384, y: 0.0036000344, z: 0.32680702}
-  m_Center: {x: 0.00029909983, y: 0.0017999997, z: 0.0007795021}
