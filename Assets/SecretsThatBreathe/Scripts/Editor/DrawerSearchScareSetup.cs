@@ -29,8 +29,8 @@ namespace SecretsThatBreathe.Editor
                 if (eating != null && eating.beforeEatingText == null)
                 {
                     eating.ConfigureBeforeEatingUI();
-                    var font = AssetDatabase.LoadAssetAtPath<TMPro.TMP_FontAsset>("Assets/Champ&Kichzz/Fonts/PKFbasicDemo SDF.asset");
-                    if (font != null && (eating.beforeEatingText.font == null || !eating.beforeEatingText.font.HasCharacter('ท')))
+                    var font = AssetDatabase.LoadAssetAtPath<TMPro.TMP_FontAsset>("Assets/Nemo_Upgrade/Font/Kanit/Kanit-Medium SDF.asset");
+                    if (font != null && eating.beforeEatingText.font == null)
                         eating.beforeEatingText.font = font;
                     EditorUtility.SetDirty(eating);
                     PrefabUtility.RecordPrefabInstancePropertyModifications(eating);
@@ -43,7 +43,7 @@ namespace SecretsThatBreathe.Editor
                         existing.auntDialogueUI.thankYouLine == null || existing.mainDoor == null || existing.auntExitPoint == null || existing.screenFade == null || existing.postMealThoughtUI == null)
                     {
                         existing.ConfigureScene();
-                        existing.UseThaiFontIfNeeded(AssetDatabase.LoadAssetAtPath<TMPro.TMP_FontAsset>("Assets/Champ&Kichzz/Fonts/PKFbasicDemo SDF.asset"));
+                        existing.UseThaiFontIfNeeded(AssetDatabase.LoadAssetAtPath<TMPro.TMP_FontAsset>("Assets/Nemo_Upgrade/Font/Kanit/Kanit-Medium SDF.asset"));
                         EditorUtility.SetDirty(existing);
                         PrefabUtility.RecordPrefabInstancePropertyModifications(existing);
                         EditorSceneManager.MarkSceneDirty(scene);
@@ -64,7 +64,7 @@ namespace SecretsThatBreathe.Editor
                 player.sitFade = story.screenFade;
                 EditorUtility.SetDirty(player);
                 PrefabUtility.RecordPrefabInstancePropertyModifications(player);
-                story.UseThaiFontIfNeeded(AssetDatabase.LoadAssetAtPath<TMPro.TMP_FontAsset>("Assets/Champ&Kichzz/Fonts/PKFbasicDemo SDF.asset"));
+                story.UseThaiFontIfNeeded(AssetDatabase.LoadAssetAtPath<TMPro.TMP_FontAsset>("Assets/Nemo_Upgrade/Font/Kanit/Kanit-Medium SDF.asset"));
                 EditorUtility.SetDirty(story);
                 PrefabUtility.RecordPrefabInstancePropertyModifications(story);
                 EditorSceneManager.MarkSceneDirty(scene);

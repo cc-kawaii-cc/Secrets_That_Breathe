@@ -30,7 +30,7 @@ namespace SecretsThatBreathe.LevelTools
         public const string P_NPC = "Assets/Champ&Kichzz/Prefab/Npc/NPC.prefab";
 
         // ฟอนต์เดียวกับซับไตเติลในเกม — ฟอนต์ default ของ TMP ไม่มีสระ/วรรณยุกต์ไทย ป้ายจะเป็นสี่เหลี่ยม
-        const string THAI_FONT = "Assets/Champ&Kichzz/Fonts/PKFbasicDemo SDF.asset";
+        const string THAI_FONT = "Assets/Nemo_Upgrade/Font/Kanit/Kanit-Medium SDF.asset";
 
         public static readonly Color GoldInk = new Color(0.93f, 0.78f, 0.42f);
         public static readonly Color DarkInk = new Color(0.10f, 0.10f, 0.12f);

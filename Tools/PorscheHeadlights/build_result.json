@@ -1,0 +1,1949 @@
+{
+    "id": "porsche-build-20261019-02",
+    "operation": "build",
+    "success": true,
+    "error": "",
+    "consumedRequest": "D:\\Unity\\ปี3\\Secrets_That_Breathe\\Tools\\PorscheHeadlights\\consumed\\porsche-build-20261019-02.json",
+    "utc": "2026-10-19T13:33:08.6899056Z",
+    "unityVersion": "6000.3.8f1",
+    "projectRoot": "D:\\Unity\\ปี3\\Secrets_That_Breathe",
+    "scenes": [
+        {
+            "name": "MainScene_2_Evening",
+            "path": "Assets/Nemo_Upgrade/MainScene_2_Evening.unity",
+            "isLoaded": true,
+            "isDirty": true,
+            "handle": -97724
+        }
+    ],
+    "activeScenePath": "Assets/Nemo_Upgrade/MainScene_2_Evening.unity",
+    "prefabStageAssetPath": "Assets/Model Palm/Porsche V.2/PorscheV.2.prefab",
+    "prefabStageDirty": true,
+    "assets": [
+        {
+            "path": "Assets/Model Palm/Porsche V.2/PorscheV.2.fbx",
+            "guid": "45ddf12d16f1b0443ad5f6897ec0060a",
+            "length": 8404460,
+            "sha256": "1ab1d294afc299b1f0794ec05c93b3bdf4eba90de7ac5ae53658b259d0ba2d63",
+            "metaSha256": "08c70f9b6ee13d1c9e72dd76f9da06f37433dc13febf3500f10539c4eda03244"
+        },
+        {
+            "path": "Assets/Model Palm/Porsche V.2/PorscheV.2.prefab",
+            "guid": "dc0beb625b5239c439aa5d6edc2aa3d8",
+            "length": 25922,
+            "sha256": "08673b464c797184a6133bd134ad97bbd46ab1b843d833f8a828ad579a47cfb2",
+            "metaSha256": "ceeb06323f0b1c53eb295870477a528791036039417e69e0d74956e6b36ae4c0"
+        },
+        {
+            "path": "Assets/Model Palm/Porsche V.2/Material/Headlights.mat",
+            "guid": "6443a3699d0cb974f9006120c85fcb9e",
+            "length": 4016,
+            "sha256": "717a14edd9e3f98d7c0a13397282eaa825fcab8335218121b15af55b19939e5b",
+            "metaSha256": "459a2d33107996b247af4840322270c95fec53eb8924e341483a6874b79629e2"
+        },
+        {
+            "path": "Assets/Model Palm/Porsche V.2/Material/Material.001.mat",
+            "guid": "4b9ec57aface39641a8b4601a4f86827",
+            "length": 3884,
+            "sha256": "9c32da306a2df6e999ddece20231e035cb2154c2f21cc23580e85442b955a97d",
+            "metaSha256": "17950f422c4076936bb553780ab53c92d7fbda768e39e549966de68a7a2005b3"
+        },
+        {
+            "path": "Assets/Model Palm/Porsche V.2/Material/Material.002.mat",
+            "guid": "b294bb371b7269b458465c65f6629f50",
+            "length": 3890,
+            "sha256": "501b26280d52f3baadeb0c452052af1b4369323c76b86e123ec452be9e12ca60",
+            "metaSha256": "fd11309f5d1a4d1adae318af088bec626c687be38d78966ee4cbeba4d8a849be"
+        },
+        {
+            "path": "Assets/Model Palm/Porsche V.2/Material/Material.003.mat",
+            "guid": "25ac1f580fc2f1b40b1771c80a5f8455",
+            "length": 3888,
+            "sha256": "cb24c923101dc8132823f3861dd9fd708c290dd01815781528d9acdbbfb3c217",
+            "metaSha256": "60e276f4b46f8534e8afafa5b5ad1ebbc36d5ff847bec8af3dc6d844f9f46c3b"
+        },
+        {
+            "path": "Assets/Model Palm/Porsche V.2/Material/Material.004.mat",
+            "guid": "8746794abf4894a46b716f9d9fedab5e",
+            "length": 3882,
+            "sha256": "aadb61b493dee4abf8854148e9aee024c211f38968629b02e5012414f2b4ed78",
+            "metaSha256": "8fec341dd83fb3ebb73f7d305f3a3f2bf92140725333b14f6e74cfe7f4269572"
+        },
+        {
+            "path": "Assets/Model Palm/Porsche V.2/Material/Material.005.mat",
+            "guid": "5779c01b820005c498078416dac7bc1c",
+            "length": 3895,
+            "sha256": "dcdbbd48f1b9a6bba10ba76a1a1e297df7a81254b15920fd65cd22f5e138c829",
+            "metaSha256": "5d3fe6786346c65770b589c9b7704c5e0e43702915fbd5b0eedd8756ddbac95a"
+        },
+        {
+            "path": "Assets/Model Palm/Porsche V.2/Material/Material.006.mat",
+            "guid": "b84ab399a26814e4e803ce237c10cc17",
+            "length": 4040,
+            "sha256": "f2bd0df34f46888309ca4f7ede1e6af7486e8fbda47d4eb9b9106f6408c18ce5",
+            "metaSha256": "d215497da9b347a790e7e34697c24bc0f1431af4d1d749c979c0bc4b0d83daf9"
+        },
+        {
+            "path": "Assets/Model Palm/Porsche V.2/Material/Material.007.mat",
+            "guid": "43a8cc6d2dfb4544d9c485810670e108",
+            "length": 4040,
+            "sha256": "12dc0274613be97468747ac09b8906272abcbe5a0c8bec7827c773665d91a259",
+            "metaSha256": "5bb9fc632eb55d3c53a2807c6157773fd1c3fa26df4e20cbfc186c7c6661100c"
+        },
+        {
+            "path": "Assets/Model Palm/Porsche V.2/Material/Material.008.mat",
+            "guid": "c4f01e9b0616c8c4c8075dff855af87f",
+            "length": 3948,
+            "sha256": "f7ace7f6469b7cd8fbc58d2f183a6d807a4611c07d2c3689a8eed484c5f4372e",
+            "metaSha256": "8d72832e63a5ad2b53b0797250a9e15129208e0bf358911f9e027f3ca26ad788"
+        },
+        {
+            "path": "Assets/Model Palm/Porsche V.2/Material/New Material.mat",
+            "guid": "6f8bfdc8601a3e34f8467dbad4d5563b",
+            "length": 3915,
+            "sha256": "943fa285acbeed390f12ec07d3d5dcae20026981a0d2c8b9883db2e551180adb",
+            "metaSha256": "802adf31283aea0de669f1c1aa730b778596e1c42923b985e106de4d974557af"
+        },
+        {
+            "path": "Assets/Model Palm/Porsche V.2/Material/tripo_mat_c3595359.001.mat",
+            "guid": "5b74380bd44c03044ae1d851e3dd4749",
+            "length": 3973,
+            "sha256": "d37a54ba8202b276e5307b0bae83077dabe7582f546547cddb5e15be7146185d",
+            "metaSha256": "e4f790b0d6becb7e32e0f69de4391503ad71c9eece44e51de4b2c198ebe2f5ef"
+        },
+        {
+            "path": "Assets/Model Palm/Porsche V.2/Texture/Gemini_brake.png",
+            "guid": "4a5d461a70cbf944d84406103bff0be4",
+            "length": 1497136,
+            "sha256": "5fd44877d60e27f8d5196588466c6c79ec347c89c05db5bbb0f4b632575b685e",
+            "metaSha256": "f85804cdbfc5fbc77f00d8e186b1fe41ee43bb725e69b6f969bd582fc50e9d73"
+        },
+        {
+            "path": "Assets/Model Palm/Porsche V.2/Texture/Gemini_Generated_Image_6qagrd6qagrd6qag.jpg",
+            "guid": "e994be8d70a1dd14696cc7a711c385be",
+            "length": 2441658,
+            "sha256": "74e972b6fb57a230adfe5a1bc1d18c25a9095bc92211954bde00e13ff5a0316b",
+            "metaSha256": "b7fd7ace6475d285b5912df7cce0049285e1eeb5766000a7691dca5fdf034387"
+        },
+        {
+            "path": "Assets/Model Palm/Porsche V.2/Texture/tripo_rgb_62867c90-c4b3-4b96-b7c1-0cf4f20ce93e.jpg",
+            "guid": "5651b67cb8b7a8d4496f00c944d75284",
+            "length": 3527388,
+            "sha256": "26adfc3ca86cb423dcf010782c1915b509798a82b0b320031b77d2fdf6d2c55c",
+            "metaSha256": "0fa6bd48129ca3c59161d7944f85733eb13f8fe122b6fd5229fa80e3b175bc9a"
+        }
+    ],
+    "sourceMeshes": [
+        {
+            "name": "Body",
+            "guid": "45ddf12d16f1b0443ad5f6897ec0060a",
+            "localId": 2959467708922500008,
+            "isReadable": false,
+            "vertices": 30048,
+            "triangles": 23809,
+            "subMeshes": 5,
+            "indexFormat": "UInt16",
+            "boundsCenter": {
+                "x": 0.0,
+                "y": 0.6848108768463135,
+                "z": 0.0022346973419189455
+            },
+            "boundsSize": {
+                "x": 1.8519998788833619,
+                "y": 1.1883783340454102,
+                "z": 4.570000171661377
+            },
+            "attributes": [
+                "(attr=Position fmt=Float32 dim=3 stream=0)",
+                "(attr=Normal fmt=Float32 dim=3 stream=0)",
+                "(attr=Tangent fmt=Float32 dim=4 stream=0)",
+                "(attr=TexCoord0 fmt=Float32 dim=2 stream=0)",
+                "(attr=TexCoord1 fmt=Float32 dim=2 stream=0)"
+            ],
+            "vertexBufferSha256": [
+                "dac2cec2e6b4dd6d1cefdb0d8e8ffe5e039c8f795e1dd4b55c2c412f37853853"
+            ],
+            "indexBufferSha256": "b32f7e63950ff27a8fd224585c9b485f9aec2d82680752591f47ec69ee2116c0",
+            "parts": [
+                {
+                    "index": 0,
+                    "topology": "Triangles",
+                    "indexStart": 0,
+                    "indexCount": 57564,
+                    "baseVertex": 0,
+                    "firstVertex": 0,
+                    "vertexCount": 24159
+                },
+                {
+                    "index": 1,
+                    "topology": "Triangles",
+                    "indexStart": 57564,
+                    "indexCount": 1440,
+                    "baseVertex": 0,
+                    "firstVertex": 24159,
+                    "vertexCount": 553
+                },
+                {
+                    "index": 2,
+                    "topology": "Triangles",
+                    "indexStart": 59004,
+                    "indexCount": 2112,
+                    "baseVertex": 0,
+                    "firstVertex": 24712,
+                    "vertexCount": 872
+                },
+                {
+                    "index": 3,
+                    "topology": "Triangles",
+                    "indexStart": 61116,
+                    "indexCount": 4773,
+                    "baseVertex": 0,
+                    "firstVertex": 167,
+                    "vertexCount": 27498
+                },
+                {
+                    "index": 4,
+                    "topology": "Triangles",
+                    "indexStart": 65889,
+                    "indexCount": 5538,
+                    "baseVertex": 0,
+                    "firstVertex": 27665,
+                    "vertexCount": 2383
+                }
+            ],
+            "readError": ""
+        },
+        {
+            "name": "Front_left_wheel",
+            "guid": "45ddf12d16f1b0443ad5f6897ec0060a",
+            "localId": 7855596556186534509,
+            "isReadable": false,
+            "vertices": 224,
+            "triangles": 154,
+            "subMeshes": 2,
+            "indexFormat": "UInt16",
+            "boundsCenter": {
+                "x": -0.7028017640113831,
+                "y": 0.34499800205230715,
+                "z": 1.2678883075714112
+            },
+            "boundsSize": {
+                "x": 0.25294673442840578,
+                "y": 0.6863722801208496,
+                "z": 0.6863723397254944
+            },
+            "attributes": [
+                "(attr=Position fmt=Float32 dim=3 stream=0)",
+                "(attr=Normal fmt=Float32 dim=3 stream=0)",
+                "(attr=Tangent fmt=Float32 dim=4 stream=0)",
+                "(attr=TexCoord0 fmt=Float32 dim=2 stream=0)",
+                "(attr=TexCoord1 fmt=Float32 dim=2 stream=0)"
+            ],
+            "vertexBufferSha256": [
+                "4787acba241cdfe262755c49122f4c59d1321c5ed89a3d6e83fcd8fbfd42d907"
+            ],
+            "indexBufferSha256": "8c48674108a653e8d8f08a5ec6f1820419a29084bdec10fb556dbfc364c2d847",
+            "parts": [
+                {
+                    "index": 0,
+                    "topology": "Triangles",
+                    "indexStart": 0,
+                    "indexCount": 372,
+                    "baseVertex": 0,
+                    "firstVertex": 0,
+                    "vertexCount": 192
+                },
+                {
+                    "index": 1,
+                    "topology": "Triangles",
+                    "indexStart": 372,
+                    "indexCount": 90,
+                    "baseVertex": 0,
+                    "firstVertex": 192,
+                    "vertexCount": 32
+                }
+            ],
+            "readError": ""
+        },
+        {
+            "name": "Front_right_wheel",
+            "guid": "45ddf12d16f1b0443ad5f6897ec0060a",
+            "localId": 2625741197381495876,
+            "isReadable": false,
+            "vertices": 224,
+            "triangles": 154,
+            "subMeshes": 2,
+            "indexFormat": "UInt16",
+            "boundsCenter": {
+                "x": 0.7031205892562866,
+                "y": 0.34499818086624148,
+                "z": 1.2678883075714112
+            },
+            "boundsSize": {
+                "x": 0.2541702389717102,
+                "y": 0.6863722801208496,
+                "z": 0.6863723397254944
+            },
+            "attributes": [
+                "(attr=Position fmt=Float32 dim=3 stream=0)",
+                "(attr=Normal fmt=Float32 dim=3 stream=0)",
+                "(attr=Tangent fmt=Float32 dim=4 stream=0)",
+                "(attr=TexCoord0 fmt=Float32 dim=2 stream=0)",
+                "(attr=TexCoord1 fmt=Float32 dim=2 stream=0)"
+            ],
+            "vertexBufferSha256": [
+                "b970470efe697638cd6649c1dc856057a551f239ea2f9a83195cb868e635aee5"
+            ],
+            "indexBufferSha256": "8c48674108a653e8d8f08a5ec6f1820419a29084bdec10fb556dbfc364c2d847",
+            "parts": [
+                {
+                    "index": 0,
+                    "topology": "Triangles",
+                    "indexStart": 0,
+                    "indexCount": 372,
+                    "baseVertex": 0,
+                    "firstVertex": 0,
+                    "vertexCount": 192
+                },
+                {
+                    "index": 1,
+                    "topology": "Triangles",
+                    "indexStart": 372,
+                    "indexCount": 90,
+                    "baseVertex": 0,
+                    "firstVertex": 192,
+                    "vertexCount": 32
+                }
+            ],
+            "readError": ""
+        },
+        {
+            "name": "License_plate",
+            "guid": "45ddf12d16f1b0443ad5f6897ec0060a",
+            "localId": -5641967433709107057,
+            "isReadable": false,
+            "vertices": 8,
+            "triangles": 4,
+            "subMeshes": 1,
+            "indexFormat": "UInt16",
+            "boundsCenter": {
+                "x": -0.012608565390110016,
+                "y": 0.44140514731407168,
+                "z": 0.0006020069122314453
+            },
+            "boundsSize": {
+                "x": 0.3399999737739563,
+                "y": 0.30732184648513796,
+                "z": 4.514225006103516
+            },
+            "attributes": [
+                "(attr=Position fmt=Float32 dim=3 stream=0)",
+                "(attr=Normal fmt=Float32 dim=3 stream=0)",
+                "(attr=Tangent fmt=Float32 dim=4 stream=0)",
+                "(attr=TexCoord0 fmt=Float32 dim=2 stream=0)",
+                "(attr=TexCoord1 fmt=Float32 dim=2 stream=0)"
+            ],
+            "vertexBufferSha256": [
+                "be016726469de63fc272bbe340debb242026be85f22ac555259b3a1687d98c02"
+            ],
+            "indexBufferSha256": "668b099db30af4b0b9773a52497c73bca667af4084a84d8ddd703b94890b06fd",
+            "parts": [
+                {
+                    "index": 0,
+                    "topology": "Triangles",
+                    "indexStart": 0,
+                    "indexCount": 12,
+                    "baseVertex": 0,
+                    "firstVertex": 0,
+                    "vertexCount": 8
+                }
+            ],
+            "readError": ""
+        },
+        {
+            "name": "Light",
+            "guid": "45ddf12d16f1b0443ad5f6897ec0060a",
+            "localId": 8148188476708289613,
+            "isReadable": false,
+            "vertices": 1865,
+            "triangles": 1621,
+            "subMeshes": 1,
+            "indexFormat": "UInt16",
+            "boundsCenter": {
+                "x": 0.0028090178966522218,
+                "y": 0.7232041358947754,
+                "z": -0.2024410367012024
+            },
+            "boundsSize": {
+                "x": 1.4943337440490723,
+                "y": 0.1353500485420227,
+                "z": 3.8254408836364748
+            },
+            "attributes": [
+                "(attr=Position fmt=Float32 dim=3 stream=0)",
+                "(attr=Normal fmt=Float32 dim=3 stream=0)",
+                "(attr=Tangent fmt=Float32 dim=4 stream=0)",
+                "(attr=TexCoord0 fmt=Float32 dim=2 stream=0)",
+                "(attr=TexCoord1 fmt=Float32 dim=2 stream=0)"
+            ],
+            "vertexBufferSha256": [
+                "fdc7bee2340bacbe0af7e34b270c306d2a6b2a5ded7476c8f7ce41a16c287042"
+            ],
+            "indexBufferSha256": "7286de041844e505b5faa27c0da4b43ae63f5256cce4b902618fd20546994b10",
+            "parts": [
+                {
+                    "index": 0,
+                    "topology": "Triangles",
+                    "indexStart": 0,
+                    "indexCount": 4863,
+                    "baseVertex": 0,
+                    "firstVertex": 0,
+                    "vertexCount": 1865
+                }
+            ],
+            "readError": ""
+        },
+        {
+            "name": "Wheel",
+            "guid": "45ddf12d16f1b0443ad5f6897ec0060a",
+            "localId": -2309305249758762421,
+            "isReadable": false,
+            "vertices": 452,
+            "triangles": 308,
+            "subMeshes": 2,
+            "indexFormat": "UInt16",
+            "boundsCenter": {
+                "x": 0.0035217702388763429,
+                "y": 0.36387258768081667,
+                "z": -1.2647547721862794
+            },
+            "boundsSize": {
+                "x": 1.7005338668823243,
+                "y": 0.7191681861877441,
+                "z": 0.7191680669784546
+            },
+            "attributes": [
+                "(attr=Position fmt=Float32 dim=3 stream=0)",
+                "(attr=Normal fmt=Float32 dim=3 stream=0)",
+                "(attr=Tangent fmt=Float32 dim=4 stream=0)",
+                "(attr=TexCoord0 fmt=Float32 dim=2 stream=0)",
+                "(attr=TexCoord1 fmt=Float32 dim=2 stream=0)"
+            ],
+            "vertexBufferSha256": [
+                "9095133ca3261db039e699c03f978182b2ed7ca8e960c8223cd05ee16af19108"
+            ],
+            "indexBufferSha256": "df3e63db3e1db9beaf5f34721a9ff20b5a7ec766a4bb23845dbda3773580980c",
+            "parts": [
+                {
+                    "index": 0,
+                    "topology": "Triangles",
+                    "indexStart": 0,
+                    "indexCount": 744,
+                    "baseVertex": 0,
+                    "firstVertex": 0,
+                    "vertexCount": 388
+                },
+                {
+                    "index": 1,
+                    "topology": "Triangles",
+                    "indexStart": 744,
+                    "indexCount": 180,
+                    "baseVertex": 0,
+                    "firstVertex": 388,
+                    "vertexCount": 64
+                }
+            ],
+            "readError": ""
+        },
+        {
+            "name": "Window",
+            "guid": "45ddf12d16f1b0443ad5f6897ec0060a",
+            "localId": 1049928748687988745,
+            "isReadable": false,
+            "vertices": 320,
+            "triangles": 386,
+            "subMeshes": 1,
+            "indexFormat": "UInt16",
+            "boundsCenter": {
+                "x": 0.0,
+                "y": 1.0380290746688843,
+                "z": -0.37655019760131838
+            },
+            "boundsSize": {
+                "x": 1.3576339483261109,
+                "y": 0.3624863624572754,
+                "z": 2.5833351612091066
+            },
+            "attributes": [
+                "(attr=Position fmt=Float32 dim=3 stream=0)",
+                "(attr=Normal fmt=Float32 dim=3 stream=0)",
+                "(attr=Tangent fmt=Float32 dim=4 stream=0)",
+                "(attr=TexCoord0 fmt=Float32 dim=2 stream=0)",
+                "(attr=TexCoord1 fmt=Float32 dim=2 stream=0)"
+            ],
+            "vertexBufferSha256": [
+                "4156293677c12cdf83ce662b3dbed0a530e32fd2c9454fc73317977a77a52346"
+            ],
+            "indexBufferSha256": "d61dd1b9986335f6be5bebcee118df19fbb9b53d07f9cbca893f224a0f03f105",
+            "parts": [
+                {
+                    "index": 0,
+                    "topology": "Triangles",
+                    "indexStart": 0,
+                    "indexCount": 1158,
+                    "baseVertex": 0,
+                    "firstVertex": 0,
+                    "vertexCount": 320
+                }
+            ],
+            "readError": ""
+        }
+    ],
+    "sourceNodes": [
+        {
+            "path": "PorscheV.2",
+            "globalId": "GlobalObjectId_V1-1-45ddf12d16f1b0443ad5f6897ec0060a-919132149155446097-0",
+            "assetGuid": "45ddf12d16f1b0443ad5f6897ec0060a",
+            "localId": 919132149155446097,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "active": true,
+            "meshName": "",
+            "meshGuid": "",
+            "meshLocalId": 0,
+            "materialNames": [],
+            "materialReferences": [],
+            "baseMapReferences": [],
+            "componentReferences": [
+                "45ddf12d16f1b0443ad5f6897ec0060a:-8679921383154817045:Assets/Model Palm/Porsche V.2/PorscheV.2.fbx"
+            ]
+        },
+        {
+            "path": "PorscheV.2/Body",
+            "globalId": "GlobalObjectId_V1-1-45ddf12d16f1b0443ad5f6897ec0060a-635547659545568360-0",
+            "assetGuid": "45ddf12d16f1b0443ad5f6897ec0060a",
+            "localId": 635547659545568360,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "active": true,
+            "meshName": "Body",
+            "meshGuid": "45ddf12d16f1b0443ad5f6897ec0060a",
+            "meshLocalId": 2959467708922500008,
+            "materialNames": [
+                "tripo_mat_c3595359.001",
+                "Material.001",
+                "Material.002",
+                "Material.004",
+                "Material.003"
+            ],
+            "materialReferences": [
+                "5b74380bd44c03044ae1d851e3dd4749:2100000:Assets/Model Palm/Porsche V.2/Material/tripo_mat_c3595359.001.mat",
+                "4b9ec57aface39641a8b4601a4f86827:2100000:Assets/Model Palm/Porsche V.2/Material/Material.001.mat",
+                "b294bb371b7269b458465c65f6629f50:2100000:Assets/Model Palm/Porsche V.2/Material/Material.002.mat",
+                "8746794abf4894a46b716f9d9fedab5e:2100000:Assets/Model Palm/Porsche V.2/Material/Material.004.mat",
+                "25ac1f580fc2f1b40b1771c80a5f8455:2100000:Assets/Model Palm/Porsche V.2/Material/Material.003.mat"
+            ],
+            "baseMapReferences": [
+                "5651b67cb8b7a8d4496f00c944d75284:2800000:Assets/Model Palm/Porsche V.2/Texture/tripo_rgb_62867c90-c4b3-4b96-b7c1-0cf4f20ce93e.jpg",
+                "",
+                "",
+                "",
+                ""
+            ],
+            "componentReferences": [
+                "45ddf12d16f1b0443ad5f6897ec0060a:4167280743394806330:Assets/Model Palm/Porsche V.2/PorscheV.2.fbx",
+                "45ddf12d16f1b0443ad5f6897ec0060a:-3387599253219119134:Assets/Model Palm/Porsche V.2/PorscheV.2.fbx",
+                "45ddf12d16f1b0443ad5f6897ec0060a:-6652725513331149018:Assets/Model Palm/Porsche V.2/PorscheV.2.fbx"
+            ]
+        },
+        {
+            "path": "PorscheV.2/Front_left_wheel",
+            "globalId": "GlobalObjectId_V1-1-45ddf12d16f1b0443ad5f6897ec0060a-6231831909176926927-0",
+            "assetGuid": "45ddf12d16f1b0443ad5f6897ec0060a",
+            "localId": 6231831909176926927,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "active": true,
+            "meshName": "Front_left_wheel",
+            "meshGuid": "45ddf12d16f1b0443ad5f6897ec0060a",
+            "meshLocalId": 7855596556186534509,
+            "materialNames": [
+                "Material.005",
+                "Material.006"
+            ],
+            "materialReferences": [
+                "5779c01b820005c498078416dac7bc1c:2100000:Assets/Model Palm/Porsche V.2/Material/Material.005.mat",
+                "b84ab399a26814e4e803ce237c10cc17:2100000:Assets/Model Palm/Porsche V.2/Material/Material.006.mat"
+            ],
+            "baseMapReferences": [
+                "",
+                "4a5d461a70cbf944d84406103bff0be4:2800000:Assets/Model Palm/Porsche V.2/Texture/Gemini_brake.png"
+            ],
+            "componentReferences": [
+                "45ddf12d16f1b0443ad5f6897ec0060a:8913963202687977775:Assets/Model Palm/Porsche V.2/PorscheV.2.fbx",
+                "45ddf12d16f1b0443ad5f6897ec0060a:-1202869727263638492:Assets/Model Palm/Porsche V.2/PorscheV.2.fbx",
+                "45ddf12d16f1b0443ad5f6897ec0060a:-5904845623294487475:Assets/Model Palm/Porsche V.2/PorscheV.2.fbx"
+            ]
+        },
+        {
+            "path": "PorscheV.2/Front_right_wheel",
+            "globalId": "GlobalObjectId_V1-1-45ddf12d16f1b0443ad5f6897ec0060a-15615028148676932401-0",
+            "assetGuid": "45ddf12d16f1b0443ad5f6897ec0060a",
+            "localId": -2831715925032619215,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "active": true,
+            "meshName": "Front_right_wheel",
+            "meshGuid": "45ddf12d16f1b0443ad5f6897ec0060a",
+            "meshLocalId": 2625741197381495876,
+            "materialNames": [
+                "Material.005",
+                "Material.006"
+            ],
+            "materialReferences": [
+                "5779c01b820005c498078416dac7bc1c:2100000:Assets/Model Palm/Porsche V.2/Material/Material.005.mat",
+                "b84ab399a26814e4e803ce237c10cc17:2100000:Assets/Model Palm/Porsche V.2/Material/Material.006.mat"
+            ],
+            "baseMapReferences": [
+                "",
+                "4a5d461a70cbf944d84406103bff0be4:2800000:Assets/Model Palm/Porsche V.2/Texture/Gemini_brake.png"
+            ],
+            "componentReferences": [
+                "45ddf12d16f1b0443ad5f6897ec0060a:-8844471311406896109:Assets/Model Palm/Porsche V.2/PorscheV.2.fbx",
+                "45ddf12d16f1b0443ad5f6897ec0060a:5878593740189944875:Assets/Model Palm/Porsche V.2/PorscheV.2.fbx",
+                "45ddf12d16f1b0443ad5f6897ec0060a:4191200435191000362:Assets/Model Palm/Porsche V.2/PorscheV.2.fbx"
+            ]
+        },
+        {
+            "path": "PorscheV.2/License_plate",
+            "globalId": "GlobalObjectId_V1-1-45ddf12d16f1b0443ad5f6897ec0060a-9217317991017594718-0",
+            "assetGuid": "45ddf12d16f1b0443ad5f6897ec0060a",
+            "localId": 9217317991017594718,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "active": true,
+            "meshName": "License_plate",
+            "meshGuid": "45ddf12d16f1b0443ad5f6897ec0060a",
+            "meshLocalId": -5641967433709107057,
+            "materialNames": [
+                "Material.008"
+            ],
+            "materialReferences": [
+                "c4f01e9b0616c8c4c8075dff855af87f:2100000:Assets/Model Palm/Porsche V.2/Material/Material.008.mat"
+            ],
+            "baseMapReferences": [
+                "e994be8d70a1dd14696cc7a711c385be:2800000:Assets/Model Palm/Porsche V.2/Texture/Gemini_Generated_Image_6qagrd6qagrd6qag.jpg"
+            ],
+            "componentReferences": [
+                "45ddf12d16f1b0443ad5f6897ec0060a:6808627074411242183:Assets/Model Palm/Porsche V.2/PorscheV.2.fbx",
+                "45ddf12d16f1b0443ad5f6897ec0060a:-994740878983828235:Assets/Model Palm/Porsche V.2/PorscheV.2.fbx",
+                "45ddf12d16f1b0443ad5f6897ec0060a:5190949245649188863:Assets/Model Palm/Porsche V.2/PorscheV.2.fbx"
+            ]
+        },
+        {
+            "path": "PorscheV.2/Light",
+            "globalId": "GlobalObjectId_V1-1-45ddf12d16f1b0443ad5f6897ec0060a-9746126720595353341-0",
+            "assetGuid": "45ddf12d16f1b0443ad5f6897ec0060a",
+            "localId": -8700617353114198275,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "active": true,
+            "meshName": "Light",
+            "meshGuid": "45ddf12d16f1b0443ad5f6897ec0060a",
+            "meshLocalId": 8148188476708289613,
+            "materialNames": [
+                "tripo_mat_c3595359.001"
+            ],
+            "materialReferences": [
+                "5b74380bd44c03044ae1d851e3dd4749:2100000:Assets/Model Palm/Porsche V.2/Material/tripo_mat_c3595359.001.mat"
+            ],
+            "baseMapReferences": [
+                "5651b67cb8b7a8d4496f00c944d75284:2800000:Assets/Model Palm/Porsche V.2/Texture/tripo_rgb_62867c90-c4b3-4b96-b7c1-0cf4f20ce93e.jpg"
+            ],
+            "componentReferences": [
+                "45ddf12d16f1b0443ad5f6897ec0060a:-447275898630060098:Assets/Model Palm/Porsche V.2/PorscheV.2.fbx",
+                "45ddf12d16f1b0443ad5f6897ec0060a:227479335502014272:Assets/Model Palm/Porsche V.2/PorscheV.2.fbx",
+                "45ddf12d16f1b0443ad5f6897ec0060a:5100068591777345685:Assets/Model Palm/Porsche V.2/PorscheV.2.fbx"
+            ]
+        },
+        {
+            "path": "PorscheV.2/Wheel",
+            "globalId": "GlobalObjectId_V1-1-45ddf12d16f1b0443ad5f6897ec0060a-901897122485332503-0",
+            "assetGuid": "45ddf12d16f1b0443ad5f6897ec0060a",
+            "localId": 901897122485332503,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "active": true,
+            "meshName": "Wheel",
+            "meshGuid": "45ddf12d16f1b0443ad5f6897ec0060a",
+            "meshLocalId": -2309305249758762421,
+            "materialNames": [
+                "Material.005",
+                "Material.007"
+            ],
+            "materialReferences": [
+                "5779c01b820005c498078416dac7bc1c:2100000:Assets/Model Palm/Porsche V.2/Material/Material.005.mat",
+                "43a8cc6d2dfb4544d9c485810670e108:2100000:Assets/Model Palm/Porsche V.2/Material/Material.007.mat"
+            ],
+            "baseMapReferences": [
+                "",
+                "4a5d461a70cbf944d84406103bff0be4:2800000:Assets/Model Palm/Porsche V.2/Texture/Gemini_brake.png"
+            ],
+            "componentReferences": [
+                "45ddf12d16f1b0443ad5f6897ec0060a:2512243300098982147:Assets/Model Palm/Porsche V.2/PorscheV.2.fbx",
+                "45ddf12d16f1b0443ad5f6897ec0060a:9112204506036662602:Assets/Model Palm/Porsche V.2/PorscheV.2.fbx",
+                "45ddf12d16f1b0443ad5f6897ec0060a:-8719454951683086028:Assets/Model Palm/Porsche V.2/PorscheV.2.fbx"
+            ]
+        },
+        {
+            "path": "PorscheV.2/Window",
+            "globalId": "GlobalObjectId_V1-1-45ddf12d16f1b0443ad5f6897ec0060a-5769484663829117588-0",
+            "assetGuid": "45ddf12d16f1b0443ad5f6897ec0060a",
+            "localId": 5769484663829117588,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "active": true,
+            "meshName": "Window",
+            "meshGuid": "45ddf12d16f1b0443ad5f6897ec0060a",
+            "meshLocalId": 1049928748687988745,
+            "materialNames": [
+                "Material.001"
+            ],
+            "materialReferences": [
+                "4b9ec57aface39641a8b4601a4f86827:2100000:Assets/Model Palm/Porsche V.2/Material/Material.001.mat"
+            ],
+            "baseMapReferences": [
+                ""
+            ],
+            "componentReferences": [
+                "45ddf12d16f1b0443ad5f6897ec0060a:-8634971656262275435:Assets/Model Palm/Porsche V.2/PorscheV.2.fbx",
+                "45ddf12d16f1b0443ad5f6897ec0060a:7104672601287901898:Assets/Model Palm/Porsche V.2/PorscheV.2.fbx",
+                "45ddf12d16f1b0443ad5f6897ec0060a:2005229715816757442:Assets/Model Palm/Porsche V.2/PorscheV.2.fbx"
+            ]
+        }
+    ],
+    "prefabNodes": [
+        {
+            "path": "PorscheV.2",
+            "globalId": "GlobalObjectId_V1-1-dc0beb625b5239c439aa5d6edc2aa3d8-203749215052050788-0",
+            "assetGuid": "dc0beb625b5239c439aa5d6edc2aa3d8",
+            "localId": 203749215052050788,
+            "position": {
+                "x": 19.96796226501465,
+                "y": 5.9471398117239e-7,
+                "z": -3.4864912033081056
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "active": true,
+            "meshName": "",
+            "meshGuid": "",
+            "meshLocalId": 0,
+            "materialNames": [],
+            "materialReferences": [],
+            "baseMapReferences": [],
+            "componentReferences": [
+                "dc0beb625b5239c439aa5d6edc2aa3d8:2523572730012541411:Assets/Model Palm/Porsche V.2/PorscheV.2.prefab"
+            ]
+        },
+        {
+            "path": "PorscheV.2/Body",
+            "globalId": "GlobalObjectId_V1-1-dc0beb625b5239c439aa5d6edc2aa3d8-1579612710003937451-0",
+            "assetGuid": "dc0beb625b5239c439aa5d6edc2aa3d8",
+            "localId": 1579612710003937451,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "active": true,
+            "meshName": "Body_HeadlightsSeparated",
+            "meshGuid": "0657e73af86ab8b4c98404814d07da8d",
+            "meshLocalId": 4300000,
+            "materialNames": [
+                "tripo_mat_c3595359.001",
+                "Material.001",
+                "Material.002",
+                "Material.004",
+                "Material.003"
+            ],
+            "materialReferences": [
+                "5b74380bd44c03044ae1d851e3dd4749:2100000:Assets/Model Palm/Porsche V.2/Material/tripo_mat_c3595359.001.mat",
+                "4b9ec57aface39641a8b4601a4f86827:2100000:Assets/Model Palm/Porsche V.2/Material/Material.001.mat",
+                "b294bb371b7269b458465c65f6629f50:2100000:Assets/Model Palm/Porsche V.2/Material/Material.002.mat",
+                "8746794abf4894a46b716f9d9fedab5e:2100000:Assets/Model Palm/Porsche V.2/Material/Material.004.mat",
+                "25ac1f580fc2f1b40b1771c80a5f8455:2100000:Assets/Model Palm/Porsche V.2/Material/Material.003.mat"
+            ],
+            "baseMapReferences": [
+                "5651b67cb8b7a8d4496f00c944d75284:2800000:Assets/Model Palm/Porsche V.2/Texture/tripo_rgb_62867c90-c4b3-4b96-b7c1-0cf4f20ce93e.jpg",
+                "",
+                "",
+                "",
+                ""
+            ],
+            "componentReferences": [
+                "dc0beb625b5239c439aa5d6edc2aa3d8:8192323508175438015:Assets/Model Palm/Porsche V.2/PorscheV.2.prefab",
+                "dc0beb625b5239c439aa5d6edc2aa3d8:2849472969386426243:Assets/Model Palm/Porsche V.2/PorscheV.2.prefab",
+                "dc0beb625b5239c439aa5d6edc2aa3d8:9208429781648669095:Assets/Model Palm/Porsche V.2/PorscheV.2.prefab"
+            ]
+        },
+        {
+            "path": "PorscheV.2/Front_left_wheel",
+            "globalId": "GlobalObjectId_V1-1-dc0beb625b5239c439aa5d6edc2aa3d8-7483084461653957684-0",
+            "assetGuid": "dc0beb625b5239c439aa5d6edc2aa3d8",
+            "localId": 7483084461653957684,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "active": true,
+            "meshName": "Front_left_wheel",
+            "meshGuid": "45ddf12d16f1b0443ad5f6897ec0060a",
+            "meshLocalId": 7855596556186534509,
+            "materialNames": [
+                "Material.005",
+                "Material.006"
+            ],
+            "materialReferences": [
+                "5779c01b820005c498078416dac7bc1c:2100000:Assets/Model Palm/Porsche V.2/Material/Material.005.mat",
+                "b84ab399a26814e4e803ce237c10cc17:2100000:Assets/Model Palm/Porsche V.2/Material/Material.006.mat"
+            ],
+            "baseMapReferences": [
+                "",
+                "4a5d461a70cbf944d84406103bff0be4:2800000:Assets/Model Palm/Porsche V.2/Texture/Gemini_brake.png"
+            ],
+            "componentReferences": [
+                "dc0beb625b5239c439aa5d6edc2aa3d8:1266552921048278655:Assets/Model Palm/Porsche V.2/PorscheV.2.prefab",
+                "dc0beb625b5239c439aa5d6edc2aa3d8:8766592331887956730:Assets/Model Palm/Porsche V.2/PorscheV.2.prefab",
+                "dc0beb625b5239c439aa5d6edc2aa3d8:4962608490707079131:Assets/Model Palm/Porsche V.2/PorscheV.2.prefab"
+            ]
+        },
+        {
+            "path": "PorscheV.2/Front_right_wheel",
+            "globalId": "GlobalObjectId_V1-1-dc0beb625b5239c439aa5d6edc2aa3d8-2845684974197686015-0",
+            "assetGuid": "dc0beb625b5239c439aa5d6edc2aa3d8",
+            "localId": 2845684974197686015,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "active": true,
+            "meshName": "Front_right_wheel",
+            "meshGuid": "45ddf12d16f1b0443ad5f6897ec0060a",
+            "meshLocalId": 2625741197381495876,
+            "materialNames": [
+                "Material.005",
+                "Material.006"
+            ],
+            "materialReferences": [
+                "5779c01b820005c498078416dac7bc1c:2100000:Assets/Model Palm/Porsche V.2/Material/Material.005.mat",
+                "b84ab399a26814e4e803ce237c10cc17:2100000:Assets/Model Palm/Porsche V.2/Material/Material.006.mat"
+            ],
+            "baseMapReferences": [
+                "",
+                "4a5d461a70cbf944d84406103bff0be4:2800000:Assets/Model Palm/Porsche V.2/Texture/Gemini_brake.png"
+            ],
+            "componentReferences": [
+                "dc0beb625b5239c439aa5d6edc2aa3d8:2019449762339033751:Assets/Model Palm/Porsche V.2/PorscheV.2.prefab",
+                "dc0beb625b5239c439aa5d6edc2aa3d8:3889400227296867168:Assets/Model Palm/Porsche V.2/PorscheV.2.prefab",
+                "dc0beb625b5239c439aa5d6edc2aa3d8:8197139348821688779:Assets/Model Palm/Porsche V.2/PorscheV.2.prefab"
+            ]
+        },
+        {
+            "path": "PorscheV.2/License_plate",
+            "globalId": "GlobalObjectId_V1-1-dc0beb625b5239c439aa5d6edc2aa3d8-5620656631488134846-0",
+            "assetGuid": "dc0beb625b5239c439aa5d6edc2aa3d8",
+            "localId": 5620656631488134846,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "active": true,
+            "meshName": "License_plate",
+            "meshGuid": "45ddf12d16f1b0443ad5f6897ec0060a",
+            "meshLocalId": -5641967433709107057,
+            "materialNames": [
+                "Material.008"
+            ],
+            "materialReferences": [
+                "c4f01e9b0616c8c4c8075dff855af87f:2100000:Assets/Model Palm/Porsche V.2/Material/Material.008.mat"
+            ],
+            "baseMapReferences": [
+                "e994be8d70a1dd14696cc7a711c385be:2800000:Assets/Model Palm/Porsche V.2/Texture/Gemini_Generated_Image_6qagrd6qagrd6qag.jpg"
+            ],
+            "componentReferences": [
+                "dc0beb625b5239c439aa5d6edc2aa3d8:2728658690485142390:Assets/Model Palm/Porsche V.2/PorscheV.2.prefab",
+                "dc0beb625b5239c439aa5d6edc2aa3d8:9063233746901433562:Assets/Model Palm/Porsche V.2/PorscheV.2.prefab",
+                "dc0beb625b5239c439aa5d6edc2aa3d8:3803930444008922761:Assets/Model Palm/Porsche V.2/PorscheV.2.prefab"
+            ]
+        },
+        {
+            "path": "PorscheV.2/Light",
+            "globalId": "GlobalObjectId_V1-1-dc0beb625b5239c439aa5d6edc2aa3d8-8424216434471204061-0",
+            "assetGuid": "dc0beb625b5239c439aa5d6edc2aa3d8",
+            "localId": 8424216434471204061,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "active": true,
+            "meshName": "Light_RearOnly",
+            "meshGuid": "d992fd3306b9bc449a2aec0379ac16b2",
+            "meshLocalId": 4300000,
+            "materialNames": [
+                "tripo_mat_c3595359.001"
+            ],
+            "materialReferences": [
+                "5b74380bd44c03044ae1d851e3dd4749:2100000:Assets/Model Palm/Porsche V.2/Material/tripo_mat_c3595359.001.mat"
+            ],
+            "baseMapReferences": [
+                "5651b67cb8b7a8d4496f00c944d75284:2800000:Assets/Model Palm/Porsche V.2/Texture/tripo_rgb_62867c90-c4b3-4b96-b7c1-0cf4f20ce93e.jpg"
+            ],
+            "componentReferences": [
+                "dc0beb625b5239c439aa5d6edc2aa3d8:5886752628126656698:Assets/Model Palm/Porsche V.2/PorscheV.2.prefab",
+                "dc0beb625b5239c439aa5d6edc2aa3d8:4786495081745616998:Assets/Model Palm/Porsche V.2/PorscheV.2.prefab",
+                "dc0beb625b5239c439aa5d6edc2aa3d8:7234837142624922050:Assets/Model Palm/Porsche V.2/PorscheV.2.prefab"
+            ]
+        },
+        {
+            "path": "PorscheV.2/Wheel",
+            "globalId": "GlobalObjectId_V1-1-dc0beb625b5239c439aa5d6edc2aa3d8-1147737092090936438-0",
+            "assetGuid": "dc0beb625b5239c439aa5d6edc2aa3d8",
+            "localId": 1147737092090936438,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "active": true,
+            "meshName": "Wheel",
+            "meshGuid": "45ddf12d16f1b0443ad5f6897ec0060a",
+            "meshLocalId": -2309305249758762421,
+            "materialNames": [
+                "Material.005",
+                "Material.007"
+            ],
+            "materialReferences": [
+                "5779c01b820005c498078416dac7bc1c:2100000:Assets/Model Palm/Porsche V.2/Material/Material.005.mat",
+                "43a8cc6d2dfb4544d9c485810670e108:2100000:Assets/Model Palm/Porsche V.2/Material/Material.007.mat"
+            ],
+            "baseMapReferences": [
+                "",
+                "4a5d461a70cbf944d84406103bff0be4:2800000:Assets/Model Palm/Porsche V.2/Texture/Gemini_brake.png"
+            ],
+            "componentReferences": [
+                "dc0beb625b5239c439aa5d6edc2aa3d8:4312084388623338662:Assets/Model Palm/Porsche V.2/PorscheV.2.prefab",
+                "dc0beb625b5239c439aa5d6edc2aa3d8:5966827207356782232:Assets/Model Palm/Porsche V.2/PorscheV.2.prefab",
+                "dc0beb625b5239c439aa5d6edc2aa3d8:5025075498644426855:Assets/Model Palm/Porsche V.2/PorscheV.2.prefab"
+            ]
+        },
+        {
+            "path": "PorscheV.2/Window",
+            "globalId": "GlobalObjectId_V1-1-dc0beb625b5239c439aa5d6edc2aa3d8-7186159710204560151-0",
+            "assetGuid": "dc0beb625b5239c439aa5d6edc2aa3d8",
+            "localId": 7186159710204560151,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "active": true,
+            "meshName": "Window",
+            "meshGuid": "45ddf12d16f1b0443ad5f6897ec0060a",
+            "meshLocalId": 1049928748687988745,
+            "materialNames": [
+                "New Material"
+            ],
+            "materialReferences": [
+                "6f8bfdc8601a3e34f8467dbad4d5563b:2100000:Assets/Model Palm/Porsche V.2/Material/New Material.mat"
+            ],
+            "baseMapReferences": [
+                ""
+            ],
+            "componentReferences": [
+                "dc0beb625b5239c439aa5d6edc2aa3d8:1862206921284268897:Assets/Model Palm/Porsche V.2/PorscheV.2.prefab",
+                "dc0beb625b5239c439aa5d6edc2aa3d8:2888589996682151010:Assets/Model Palm/Porsche V.2/PorscheV.2.prefab",
+                "dc0beb625b5239c439aa5d6edc2aa3d8:835153620236817122:Assets/Model Palm/Porsche V.2/PorscheV.2.prefab"
+            ]
+        },
+        {
+            "path": "PorscheV.2/Headlight_Left",
+            "globalId": "GlobalObjectId_V1-1-dc0beb625b5239c439aa5d6edc2aa3d8-4686152523635516271-0",
+            "assetGuid": "dc0beb625b5239c439aa5d6edc2aa3d8",
+            "localId": 4686152523635516271,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "active": true,
+            "meshName": "Headlight_Left",
+            "meshGuid": "46e9966853671cc4f80dc1e8540abea6",
+            "meshLocalId": 4300000,
+            "materialNames": [
+                "Headlights",
+                "Material.001",
+                "Material.002",
+                "Material.004",
+                "Material.003"
+            ],
+            "materialReferences": [
+                "6443a3699d0cb974f9006120c85fcb9e:2100000:Assets/Model Palm/Porsche V.2/Material/Headlights.mat",
+                "4b9ec57aface39641a8b4601a4f86827:2100000:Assets/Model Palm/Porsche V.2/Material/Material.001.mat",
+                "b294bb371b7269b458465c65f6629f50:2100000:Assets/Model Palm/Porsche V.2/Material/Material.002.mat",
+                "8746794abf4894a46b716f9d9fedab5e:2100000:Assets/Model Palm/Porsche V.2/Material/Material.004.mat",
+                "25ac1f580fc2f1b40b1771c80a5f8455:2100000:Assets/Model Palm/Porsche V.2/Material/Material.003.mat"
+            ],
+            "baseMapReferences": [
+                "5651b67cb8b7a8d4496f00c944d75284:2800000:Assets/Model Palm/Porsche V.2/Texture/tripo_rgb_62867c90-c4b3-4b96-b7c1-0cf4f20ce93e.jpg",
+                "",
+                "",
+                "",
+                ""
+            ],
+            "componentReferences": [
+                "dc0beb625b5239c439aa5d6edc2aa3d8:7419875948868295760:Assets/Model Palm/Porsche V.2/PorscheV.2.prefab",
+                "dc0beb625b5239c439aa5d6edc2aa3d8:340176951478982081:Assets/Model Palm/Porsche V.2/PorscheV.2.prefab",
+                "dc0beb625b5239c439aa5d6edc2aa3d8:3637545586091676339:Assets/Model Palm/Porsche V.2/PorscheV.2.prefab"
+            ]
+        },
+        {
+            "path": "PorscheV.2/Headlight_Right",
+            "globalId": "GlobalObjectId_V1-1-dc0beb625b5239c439aa5d6edc2aa3d8-7014807378322824146-0",
+            "assetGuid": "dc0beb625b5239c439aa5d6edc2aa3d8",
+            "localId": 7014807378322824146,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "active": true,
+            "meshName": "Headlight_Right",
+            "meshGuid": "24560d766f5a72e48ae9241dcd229360",
+            "meshLocalId": 4300000,
+            "materialNames": [
+                "Headlights",
+                "Material.001",
+                "Material.002",
+                "Material.004",
+                "Material.003"
+            ],
+            "materialReferences": [
+                "6443a3699d0cb974f9006120c85fcb9e:2100000:Assets/Model Palm/Porsche V.2/Material/Headlights.mat",
+                "4b9ec57aface39641a8b4601a4f86827:2100000:Assets/Model Palm/Porsche V.2/Material/Material.001.mat",
+                "b294bb371b7269b458465c65f6629f50:2100000:Assets/Model Palm/Porsche V.2/Material/Material.002.mat",
+                "8746794abf4894a46b716f9d9fedab5e:2100000:Assets/Model Palm/Porsche V.2/Material/Material.004.mat",
+                "25ac1f580fc2f1b40b1771c80a5f8455:2100000:Assets/Model Palm/Porsche V.2/Material/Material.003.mat"
+            ],
+            "baseMapReferences": [
+                "5651b67cb8b7a8d4496f00c944d75284:2800000:Assets/Model Palm/Porsche V.2/Texture/tripo_rgb_62867c90-c4b3-4b96-b7c1-0cf4f20ce93e.jpg",
+                "",
+                "",
+                "",
+                ""
+            ],
+            "componentReferences": [
+                "dc0beb625b5239c439aa5d6edc2aa3d8:7740292606110826889:Assets/Model Palm/Porsche V.2/PorscheV.2.prefab",
+                "dc0beb625b5239c439aa5d6edc2aa3d8:2410739186171040627:Assets/Model Palm/Porsche V.2/PorscheV.2.prefab",
+                "dc0beb625b5239c439aa5d6edc2aa3d8:6221176667755971005:Assets/Model Palm/Porsche V.2/PorscheV.2.prefab"
+            ]
+        }
+    ],
+    "stageNodes": [
+        {
+            "path": "PorscheV.2",
+            "globalId": "GlobalObjectId_V1-2-dc0beb625b5239c439aa5d6edc2aa3d8-203749215052050788-0",
+            "assetGuid": "00000000000000000000000000000000",
+            "localId": 0,
+            "position": {
+                "x": 19.96796226501465,
+                "y": 5.9471398117239e-7,
+                "z": -3.4864912033081056
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "active": true,
+            "meshName": "",
+            "meshGuid": "",
+            "meshLocalId": 0,
+            "materialNames": [],
+            "materialReferences": [],
+            "baseMapReferences": [],
+            "componentReferences": [
+                "00000000000000000000000000000000:0:"
+            ]
+        },
+        {
+            "path": "PorscheV.2/Body",
+            "globalId": "GlobalObjectId_V1-2-dc0beb625b5239c439aa5d6edc2aa3d8-1579612710003937451-0",
+            "assetGuid": "00000000000000000000000000000000",
+            "localId": 0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "active": true,
+            "meshName": "Body_HeadlightsSeparated",
+            "meshGuid": "0657e73af86ab8b4c98404814d07da8d",
+            "meshLocalId": 4300000,
+            "materialNames": [
+                "tripo_mat_c3595359.001",
+                "Material.001",
+                "Material.002",
+                "Material.004",
+                "Material.003"
+            ],
+            "materialReferences": [
+                "5b74380bd44c03044ae1d851e3dd4749:2100000:Assets/Model Palm/Porsche V.2/Material/tripo_mat_c3595359.001.mat",
+                "4b9ec57aface39641a8b4601a4f86827:2100000:Assets/Model Palm/Porsche V.2/Material/Material.001.mat",
+                "b294bb371b7269b458465c65f6629f50:2100000:Assets/Model Palm/Porsche V.2/Material/Material.002.mat",
+                "8746794abf4894a46b716f9d9fedab5e:2100000:Assets/Model Palm/Porsche V.2/Material/Material.004.mat",
+                "25ac1f580fc2f1b40b1771c80a5f8455:2100000:Assets/Model Palm/Porsche V.2/Material/Material.003.mat"
+            ],
+            "baseMapReferences": [
+                "5651b67cb8b7a8d4496f00c944d75284:2800000:Assets/Model Palm/Porsche V.2/Texture/tripo_rgb_62867c90-c4b3-4b96-b7c1-0cf4f20ce93e.jpg",
+                "",
+                "",
+                "",
+                ""
+            ],
+            "componentReferences": [
+                "00000000000000000000000000000000:0:",
+                "00000000000000000000000000000000:0:",
+                "00000000000000000000000000000000:0:"
+            ]
+        },
+        {
+            "path": "PorscheV.2/Front_left_wheel",
+            "globalId": "GlobalObjectId_V1-2-dc0beb625b5239c439aa5d6edc2aa3d8-7483084461653957684-0",
+            "assetGuid": "00000000000000000000000000000000",
+            "localId": 0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "active": true,
+            "meshName": "Front_left_wheel",
+            "meshGuid": "45ddf12d16f1b0443ad5f6897ec0060a",
+            "meshLocalId": 7855596556186534509,
+            "materialNames": [
+                "Material.005",
+                "Material.006"
+            ],
+            "materialReferences": [
+                "5779c01b820005c498078416dac7bc1c:2100000:Assets/Model Palm/Porsche V.2/Material/Material.005.mat",
+                "b84ab399a26814e4e803ce237c10cc17:2100000:Assets/Model Palm/Porsche V.2/Material/Material.006.mat"
+            ],
+            "baseMapReferences": [
+                "",
+                "4a5d461a70cbf944d84406103bff0be4:2800000:Assets/Model Palm/Porsche V.2/Texture/Gemini_brake.png"
+            ],
+            "componentReferences": [
+                "00000000000000000000000000000000:0:",
+                "00000000000000000000000000000000:0:",
+                "00000000000000000000000000000000:0:"
+            ]
+        },
+        {
+            "path": "PorscheV.2/Front_right_wheel",
+            "globalId": "GlobalObjectId_V1-2-dc0beb625b5239c439aa5d6edc2aa3d8-2845684974197686015-0",
+            "assetGuid": "00000000000000000000000000000000",
+            "localId": 0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "active": true,
+            "meshName": "Front_right_wheel",
+            "meshGuid": "45ddf12d16f1b0443ad5f6897ec0060a",
+            "meshLocalId": 2625741197381495876,
+            "materialNames": [
+                "Material.005",
+                "Material.006"
+            ],
+            "materialReferences": [
+                "5779c01b820005c498078416dac7bc1c:2100000:Assets/Model Palm/Porsche V.2/Material/Material.005.mat",
+                "b84ab399a26814e4e803ce237c10cc17:2100000:Assets/Model Palm/Porsche V.2/Material/Material.006.mat"
+            ],
+            "baseMapReferences": [
+                "",
+                "4a5d461a70cbf944d84406103bff0be4:2800000:Assets/Model Palm/Porsche V.2/Texture/Gemini_brake.png"
+            ],
+            "componentReferences": [
+                "00000000000000000000000000000000:0:",
+                "00000000000000000000000000000000:0:",
+                "00000000000000000000000000000000:0:"
+            ]
+        },
+        {
+            "path": "PorscheV.2/License_plate",
+            "globalId": "GlobalObjectId_V1-2-dc0beb625b5239c439aa5d6edc2aa3d8-5620656631488134846-0",
+            "assetGuid": "00000000000000000000000000000000",
+            "localId": 0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "active": true,
+            "meshName": "License_plate",
+            "meshGuid": "45ddf12d16f1b0443ad5f6897ec0060a",
+            "meshLocalId": -5641967433709107057,
+            "materialNames": [
+                "Material.008"
+            ],
+            "materialReferences": [
+                "c4f01e9b0616c8c4c8075dff855af87f:2100000:Assets/Model Palm/Porsche V.2/Material/Material.008.mat"
+            ],
+            "baseMapReferences": [
+                "e994be8d70a1dd14696cc7a711c385be:2800000:Assets/Model Palm/Porsche V.2/Texture/Gemini_Generated_Image_6qagrd6qagrd6qag.jpg"
+            ],
+            "componentReferences": [
+                "00000000000000000000000000000000:0:",
+                "00000000000000000000000000000000:0:",
+                "00000000000000000000000000000000:0:"
+            ]
+        },
+        {
+            "path": "PorscheV.2/Light",
+            "globalId": "GlobalObjectId_V1-2-dc0beb625b5239c439aa5d6edc2aa3d8-8424216434471204061-0",
+            "assetGuid": "00000000000000000000000000000000",
+            "localId": 0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "active": true,
+            "meshName": "Light_RearOnly",
+            "meshGuid": "d992fd3306b9bc449a2aec0379ac16b2",
+            "meshLocalId": 4300000,
+            "materialNames": [
+                "tripo_mat_c3595359.001"
+            ],
+            "materialReferences": [
+                "5b74380bd44c03044ae1d851e3dd4749:2100000:Assets/Model Palm/Porsche V.2/Material/tripo_mat_c3595359.001.mat"
+            ],
+            "baseMapReferences": [
+                "5651b67cb8b7a8d4496f00c944d75284:2800000:Assets/Model Palm/Porsche V.2/Texture/tripo_rgb_62867c90-c4b3-4b96-b7c1-0cf4f20ce93e.jpg"
+            ],
+            "componentReferences": [
+                "00000000000000000000000000000000:0:",
+                "00000000000000000000000000000000:0:",
+                "00000000000000000000000000000000:0:"
+            ]
+        },
+        {
+            "path": "PorscheV.2/Wheel",
+            "globalId": "GlobalObjectId_V1-2-dc0beb625b5239c439aa5d6edc2aa3d8-1147737092090936438-0",
+            "assetGuid": "00000000000000000000000000000000",
+            "localId": 0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "active": true,
+            "meshName": "Wheel",
+            "meshGuid": "45ddf12d16f1b0443ad5f6897ec0060a",
+            "meshLocalId": -2309305249758762421,
+            "materialNames": [
+                "Material.005",
+                "Material.007"
+            ],
+            "materialReferences": [
+                "5779c01b820005c498078416dac7bc1c:2100000:Assets/Model Palm/Porsche V.2/Material/Material.005.mat",
+                "43a8cc6d2dfb4544d9c485810670e108:2100000:Assets/Model Palm/Porsche V.2/Material/Material.007.mat"
+            ],
+            "baseMapReferences": [
+                "",
+                "4a5d461a70cbf944d84406103bff0be4:2800000:Assets/Model Palm/Porsche V.2/Texture/Gemini_brake.png"
+            ],
+            "componentReferences": [
+                "00000000000000000000000000000000:0:",
+                "00000000000000000000000000000000:0:",
+                "00000000000000000000000000000000:0:"
+            ]
+        },
+        {
+            "path": "PorscheV.2/Window",
+            "globalId": "GlobalObjectId_V1-2-dc0beb625b5239c439aa5d6edc2aa3d8-7186159710204560151-0",
+            "assetGuid": "00000000000000000000000000000000",
+            "localId": 0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "active": true,
+            "meshName": "Window",
+            "meshGuid": "45ddf12d16f1b0443ad5f6897ec0060a",
+            "meshLocalId": 1049928748687988745,
+            "materialNames": [
+                "New Material"
+            ],
+            "materialReferences": [
+                "6f8bfdc8601a3e34f8467dbad4d5563b:2100000:Assets/Model Palm/Porsche V.2/Material/New Material.mat"
+            ],
+            "baseMapReferences": [
+                ""
+            ],
+            "componentReferences": [
+                "00000000000000000000000000000000:0:",
+                "00000000000000000000000000000000:0:",
+                "00000000000000000000000000000000:0:"
+            ]
+        },
+        {
+            "path": "PorscheV.2/Headlight_Left",
+            "globalId": "GlobalObjectId_V1-2-dc0beb625b5239c439aa5d6edc2aa3d8-4686152523635516271-0",
+            "assetGuid": "00000000000000000000000000000000",
+            "localId": 0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "active": true,
+            "meshName": "Headlight_Left",
+            "meshGuid": "46e9966853671cc4f80dc1e8540abea6",
+            "meshLocalId": 4300000,
+            "materialNames": [
+                "Headlights",
+                "Material.001",
+                "Material.002",
+                "Material.004",
+                "Material.003"
+            ],
+            "materialReferences": [
+                "6443a3699d0cb974f9006120c85fcb9e:2100000:Assets/Model Palm/Porsche V.2/Material/Headlights.mat",
+                "4b9ec57aface39641a8b4601a4f86827:2100000:Assets/Model Palm/Porsche V.2/Material/Material.001.mat",
+                "b294bb371b7269b458465c65f6629f50:2100000:Assets/Model Palm/Porsche V.2/Material/Material.002.mat",
+                "8746794abf4894a46b716f9d9fedab5e:2100000:Assets/Model Palm/Porsche V.2/Material/Material.004.mat",
+                "25ac1f580fc2f1b40b1771c80a5f8455:2100000:Assets/Model Palm/Porsche V.2/Material/Material.003.mat"
+            ],
+            "baseMapReferences": [
+                "5651b67cb8b7a8d4496f00c944d75284:2800000:Assets/Model Palm/Porsche V.2/Texture/tripo_rgb_62867c90-c4b3-4b96-b7c1-0cf4f20ce93e.jpg",
+                "",
+                "",
+                "",
+                ""
+            ],
+            "componentReferences": [
+                "00000000000000000000000000000000:0:",
+                "00000000000000000000000000000000:0:",
+                "00000000000000000000000000000000:0:"
+            ]
+        },
+        {
+            "path": "PorscheV.2/Headlight_Right",
+            "globalId": "GlobalObjectId_V1-2-dc0beb625b5239c439aa5d6edc2aa3d8-7014807378322824146-0",
+            "assetGuid": "00000000000000000000000000000000",
+            "localId": 0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "active": true,
+            "meshName": "Headlight_Right",
+            "meshGuid": "24560d766f5a72e48ae9241dcd229360",
+            "meshLocalId": 4300000,
+            "materialNames": [
+                "Headlights",
+                "Material.001",
+                "Material.002",
+                "Material.004",
+                "Material.003"
+            ],
+            "materialReferences": [
+                "6443a3699d0cb974f9006120c85fcb9e:2100000:Assets/Model Palm/Porsche V.2/Material/Headlights.mat",
+                "4b9ec57aface39641a8b4601a4f86827:2100000:Assets/Model Palm/Porsche V.2/Material/Material.001.mat",
+                "b294bb371b7269b458465c65f6629f50:2100000:Assets/Model Palm/Porsche V.2/Material/Material.002.mat",
+                "8746794abf4894a46b716f9d9fedab5e:2100000:Assets/Model Palm/Porsche V.2/Material/Material.004.mat",
+                "25ac1f580fc2f1b40b1771c80a5f8455:2100000:Assets/Model Palm/Porsche V.2/Material/Material.003.mat"
+            ],
+            "baseMapReferences": [
+                "5651b67cb8b7a8d4496f00c944d75284:2800000:Assets/Model Palm/Porsche V.2/Texture/tripo_rgb_62867c90-c4b3-4b96-b7c1-0cf4f20ce93e.jpg",
+                "",
+                "",
+                "",
+                ""
+            ],
+            "componentReferences": [
+                "00000000000000000000000000000000:0:",
+                "00000000000000000000000000000000:0:",
+                "00000000000000000000000000000000:0:"
+            ]
+        }
+    ],
+    "build": {
+        "backupDirectory": "D:\\Unity\\ปี3\\Secrets_That_Breathe\\Tools\\PorscheHeadlights\\Backup\\porsche-build-20261019-02",
+        "selectionSha256": "a1d607fab5b802298f4a7574142bb8c038b69ae2341e273daf42754c1acb9247",
+        "originalTriangles": 25430,
+        "generatedTriangles": 25430,
+        "originalCarTriangles": 26436,
+        "finalCarTriangles": 26436,
+        "leftLensTriangles": 168,
+        "rightLensTriangles": 168,
+        "leftBulbTriangles": 148,
+        "rightBulbTriangles": 148,
+        "rawAttributesPreserved": true,
+        "sourceAssetsUnchanged": true,
+        "existingObjectAndComponentIdsPreserved": true,
+        "sceneDirtyStatesPreserved": true,
+        "generatedMeshes": [
+            {
+                "name": "Body_HeadlightsSeparated",
+                "guid": "0657e73af86ab8b4c98404814d07da8d",
+                "localId": 4300000,
+                "isReadable": true,
+                "vertices": 29725,
+                "triangles": 23473,
+                "subMeshes": 5,
+                "indexFormat": "UInt16",
+                "boundsCenter": {
+                    "x": 0.0,
+                    "y": 0.6848108768463135,
+                    "z": 0.0022344589233398439
+                },
+                "boundsSize": {
+                    "x": 1.8519998788833619,
+                    "y": 1.1883783340454102,
+                    "z": 4.569999694824219
+                },
+                "attributes": [
+                    "(attr=Position fmt=Float32 dim=3 stream=0)",
+                    "(attr=Normal fmt=Float32 dim=3 stream=0)",
+                    "(attr=Tangent fmt=Float32 dim=4 stream=0)",
+                    "(attr=TexCoord0 fmt=Float32 dim=2 stream=0)",
+                    "(attr=TexCoord1 fmt=Float32 dim=2 stream=0)"
+                ],
+                "vertexBufferSha256": [
+                    "d527236fac04a67ae741f1a2989314d4b2c8defe93bc4e9c24a5395e792edb6b"
+                ],
+                "indexBufferSha256": "978fab16f74f21d00c603cb2170df4cfc7fea3d2847b1a65b770bf8d9d7bfd30",
+                "parts": [
+                    {
+                        "index": 0,
+                        "topology": "Triangles",
+                        "indexStart": 0,
+                        "indexCount": 56556,
+                        "baseVertex": 0,
+                        "firstVertex": 0,
+                        "vertexCount": 29725
+                    },
+                    {
+                        "index": 1,
+                        "topology": "Triangles",
+                        "indexStart": 56556,
+                        "indexCount": 1440,
+                        "baseVertex": 0,
+                        "firstVertex": 0,
+                        "vertexCount": 29725
+                    },
+                    {
+                        "index": 2,
+                        "topology": "Triangles",
+                        "indexStart": 57996,
+                        "indexCount": 2112,
+                        "baseVertex": 0,
+                        "firstVertex": 0,
+                        "vertexCount": 29725
+                    },
+                    {
+                        "index": 3,
+                        "topology": "Triangles",
+                        "indexStart": 60108,
+                        "indexCount": 4773,
+                        "baseVertex": 0,
+                        "firstVertex": 0,
+                        "vertexCount": 29725
+                    },
+                    {
+                        "index": 4,
+                        "topology": "Triangles",
+                        "indexStart": 64881,
+                        "indexCount": 5538,
+                        "baseVertex": 0,
+                        "firstVertex": 0,
+                        "vertexCount": 29725
+                    }
+                ],
+                "readError": ""
+            },
+            {
+                "name": "Light_RearOnly",
+                "guid": "d992fd3306b9bc449a2aec0379ac16b2",
+                "localId": 4300000,
+                "isReadable": true,
+                "vertices": 1455,
+                "triangles": 1325,
+                "subMeshes": 1,
+                "indexFormat": "UInt16",
+                "boundsCenter": {
+                    "x": 0.002808988094329834,
+                    "y": 0.7641046047210693,
+                    "z": -1.9497921466827393
+                },
+                "boundsSize": {
+                    "x": 1.4943336248397828,
+                    "y": 0.05354905128479004,
+                    "z": 0.33073854446411135
+                },
+                "attributes": [
+                    "(attr=Position fmt=Float32 dim=3 stream=0)",
+                    "(attr=Normal fmt=Float32 dim=3 stream=0)",
+                    "(attr=Tangent fmt=Float32 dim=4 stream=0)",
+                    "(attr=TexCoord0 fmt=Float32 dim=2 stream=0)",
+                    "(attr=TexCoord1 fmt=Float32 dim=2 stream=0)"
+                ],
+                "vertexBufferSha256": [
+                    "fabc0816285207ef58024ed2945d067688b430f0c948269cf28e4b4989833c24"
+                ],
+                "indexBufferSha256": "8a30916e1694821908843c5ecb316ae6f2a3a0dd746a15e69b81835902ddccc2",
+                "parts": [
+                    {
+                        "index": 0,
+                        "topology": "Triangles",
+                        "indexStart": 0,
+                        "indexCount": 3975,
+                        "baseVertex": 0,
+                        "firstVertex": 0,
+                        "vertexCount": 1455
+                    }
+                ],
+                "readError": ""
+            },
+            {
+                "name": "Headlight_Left",
+                "guid": "46e9966853671cc4f80dc1e8540abea6",
+                "localId": 4300000,
+                "isReadable": true,
+                "vertices": 364,
+                "triangles": 316,
+                "subMeshes": 1,
+                "indexFormat": "UInt16",
+                "boundsCenter": {
+                    "x": -0.6526007056236267,
+                    "y": 0.6703938245773315,
+                    "z": 1.8011834621429444
+                },
+                "boundsSize": {
+                    "x": 0.20224058628082276,
+                    "y": 0.21625590324401856,
+                    "z": 0.3150954246520996
+                },
+                "attributes": [
+                    "(attr=Position fmt=Float32 dim=3 stream=0)",
+                    "(attr=Normal fmt=Float32 dim=3 stream=0)",
+                    "(attr=Tangent fmt=Float32 dim=4 stream=0)",
+                    "(attr=TexCoord0 fmt=Float32 dim=2 stream=0)",
+                    "(attr=TexCoord1 fmt=Float32 dim=2 stream=0)"
+                ],
+                "vertexBufferSha256": [
+                    "64ad855ec3fb171b407175da413c9ecac490721a9976a83aa2f08bd82d95e763"
+                ],
+                "indexBufferSha256": "33d131abe455a44ad07577ea3aca68e3a10df47e70c752790ea18ce966587e3d",
+                "parts": [
+                    {
+                        "index": 0,
+                        "topology": "Triangles",
+                        "indexStart": 0,
+                        "indexCount": 948,
+                        "baseVertex": 0,
+                        "firstVertex": 0,
+                        "vertexCount": 364
+                    }
+                ],
+                "readError": ""
+            },
+            {
+                "name": "Headlight_Right",
+                "guid": "24560d766f5a72e48ae9241dcd229360",
+                "localId": 4300000,
+                "isReadable": true,
+                "vertices": 369,
+                "triangles": 316,
+                "subMeshes": 1,
+                "indexFormat": "UInt16",
+                "boundsCenter": {
+                    "x": 0.6507278680801392,
+                    "y": 0.6703938245773315,
+                    "z": 1.8011834621429444
+                },
+                "boundsSize": {
+                    "x": 0.2022407054901123,
+                    "y": 0.21625590324401856,
+                    "z": 0.3150954246520996
+                },
+                "attributes": [
+                    "(attr=Position fmt=Float32 dim=3 stream=0)",
+                    "(attr=Normal fmt=Float32 dim=3 stream=0)",
+                    "(attr=Tangent fmt=Float32 dim=4 stream=0)",
+                    "(attr=TexCoord0 fmt=Float32 dim=2 stream=0)",
+                    "(attr=TexCoord1 fmt=Float32 dim=2 stream=0)"
+                ],
+                "vertexBufferSha256": [
+                    "ddbfff878e925415709e629d91c4a1dc22570d3409b4e17b8f6a0fc069e09186"
+                ],
+                "indexBufferSha256": "1eb2b53ef8f4dc38c43fb4a07687856eadbdf276760668651c14abfd3dde2376",
+                "parts": [
+                    {
+                        "index": 0,
+                        "topology": "Triangles",
+                        "indexStart": 0,
+                        "indexCount": 948,
+                        "baseVertex": 0,
+                        "firstVertex": 0,
+                        "vertexCount": 369
+                    }
+                ],
+                "readError": ""
+            }
+        ],
+        "generatedAssets": [
+            "Assets/Model Palm/Porsche V.2/Meshes/Body_HeadlightsSeparated.asset",
+            "Assets/Model Palm/Porsche V.2/Meshes/Light_RearOnly.asset",
+            "Assets/Model Palm/Porsche V.2/Meshes/Headlight_Left.asset",
+            "Assets/Model Palm/Porsche V.2/Meshes/Headlight_Right.asset",
+            "Assets/Model Palm/Porsche V.2/Material/Headlights.mat",
+            "Assets/Model Palm/Porsche V.2/PorscheV.2.prefab"
+        ]
+    }
+}

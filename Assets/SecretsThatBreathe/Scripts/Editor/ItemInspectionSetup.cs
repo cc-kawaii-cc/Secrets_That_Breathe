@@ -1,4 +1,4 @@
-﻿using TMPro;
+using TMPro;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -348,7 +348,7 @@ namespace SecretsThatBreathe.Editor
             var paper = ui.notePanel.GetComponent<Image>();
             if (paper != null) { Undo.RecordObject(paper, "Remove notebook paper background"); paper.enabled = false; Save(paper); }
             Undo.RecordObject(ui.noteText, "Use white notebook text");
-            ui.noteText.color = Color.white;
+            ui.noteText.color = SeatPromptUI.DefaultTextColor;
             ui.Clear();
             interaction.inspectionControlsRevision = 1;
             Save(ui.heldPrompt);
@@ -407,7 +407,7 @@ namespace SecretsThatBreathe.Editor
             var label = Label("Text", hint, canvas, "[RMB] หมุน");
             Stretch(label.rectTransform);
             label.alignment = TextAlignmentOptions.Center;
-            label.color = Color.white;
+            label.color = SeatPromptUI.DefaultTextColor;
             ui.rotateHint = hint.gameObject;
             ui.Clear();
             interaction.inspectionControlsRevision = 2;
@@ -428,7 +428,7 @@ namespace SecretsThatBreathe.Editor
             var label = Label("Text", rect, canvas, content);
             Stretch(label.rectTransform);
             label.alignment = TextAlignmentOptions.Center;
-            label.color = Color.white;
+            label.color = SeatPromptUI.DefaultTextColor;
             Save(image); Save(button); Save(label);
             return button;
         }
@@ -472,7 +472,7 @@ namespace SecretsThatBreathe.Editor
             var label = Label("Text", panel, canvas, content);
             Stretch(label.rectTransform);
             label.alignment = TextAlignmentOptions.Center;
-            label.color = Color.white;
+            label.color = SeatPromptUI.DefaultTextColor;
             panel.gameObject.SetActive(false);
             return label;
         }

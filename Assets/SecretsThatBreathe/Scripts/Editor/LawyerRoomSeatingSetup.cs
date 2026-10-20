@@ -110,7 +110,7 @@ namespace SecretsThatBreathe.Editor
                 if (existingUI == null)
                 {
                     Undo.RegisterCreatedObjectUndo(interactor.promptCanvas.gameObject, "Create seating Canvas");
-                    var thaiFont = AssetDatabase.LoadAssetAtPath<TMPro.TMP_FontAsset>("Assets/Champ&Kichzz/Fonts/PKFbasicDemo SDF.asset");
+                    var thaiFont = AssetDatabase.LoadAssetAtPath<TMPro.TMP_FontAsset>("Assets/Nemo_Upgrade/Font/Kanit/Kanit-Medium SDF.asset");
                     if (thaiFont != null) interactor.promptCanvas.promptLabel.font = thaiFont;
                 }
             }
@@ -135,7 +135,7 @@ namespace SecretsThatBreathe.Editor
             PrefabUtility.RecordPrefabInstancePropertyModifications(player);
             var drawerStory = GetOrAdd<DrawerSearchScareSequence>(fps.gameObject);
             drawerStory.ConfigureScene();
-            drawerStory.UseThaiFontIfNeeded(AssetDatabase.LoadAssetAtPath<TMPro.TMP_FontAsset>("Assets/Champ&Kichzz/Fonts/PKFbasicDemo SDF.asset"));
+            drawerStory.UseThaiFontIfNeeded(AssetDatabase.LoadAssetAtPath<TMPro.TMP_FontAsset>("Assets/Nemo_Upgrade/Font/Kanit/Kanit-Medium SDF.asset"));
             EditorUtility.SetDirty(drawerStory);
             PrefabUtility.RecordPrefabInstancePropertyModifications(drawerStory);
             EditorSceneManager.MarkSceneDirty(scene);

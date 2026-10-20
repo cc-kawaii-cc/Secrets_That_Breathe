@@ -44,7 +44,7 @@ namespace SecretsThatBreathe.Editor
             ChairExplorationInstaller.Install(scene, player, canvas);
             changed |= before != CountInspections(scene) || (main != null && main.unlockTrigger != oldGate);
             if (!changed) return;
-            var font = AssetDatabase.LoadAssetAtPath<TMPro.TMP_FontAsset>("Assets/Champ&Kichzz/Fonts/PKFbasicDemo SDF.asset");
+            var font = AssetDatabase.LoadAssetAtPath<TMPro.TMP_FontAsset>("Assets/Nemo_Upgrade/Font/Kanit/Kanit-Medium SDF.asset");
             foreach (var root in scene.GetRootGameObjects())
                 foreach (var inspection in root.GetComponentsInChildren<ChairInspectionInteractable>(true))
                 { EditorUtility.SetDirty(inspection); PrefabUtility.RecordPrefabInstancePropertyModifications(inspection); }
@@ -58,7 +58,7 @@ namespace SecretsThatBreathe.Editor
                     EditorUtility.SetDirty(interactor.chairInspectionUI);
                     foreach (var text in interactor.chairInspectionUI.GetComponentsInChildren<TMPro.TMP_Text>(true))
                     {
-                        if (text.font == null || !text.font.HasCharacter('น')) text.font = font;
+                        if (text.font == null) text.font = font;
                         EditorUtility.SetDirty(text);
                         EditorUtility.SetDirty(text.transform.parent);
                     }

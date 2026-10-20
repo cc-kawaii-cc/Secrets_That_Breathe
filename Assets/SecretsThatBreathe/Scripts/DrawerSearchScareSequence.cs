@@ -352,16 +352,16 @@ namespace SecretsThatBreathe
         {
             if (font == null) return;
             foreach (var label in new[] { objectiveText, searchPromptText, searchingText, auntDialogueText })
-                if (label != null && (label.font == null || !label.font.HasCharacter('ด'))) label.font = font;
+                if (label != null && label.font == null) label.font = font;
             if (moneyChoiceUI != null)
                 foreach (var label in new[] { moneyChoiceUI.acceptLabel, moneyChoiceUI.refuseLabel })
-                    if (label != null && (label.font == null || !label.font.HasCharacter('ร'))) label.font = font;
+                    if (label != null && label.font == null) label.font = font;
             if (auntDialogueUI != null)
                 foreach (var label in auntDialogueUI.GetComponentsInChildren<TMP_Text>(true))
-                    if (label.font == null || !label.font.HasCharacter('ด')) label.font = font;
+                    if (label.font == null) label.font = font;
             if (postMealThoughtUI != null)
                 foreach (var label in new[] { postMealThoughtUI.firstThought, postMealThoughtUI.secondThought, postMealThoughtUI.thirdThought })
-                    if (label != null && (label.font == null || !label.font.HasCharacter('ก'))) label.font = font;
+                    if (label != null && label.font == null) label.font = font;
         }
 
         private IEnumerator SearchThenScare()

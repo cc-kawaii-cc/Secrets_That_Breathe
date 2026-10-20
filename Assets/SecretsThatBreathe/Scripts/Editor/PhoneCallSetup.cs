@@ -196,7 +196,7 @@ namespace SecretsThatBreathe.Editor
             label.font = canvas.promptLabel.font;
             label.fontSize = 30f;
             label.alignment = alignment;
-            label.color = Color.white;
+            label.color = SeatPromptUI.DefaultTextColor;
             label.raycastTarget = false;
             label.text = text;
             return label;

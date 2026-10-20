@@ -10,6 +10,7 @@ namespace SecretsThatBreathe
     [DisallowMultipleComponent]
     public sealed class SeatPromptUI : MonoBehaviour
     {
+        public static Color DefaultTextColor => new Color32(220, 220, 220, 255);
         [Tooltip("Only this panel is shown/hidden; the Canvas can contain other UI.")]
         public GameObject promptPanel;
         [Tooltip("Edit Text Input on this TextMeshPro component to write your own sentence.")]
@@ -108,9 +109,9 @@ namespace SecretsThatBreathe
             if (background != null) background.enabled = false;
             var label = panel.GetComponentInChildren<TMP_Text>(true);
             label.text = text;
-            if (label.font == null || !label.font.HasCharacter('ด'))
-                foreach (var font in Resources.FindObjectsOfTypeAll<TMP_FontAsset>())
-                    if (font.HasCharacter('ด')) { label.font = font; break; }
+            // A dynamic font's atlas may still be empty. Keep the chosen font;
+            // new labels inherit the Canvas template instead of selecting a loaded font.
+            if (label.font == null && promptLabel != null) label.font = promptLabel.font;
             panel.SetActive(false);
             return label;
         }
@@ -187,7 +188,7 @@ namespace SecretsThatBreathe
             label.text = "[E] Sit";
             label.fontSize = 30f;
             label.alignment = TextAlignmentOptions.Center;
-            label.color = Color.white;
+            label.color = SeatPromptUI.DefaultTextColor;
             label.raycastTarget = false;
 
             var ui = canvasObject.AddComponent<SeatPromptUI>();

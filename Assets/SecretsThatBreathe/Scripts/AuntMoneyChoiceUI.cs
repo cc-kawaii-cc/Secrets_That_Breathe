@@ -99,7 +99,7 @@ namespace SecretsThatBreathe
             label.fontSize = 30f;
             label.text = text;
             label.alignment = TextAlignmentOptions.Center;
-            label.color = Color.white;
+            label.color = SeatPromptUI.DefaultTextColor;
             label.raycastTarget = false;
             return button;
         }

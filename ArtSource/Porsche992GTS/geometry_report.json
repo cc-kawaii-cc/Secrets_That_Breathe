@@ -1,0 +1,129 @@
+{
+  "source": "Created from scratch with original parametric geometry. No existing vehicle mesh imported.",
+  "variant": "992.2 Carrera GTS Coupe, RHD",
+  "nominal_dimensions_m": {
+    "length": 4.553,
+    "body_width": 1.852,
+    "height": 1.296,
+    "wheelbase": 2.45
+  },
+  "paint": "White",
+  "wheels": "Black split five-spoke, 20-inch front / 21-inch rear",
+  "objects": 433,
+  "triangles": 527888,
+  "groups": {
+    "Door_L": {
+      "meshes": 17,
+      "triangles": 15000,
+      "pivot": [
+        -0.8,
+        -0.635,
+        0.76
+      ]
+    },
+    "Door_R": {
+      "meshes": 17,
+      "triangles": 15000,
+      "pivot": [
+        0.8,
+        -0.635,
+        0.76
+      ]
+    },
+    "Bonnet": {
+      "meshes": 2,
+      "triangles": 23436,
+      "pivot": [
+        0,
+        -0.7,
+        0.82
+      ]
+    },
+    "EngineCover": {
+      "meshes": 1,
+      "triangles": 22096,
+      "pivot": [
+        0,
+        1.445,
+        0.9
+      ]
+    },
+    "Spoiler": {
+      "meshes": 1,
+      "triangles": 300,
+      "pivot": [
+        0,
+        1.99,
+        0.846
+      ]
+    },
+    "Steering": {
+      "meshes": 7,
+      "triangles": 4680,
+      "pivot": [
+        0.36500000953674316,
+        -0.20499999821186066,
+        0.8270000219345093
+      ]
+    },
+    "Interior": {
+      "meshes": 138,
+      "triangles": 50172,
+      "pivot": [
+        0,
+        0,
+        0
+      ]
+    },
+    "Chassis": {
+      "meshes": 182,
+      "triangles": 266028,
+      "pivot": [
+        0,
+        0,
+        0
+      ]
+    },
+    "Wheel_FL": {
+      "meshes": 17,
+      "triangles": 33024,
+      "pivot": [
+        -0.794,
+        -1.225,
+        0.33975
+      ]
+    },
+    "Wheel_FR": {
+      "meshes": 17,
+      "triangles": 33024,
+      "pivot": [
+        0.794,
+        -1.225,
+        0.33975
+      ]
+    },
+    "Wheel_RL": {
+      "meshes": 17,
+      "triangles": 32564,
+      "pivot": [
+        -0.765,
+        1.225,
+        0.3612
+      ]
+    },
+    "Wheel_RR": {
+      "meshes": 17,
+      "triangles": 32564,
+      "pivot": [
+        0.765,
+        1.225,
+        0.3612
+      ]
+    }
+  },
+  "limitations": [
+    "Reference-based visual reconstruction, not OEM CAD or a dimension-certified scan.",
+    "Mechanical parts are visual representations, not complete engineering internals.",
+    "No driving physics, collision simulation, or exact opening-clearance guarantee yet."
+  ]
+}
