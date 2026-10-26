@@ -32,7 +32,13 @@ namespace SecretsThatBreathe.Editor
             {
                 foreach (var label in root.GetComponentsInChildren<TMP_Text>(true))
                 {
-                    if (font != null && label.font != font)
+                    bool authoredDialogue = false;
+                    var dialogue = label.GetComponentInParent<AuntDialogueUI>(true);
+                    if (dialogue != null && (label == dialogue.firstThought || label == dialogue.secondThought || label == dialogue.thirdThought))
+                        authoredDialogue = true;
+                    for (var parent = label.transform; parent != null; parent = parent.parent)
+                        if (parent.name == "FlowingDialogue") { authoredDialogue = true; break; }
+                    if (!authoredDialogue && font != null && label.font != font)
                     {
                         Undo.RecordObject(label, "Restore Kanit Medium UI font");
                         label.font = font;
@@ -42,7 +48,7 @@ namespace SecretsThatBreathe.Editor
                         changed = true;
                     }
                     var color = label.color;
-                    if (color.r == 1f && color.g == 1f && color.b == 1f)
+                    if (!authoredDialogue && color.r == 1f && color.g == 1f && color.b == 1f)
                     {
                         Undo.RecordObject(label, "Change white UI text to DCDCDC");
                         color.r = color.g = color.b = 220f / 255f;

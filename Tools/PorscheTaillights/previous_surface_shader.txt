@@ -1,0 +1,63 @@
+Shader "Secrets That Breathe/Porsche Taillights"
+{
+    Properties
+    {
+        [HDR] _EmissionColor("Emission Color", Color) = (5,0.015,0.03,1)
+        _BandHeight("Light Guide Height (m)", Float) = 0.780
+        _BandHalfWidth("Light Guide Half Width (m)", Float) = 0.005
+        _LowerStrength("Lower LED Strength", Range(0,1)) = 0.65
+        [HideInInspector] _Cull("Cull", Float) = 2
+    }
+    SubShader
+    {
+        Tags { "RenderType"="Transparent" "Queue"="Transparent" "RenderPipeline"="UniversalPipeline" }
+        LOD 300
+        Pass
+        {
+            Name "ForwardLit"
+            Tags { "LightMode"="UniversalForward" }
+            Cull [_Cull]
+            Blend One One
+            ZWrite Off
+            Offset -1, -1
+            HLSLPROGRAM
+            #pragma vertex Vert
+            #pragma fragment Frag
+            #pragma multi_compile_fog
+            #pragma multi_compile_instancing
+            #pragma shader_feature_local _EMISSION
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            CBUFFER_START(UnityPerMaterial)
+            half4 _EmissionColor;
+            float _BandHeight, _BandHalfWidth, _LowerStrength;
+            CBUFFER_END
+            struct Attributes { float4 positionOS:POSITION; float3 normalOS:NORMAL; float2 uv:TEXCOORD0; UNITY_VERTEX_INPUT_INSTANCE_ID };
+            struct Varyings {
+                float4 positionCS:SV_POSITION; float3 positionWS:TEXCOORD0; half3 normalWS:TEXCOORD1;
+                float2 uv:TEXCOORD2; float3 positionOS:TEXCOORD3; half fog:TEXCOORD4;
+                UNITY_VERTEX_INPUT_INSTANCE_ID UNITY_VERTEX_OUTPUT_STEREO
+            };
+            Varyings Vert(Attributes v) {
+                Varyings o=(Varyings)0; UNITY_SETUP_INSTANCE_ID(v); UNITY_TRANSFER_INSTANCE_ID(v,o); UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
+                VertexPositionInputs p=GetVertexPositionInputs(v.positionOS.xyz);
+                o.positionCS=p.positionCS; o.positionWS=p.positionWS; o.positionOS=v.positionOS.xyz;
+                o.fog=ComputeFogFactor(p.positionCS.z); return o;
+            }
+            half4 Frag(Varyings i):SV_Target {
+                UNITY_SETUP_INSTANCE_ID(i); UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);
+                float x=abs(i.positionOS.x), y=i.positionOS.y;
+                float center=_BandHeight-.021*pow(saturate((x-.50)/.25),1.5);
+                float aa=max(fwidth(y),.0003);
+                float band=1-smoothstep(_BandHalfWidth-aa,_BandHalfWidth+aa,abs(y-center));
+                float lower=1-smoothstep(.0025-aa,.0025+aa,abs(y-(center-.017)));
+                float segments=(step(.43,x)-step(.53,x))+(step(.56,x)-step(.66,x));
+                float rear=1-smoothstep(-2.14+.37*pow(x/.75,2),-2.137+.37*pow(x/.75,2),i.positionOS.z);
+                float mask=max(band,lower*segments*_LowerStrength)*rear*(1-smoothstep(.740,.747,x));
+                clip(mask-.001);
+                return half4(MixFogColor(_EmissionColor.rgb*mask,half3(0,0,0),i.fog),0);
+            }
+            ENDHLSL
+        }
+    }
+    Fallback "Hidden/Universal Render Pipeline/FallbackError"
+}

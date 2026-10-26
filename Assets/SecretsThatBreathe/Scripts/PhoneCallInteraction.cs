@@ -40,8 +40,8 @@ namespace SecretsThatBreathe
         [Tooltip("Wait after the incoming ring and light start before showing the 'Who is calling?' thought.")]
         [Min(0f)] public float ringThoughtDelay = 1.5f;
         [Min(.1f)] public float thoughtDuration = 3f;
-        [Min(.001f)] public float secondsPerCharacter = .05f;
-        [Min(0f)] public float lineReadDuration = 2f;
+        [HideInInspector, Min(.001f)] public float secondsPerCharacter = .05f;
+        [HideInInspector, Min(0f)] public float lineReadDuration = 1f;
         [Min(0f)] public float hangUpDelay = .5f;
         public bool IsInCall { get; private set; }
         public bool HasAnswered { get; private set; }
@@ -175,22 +175,12 @@ namespace SecretsThatBreathe
                 yield return new WaitForSeconds((dialSound != null ? dialSound.length : 0f) + dialDelay);
             }
             dialogueUI.Begin();
-            // Kem always occupies the top row; Ton always occupies the bottom row.
+            // One active speaker, with a one-second hold after the last character.
             int[] speakers = callingBack ? new[] { 0, 1, 0, 1, 0 } : new[] { 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0 };
             var sentences = callingBack ? dialogueUI.callBackSentences : dialogueUI.sentences;
             for (int i = 0; sentences != null && i < sentences.Length && i < speakers.Length; i++)
             {
-                var text = speakers[i] == 0 ? dialogueUI.kemText : dialogueUI.tonText;
-                text.text = sentences[i] != null ? sentences[i].text : "";
-                text.maxVisibleCharacters = 0;
-                text.ForceMeshUpdate();
-                int count = text.textInfo.characterCount;
-                for (int character = 1; character <= count; character++)
-                {
-                    yield return new WaitForSeconds(secondsPerCharacter);
-                    text.maxVisibleCharacters = character;
-                }
-                if (i + 1 < sentences.Length) yield return new WaitForSeconds(lineReadDuration);
+                yield return dialogueUI.PlayLine(sentences[i], speakers[i] == 0);
             }
             yield return new WaitForSeconds(hangUpDelay);
             dialogueUI.Hide();

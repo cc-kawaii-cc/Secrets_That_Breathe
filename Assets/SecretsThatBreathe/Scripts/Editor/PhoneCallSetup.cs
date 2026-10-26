@@ -182,8 +182,7 @@ namespace SecretsThatBreathe.Editor
             row.anchoredPosition = new Vector2(0f, y);
             row.sizeDelta = new Vector2(1020f, 180f);
             Label("Speaker", row, speaker, 0f, 90f, canvas, TextAlignmentOptions.TopRight);
-            Label("Colon", row, ":", 100f, 20f, canvas, TextAlignmentOptions.TopLeft);
-            return Label("Sentence", row, "", 130f, 870f, canvas, TextAlignmentOptions.TopLeft);
+            return Label("Sentence", row, "", 110f, 890f, canvas, TextAlignmentOptions.TopLeft);
         }
         private static TMP_Text Label(string name, Transform parent, string text, float x, float width, SeatPromptUI canvas, TextAlignmentOptions alignment)
         {

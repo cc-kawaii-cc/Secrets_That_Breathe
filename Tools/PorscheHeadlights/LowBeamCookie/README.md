@@ -6,7 +6,8 @@ Porsche instance in `Assets/Nemo_Upgrade/MainScene_2_Evening.unity`.
 - Asset: `Assets/SecretsThatBreathe/Lighting/Cookies/Porsche_LowBeam_LHT.png`
 - 1024 x 1024, linear grayscale RGB plus matching luminance alpha, uncompressed,
   bilinear, Clamp, no mipmaps. URP uses the RGB channels.
-- Analytic low-beam approximation: sharp upper cutoff, bounded left shoulder
+- Analytic low-beam approximation: lightly feathered upper cutoff (about seven
+  texture pixels, fading below the cutoff), bounded left shoulder
   upsweep for left-hand traffic, central hotspot and softer foreground spill.
   Both lamps use the same traffic-handed pattern; do not mirror one lamp.
 - Spot outer/inner angles: 70 / 62 degrees. Local downward aim: 0.8 degrees.

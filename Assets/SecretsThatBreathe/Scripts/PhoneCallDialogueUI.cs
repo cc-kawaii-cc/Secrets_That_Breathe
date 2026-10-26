@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 
@@ -13,9 +14,19 @@ namespace SecretsThatBreathe
         public TMP_Text[] callBackSentences;
         public GameObject ringThought;
         public GameObject answerPrompt;
+        [HideInInspector] public string khemName = "เข้ม";
+        [HideInInspector] public string tonName = "พี่ต้น";
+        public DialogueCanvasView khemDialogue = new DialogueCanvasView();
+        public DialogueCanvasView tonDialogue = new DialogueCanvasView();
+        public FlowingDialogueSettings presentation = new FlowingDialogueSettings();
+        private FlowingDialogue flowing;
+        private FlowingDialogue khemFlowing, tonFlowing;
         [HideInInspector] public int dialogueRevision;
         public void Hide()
         {
+            flowing?.Hide();
+            khemDialogue.Hide();
+            tonDialogue.Hide();
             if (conversationPanel != null) conversationPanel.SetActive(false);
             if (ringThought != null) ringThought.SetActive(false);
             if (answerPrompt != null) answerPrompt.SetActive(false);
@@ -25,7 +36,14 @@ namespace SecretsThatBreathe
             Hide();
             kemText.text = tonText.text = "";
             kemText.maxVisibleCharacters = tonText.maxVisibleCharacters = 0;
-            conversationPanel.SetActive(true);
+            if (khemFlowing == null) khemFlowing = new FlowingDialogue(khemDialogue, presentation);
+            if (tonFlowing == null) tonFlowing = new FlowingDialogue(tonDialogue, presentation);
+        }
+        public IEnumerator PlayLine(TMP_Text source, bool isKhem)
+        {
+            flowing?.Hide();
+            flowing = isKhem ? khemFlowing : tonFlowing;
+            yield return flowing.Play(source != null ? source.text : "");
         }
     }
 }

@@ -55,7 +55,7 @@ namespace SecretsThatBreathe
         {
             if (label == null || TestKey.IsMatch(label.text ?? "")) return true;
             for (var item = label.transform; item != null && item != transform; item = item.parent)
-                if (item.name.StartsWith("TestSkip") || item.name.StartsWith("CallRow")
+                if (item.name == "FlowingDialogue" || item.name.StartsWith("TestSkip") || item.name.StartsWith("CallRow")
                     || item.name == "Conversation" || item.name == "CallBackLines"
                     || (item.name == "Lines" && item.parent != null && item.parent.name == "PhoneCallUI"))
                     return true;
@@ -87,7 +87,9 @@ namespace SecretsThatBreathe
                     bool button = label.GetComponentInParent<Button>(true) != null;
                     bool control = ControlKey.IsMatch(label.text);
                     command |= control;
-                    pinned |= control || button || ReadingPage(label);
+                    string content = (label.text ?? "").Trim();
+                    bool quoted = content.Length >= 2 && content[0] == '"' && content[content.Length - 1] == '"';
+                    pinned |= control || button || quoted || ReadingPage(label);
                     priority = Mathf.Max(priority, button ? 2 : 1);
                     if (label.havePropertiesChanged) label.ForceMeshUpdate();
                 }

@@ -18,6 +18,7 @@ public static class PorscheLowBeamCookieSetup
     const string Request = Work + "/install.request";
     const int Size = 1024;
     static bool busy;
+    static bool softenOnly;
 
     static PorscheLowBeamCookieSetup() { EditorApplication.update += Poll; }
     static void Poll()
@@ -25,10 +26,11 @@ public static class PorscheLowBeamCookieSetup
         if (busy || EditorApplication.isCompiling || EditorApplication.isUpdating ||
             EditorApplication.isPlayingOrWillChangePlaymode || !File.Exists(Request)) return;
         busy = true;
+        softenOnly = File.ReadAllText(Request).Trim() == "soften";
         File.Move(Request, Work + "/request-" + DateTime.UtcNow.ToString("yyyyMMdd-HHmmssfff") + ".consumed");
         try { Install(); }
         catch (Exception e) { File.WriteAllText(Work + "/result.json", JsonUtility.ToJson(new Report { error = e.ToString() }, true)); Debug.LogException(e); }
-        finally { busy = false; }
+        finally { busy = false; softenOnly = false; }
     }
 
     [Serializable] public class Report
@@ -58,6 +60,7 @@ public static class PorscheLowBeamCookieSetup
         // Copy the LIVE scene too, so unsaved user changes are recoverable.
         if (!EditorSceneManager.SaveScene(scene, backup, true)) throw new IOException("Live scene backup failed.");
         File.Copy(ScenePath, Work + "/on-disk-before-" + stamp + ".unity");
+        if (File.Exists(CookiePath)) File.Copy(CookiePath, Work + "/cookie-before-" + stamp + ".png");
         Directory.CreateDirectory(Path.GetDirectoryName(CookiePath));
         Texture2D generated = new Texture2D(Size, Size, TextureFormat.RGBA32, false, true);
         Color32[] pixels = new Color32[Size * Size];
@@ -68,7 +71,8 @@ public static class PorscheLowBeamCookieSetup
             // Driver's left is texture left in URP's spot-cookie projection.
             // A bounded 15-degree upsweep toward the left shoulder; flat oncoming side.
             float cutoff = Mathf.Clamp((-u - .015f) * .267949f, 0, .026f);
-            float edge = Mathf.SmoothStep(0, 1, (cutoff - v) / .0035f);
+            // About seven texels of feathering, entirely below the cutoff.
+            float edge = Mathf.SmoothStep(0, 1, (cutoff - v) / .014f);
             float hot = Mathf.Exp(-.5f * (Sq((u + .025f) / .17f) + Sq((v + .045f) / .049f)));
             float spread = .38f * Mathf.Exp(-.5f * (Sq(u / .47f) + Sq((v + .17f) / .18f)));
             float foreground = .10f * Mathf.Exp(-.5f * (Sq(u / .65f) + Sq((v + .43f) / .25f)));
@@ -104,9 +108,12 @@ public static class PorscheLowBeamCookieSetup
         {
             Undo.RecordObjects(new UnityEngine.Object[] { light, light.transform }, "Set low beam cookie and aim");
             light.cookie = cookie;
-            light.spotAngle = 70;
-            light.innerSpotAngle = 62;
-            light.transform.localRotation = Quaternion.Euler(.8f, 0, 0);
+            if (!softenOnly)
+            {
+                light.spotAngle = 70;
+                light.innerSpotAngle = 62;
+                light.transform.localRotation = Quaternion.Euler(.8f, 0, 0);
+            }
             // Keep the user's intensity, colour, range, shadow setting and positions.
             PrefabUtility.RecordPrefabInstancePropertyModifications(light);
             PrefabUtility.RecordPrefabInstancePropertyModifications(light.transform);

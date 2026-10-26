@@ -13,12 +13,18 @@ namespace SecretsThatBreathe
         public Button refuseButton;
         public TMP_Text acceptLabel;
         public TMP_Text refuseLabel;
+        [Header("Transparent button feedback")]
+        public Color normalTextColor = new Color(.96f, .96f, .96f, 1f);
+        public Color highlightedTextColor = Color.white;
+        [Range(1f, 1.25f)] public float highlightedTextScale = 1.08f;
+        [Min(.01f)] public float hoverTransitionDuration = .12f;
         private bool cursorCaptured;
         private CursorLockMode previousLock;
         private bool previousVisible;
 
         public void ShowChoices()
         {
+            PrepareButtons();
             EnsureEventSystem();
             if (!cursorCaptured)
             {
@@ -29,6 +35,45 @@ namespace SecretsThatBreathe
             gameObject.SetActive(true);
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+        }
+
+        public void PrepareButtons()
+        {
+            var canvas = GetComponentInParent<Canvas>();
+            if (canvas != null)
+            {
+                var raycaster = canvas.GetComponent<GraphicRaycaster>();
+                if (raycaster == null) raycaster = canvas.gameObject.AddComponent<GraphicRaycaster>();
+                raycaster.enabled = true;
+            }
+            var group = GetComponent<CanvasGroup>();
+            if (group == null) group = gameObject.AddComponent<CanvasGroup>();
+            group.alpha = 1f;
+            group.interactable = group.blocksRaycasts = true;
+            ConfigureButton(acceptButton, acceptLabel);
+            ConfigureButton(refuseButton, refuseLabel);
+        }
+
+        private void ConfigureButton(Button button, TMP_Text label)
+        {
+            if (button == null || label == null) return;
+            button.gameObject.SetActive(true);
+            label.gameObject.SetActive(true);
+            label.enabled = true;
+            var image = button.GetComponent<Image>();
+            if (image == null) image = button.gameObject.AddComponent<Image>();
+            image.enabled = true;
+            image.color = Color.clear;
+            image.raycastTarget = true;
+            image.alphaHitTestMinimumThreshold = 0f;
+            button.enabled = button.interactable = true;
+            button.targetGraphic = image;
+            button.transition = Selectable.Transition.None;
+            label.raycastTarget = false;
+            label.color = normalTextColor;
+            var feedback = button.GetComponent<MoneyChoiceButtonFeedback>();
+            if (feedback == null) feedback = button.gameObject.AddComponent<MoneyChoiceButtonFeedback>();
+            feedback.Configure(button, label, normalTextColor, highlightedTextColor, highlightedTextScale, hoverTransitionDuration);
         }
 
         public void HideChoices()
@@ -84,7 +129,7 @@ namespace SecretsThatBreathe
             rect.anchoredPosition = new Vector2(0f, y);
             rect.sizeDelta = new Vector2(560f, 70f);
             var image = buttonObject.GetComponent<Image>();
-            image.color = new Color(0.18f, 0.20f, 0.24f, 0.9f);
+            image.color = Color.clear;
             var button = buttonObject.GetComponent<Button>();
             button.targetGraphic = image;
             var labelObject = new GameObject("Label", typeof(RectTransform), typeof(TextMeshProUGUI));

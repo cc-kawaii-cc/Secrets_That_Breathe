@@ -179,7 +179,7 @@ namespace SecretsThatBreathe
                     if (desk == null && item.name == "Table Kam") desk = item;
                     if (mainDoor == null && item.name == "Main Door") mainDoor = item;
                     if (item.name == "Chair Kam") chair = item.GetComponent<ChairInteractable>();
-                    if (auntObject == null && item.name == "Capsule" && !item.IsChildOf(transform.root)) auntObject = item.gameObject;
+                    if (auntObject == null && (item.name == "Capsule" || item.name == "UncleVisitor") && !item.IsChildOf(transform.root)) auntObject = item.gameObject;
                 }
             if (promptCanvas == null) promptCanvas = SeatPromptUI.FindOrCreate(gameObject.scene);
             if (screenFade == null) screenFade = ScreenFadeUI.FindOrCreate(promptCanvas);
@@ -321,6 +321,11 @@ namespace SecretsThatBreathe
                 ((Stage != StoryStage.AuntLeaving && !seated) || auntObject == null || auntStandPoint == null || auntFaceTarget == null || player.playerCamera == null)) CancelSequence();
             if (Stage == StoryStage.AuntDialogue && Time.timeScale > 0f)
             {
+                if (auntDialogueUI != null && auntDialogueUI.ReadyToAdvance)
+                {
+                    AdvanceDialogue();
+                    return;
+                }
                 if (awaitingDialogueRelease)
                 {
                     if (!advanceDialogue.IsPressed()) awaitingDialogueRelease = false;
@@ -440,7 +445,7 @@ namespace SecretsThatBreathe
         public bool AdvanceDialogue()
         {
             if (!isActiveAndEnabled || Stage != StoryStage.AuntDialogue || Time.timeScale <= 0f ||
-                auntDialogueText == null) return false;
+                auntDialogueText == null || auntDialogueUI == null || !auntDialogueUI.ReadyToAdvance) return false;
             if (DialogueLineIndex == 0) ShowDialogueLine(1);
             else if (DialogueLineIndex == 1) ShowDialogueLine(2);
             else if (DialogueLineIndex == 2 || DialogueLineIndex == 3) ShowMoneyChoices();

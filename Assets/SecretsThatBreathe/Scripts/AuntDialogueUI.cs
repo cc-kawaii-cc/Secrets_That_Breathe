@@ -3,24 +3,35 @@ using UnityEngine;
 
 namespace SecretsThatBreathe
 {
-    // Every sentence lives on its own Canvas TMP object; runtime only changes visibility.
+    // Canvas TMP objects store editable sentences; one shared display types them at runtime.
     public sealed class AuntDialogueUI : MonoBehaviour
     {
         public TMP_Text firstLine, secondLine, moneyLine, refuseLine;
         public TMP_Text firstThought, secondThought, thirdThought;
         public TMP_Text thankYouLine;
 
+        [HideInInspector] public string visitorName = "ลุง";
+        [HideInInspector] public string khemName = "เข้ม";
+        public DialogueCanvasView khemDialogue = new DialogueCanvasView();
+        public DialogueCanvasView visitorDialogue = new DialogueCanvasView();
+        public DialogueCanvasView thoughtDialogue = new DialogueCanvasView();
+        [HideInInspector] public int quotedTextStyleRevision;
+        [Min(0f)] public float moneyThoughtHoldDuration = 3f;
+        public FlowingDialogueSettings presentation = new FlowingDialogueSettings();
+        private FlowingDialogue flowing;
+        public bool ReadyToAdvance => flowing != null && flowing.ReadyToAdvance;
+
         // Defaults seed newly created Canvas objects only. Existing TMP text is never overwritten.
-        public const string DefaultFirstLine = "หนู... หนูใช่ทนายเข้มใช่มั้ยลูก... ช่วยป้าด้วยนะ ลูกสาวป้า... โดนรถชนตาย";
+        public const string DefaultFirstLine = "หนู... หนูใช่ทนายเข้มใช่มั้ยลูก... ช่วยลุงด้วยนะ ลูกสาวลุง... โดนรถชนตาย";
         private static readonly string[] InitialLines =
         {
             DefaultFirstLine,
-            "ป้าไปแจ้งความแล้ว... แต่ตำรวจเขาไม่รับแจ้ง บอกว่าคู่กรณีเป็นลูก ส.ส. ... สุดท้ายเขาสรุปว่าเป็นแค่อุบัติเหตุ",
-            "ป้าเหลือเงินอยู่แค่นี้... ป้าขอจ้างหนูนะ ช่วยลูกป้าหน่อยนะลูก",
-            "เก็บเงินไว้ทำศพน้องเถอะป้า คดีนี้ผมทำให้ฟรี... ผมสัญญาว่าจะลากคอมันมาเข้าคุกให้ได้",
-            "จะดีหรอเข้ม ป้าเขาก็ดูไม่ค่อยมีเงินเท่าไหร่นะ",
-            "เงินเก็บเราก็พอมีนะ ทำคดีช่วยป้าหน่อยไหม",
-            "อย่าเลย ไม่ต้องรับเงินป้ามาหรอก"
+            "ลุงไปแจ้งความแล้ว... แต่ตำรวจเขาไม่รับแจ้ง บอกว่าคู่กรณีเป็นลูก ส.ส. ... สุดท้ายเขาสรุปว่าเป็นแค่อุบัติเหตุ",
+            "ลุงเหลือเงินอยู่แค่นี้... ลุงขอจ้างหนูนะ ช่วยลูกลุงหน่อยนะลูก",
+            "เก็บเงินไว้ทำศพน้องเถอะลุง คดีนี้ผมทำให้ฟรี... ผมสัญญาว่าจะลากคอมันมาเข้าคุกให้ได้",
+            "จะดีหรอเข้ม ลุงเขาก็ดูไม่ค่อยมีเงินเท่าไหร่นะ",
+            "เงินเก็บเราก็พอมีนะ ทำคดีช่วยลุงหน่อยไหม",
+            "อย่าเลย ไม่ต้องรับเงินลุงมาหรอก"
         };
 
         public static AuntDialogueUI FindOrCreate(SeatPromptUI canvas, TMP_Text template)
@@ -64,14 +75,25 @@ namespace SecretsThatBreathe
             HideAll();
             TMP_Text label = lineIndex == 0 ? firstLine : lineIndex == 1 ? secondLine : lineIndex == 2 ? moneyLine :
                 lineIndex == 4 ? refuseLine : lineIndex == 5 ? thankYouLine : thoughtIndex == 0 ? firstThought : thoughtIndex == 1 ? secondThought : thirdThought;
-            if (label != null) label.transform.parent.gameObject.SetActive(true);
+            if (label != null)
+            {
+                bool isKhem = lineIndex == 3 || lineIndex == 4;
+                flowing = new FlowingDialogue(lineIndex == 3 ? thoughtDialogue : isKhem ? khemDialogue : visitorDialogue, presentation);
+                StartCoroutine(lineIndex == 3 ? flowing.ShowInstant(label.text, moneyThoughtHoldDuration) : flowing.Play(label.text));
+            }
             return label;
         }
 
         public void HideAll()
         {
+            StopAllCoroutines();
+            flowing?.Hide();
+            khemDialogue.Hide();
+            visitorDialogue.Hide();
+            thoughtDialogue.Hide();
             foreach (var label in new[] { firstLine, secondLine, moneyLine, refuseLine, firstThought, secondThought, thirdThought, thankYouLine })
                 if (label != null) label.transform.parent.gameObject.SetActive(false);
         }
+        private void OnDisable() => HideAll();
     }
 }
