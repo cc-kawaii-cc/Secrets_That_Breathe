@@ -53,6 +53,8 @@ namespace SecretsThatBreathe
         public TMP_Text searchPromptText;
         public TMP_Text searchingText;
         public TMP_Text auntDialogueText;
+        public TMP_Text exitObjectiveText;
+        [Min(0f)] public float exitObjectiveDelay = 3f;
         public AuntMoneyChoiceUI moneyChoiceUI;
         public AuntDialogueUI auntDialogueUI;
         public PostMealThoughtUI postMealThoughtUI;
@@ -123,6 +125,7 @@ namespace SecretsThatBreathe
         private Renderer[] drawerMeshes;
         private Coroutine sequence;
         private Coroutine auntExitRoutine;
+        private Coroutine exitObjectiveRoutine;
         private bool auntDismissed;
         private bool awaitingRelease = true, cameraCaptured, oldLookLock, npcCaptured, oldNpcActive;
         private Camera capturedCamera;
@@ -283,6 +286,7 @@ namespace SecretsThatBreathe
         private void HideAllText()
         {
             Show(objectiveText, false); Show(searchPromptText, false); Show(searchingText, false); Show(auntDialogueText, false);
+            Show(exitObjectiveText, false);
             if (auntDialogueUI != null) auntDialogueUI.HideAll();
             if (moneyChoiceUI != null) moneyChoiceUI.HideChoices();
             if (postMealThoughtUI != null) postMealThoughtUI.HideAll();
@@ -525,7 +529,15 @@ namespace SecretsThatBreathe
             player.ResumeAfterStand();
             Stage = StoryStage.Completed;
             sequence = null;
+            exitObjectiveRoutine = StartCoroutine(ShowExitObjectiveAfterDelay());
             onSequenceFinished.Invoke();
+        }
+
+        private IEnumerator ShowExitObjectiveAfterDelay()
+        {
+            yield return new WaitForSeconds(Mathf.Max(0f, exitObjectiveDelay));
+            if (Stage == StoryStage.Completed) Show(exitObjectiveText, true);
+            exitObjectiveRoutine = null;
         }
 
         private IEnumerator WalkAuntAway()
@@ -667,6 +679,7 @@ namespace SecretsThatBreathe
         }
         public void CancelSequence()
         {
+            if (exitObjectiveRoutine != null) { StopCoroutine(exitObjectiveRoutine); exitObjectiveRoutine = null; }
             if (sequence != null) { StopCoroutine(sequence); sequence = null; }
             if (auntExitRoutine != null) { StopCoroutine(auntExitRoutine); auntExitRoutine = null; }
             SetAuntWalking(false);

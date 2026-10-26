@@ -176,7 +176,7 @@ namespace SecretsThatBreathe
             }
             dialogueUI.Begin();
             // One active speaker, with a one-second hold after the last character.
-            int[] speakers = callingBack ? new[] { 0, 1, 0, 1, 0 } : new[] { 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0 };
+            int[] speakers = callingBack ? new[] { 0, 1, 0, 1, 0 } : new[] { 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0 };
             var sentences = callingBack ? dialogueUI.callBackSentences : dialogueUI.sentences;
             for (int i = 0; sentences != null && i < sentences.Length && i < speakers.Length; i++)
             {

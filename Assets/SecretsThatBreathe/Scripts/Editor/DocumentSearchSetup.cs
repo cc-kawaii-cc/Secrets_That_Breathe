@@ -14,7 +14,7 @@ namespace SecretsThatBreathe.Editor
         private static bool queued;
         private static readonly string[] CallbackLines = {
             "ฮัลโหลครับพี่ต้น", "เจอไหมเข้ม", "เจอครับพี่",
-            "โอเคเข้ม\n<pos=-30>:<pos=0>พี่ตกใจหมดนึกว่าพี่ทำหายแล้ว\n<pos=-30>:<pos=0>วางไว้ตรงนั้นแหละเข้ม เดี๋ยวพรุ่งนี้พี่เข้าไปเอา", "ได้เลยครับพี่"
+            "โอเคเข้ม\nพี่ตกใจหมดนึกว่าพี่ทำหายแล้ว\nวางไว้ตรงนั้นแหละเข้ม เดี๋ยวพรุ่งนี้พี่เข้าไปเอา", "ได้เลยครับพี่"
         };
         static DocumentSearchSetup()
         {

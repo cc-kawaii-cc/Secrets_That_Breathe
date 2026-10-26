@@ -91,7 +91,7 @@ namespace SecretsThatBreathe.Editor
             var visitorRoot = visitor.visitorDialogue.motionRoot;
             var visitorBody = visitorRoot.Find("Sentence").GetComponent<TMP_Text>();
             Require(visitorBody.font == visitor.firstLine.font && visitorBody.fontSize == visitor.firstLine.fontSize, "visitor font changed");
-            Require(visitorRoot.Find("Speaker").GetComponent<TMP_Text>().text == "ลุง", "visitor name mismatch");
+            Require(visitorRoot.Find("Speaker").GetComponent<TMP_Text>().text == "ลุงป้อง", "visitor name mismatch");
             Require(!visitorBody.text.Contains("ป้า"), "old visitor pronoun remains");
             yield return new WaitForEndOfFrame();
             ScreenCapture.CaptureScreenshot("Tools/DialogueAudit/uncle-dialogue.png");

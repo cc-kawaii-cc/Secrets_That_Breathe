@@ -18,6 +18,6 @@ for item in items:
   assert item[key]==reference[key],(item['path'],key,item[key],reference[key])
 assert any('/QuotedThoughtCanvas/' in i['path'] for i in items),'Missing saved yellow thought Canvas'
 assert reference['fontSize']=='25'
-assert reference['color']=='{r: 1, g: 1, b: 0, a: 1}'
+assert reference['color']=='{r: 0.7529412, g: 0.7529412, b: 0, a: 1}'
 Path('Tools/DialogueAudit/quoted-style-validation.json').write_text(json.dumps({'result':'PASS','items':items},ensure_ascii=False,indent=2),encoding='utf-8')
 print('PASS:',len(items),'quoted source/display texts retain size 25 and bottom position; objectives are yellow and money thoughts are white.')

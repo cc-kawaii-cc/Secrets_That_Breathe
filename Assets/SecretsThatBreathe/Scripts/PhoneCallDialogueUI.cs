@@ -18,15 +18,18 @@ namespace SecretsThatBreathe
         [HideInInspector] public string tonName = "พี่ต้น";
         public DialogueCanvasView khemDialogue = new DialogueCanvasView();
         public DialogueCanvasView tonDialogue = new DialogueCanvasView();
+        public DialogueCanvasView tonRequestDialogue = new DialogueCanvasView();
+        public TMP_Text tonRequestSentence;
         public FlowingDialogueSettings presentation = new FlowingDialogueSettings();
         private FlowingDialogue flowing;
-        private FlowingDialogue khemFlowing, tonFlowing;
+        private FlowingDialogue khemFlowing, tonFlowing, tonRequestFlowing;
         [HideInInspector] public int dialogueRevision;
         public void Hide()
         {
             flowing?.Hide();
             khemDialogue.Hide();
             tonDialogue.Hide();
+            tonRequestDialogue.Hide();
             if (conversationPanel != null) conversationPanel.SetActive(false);
             if (ringThought != null) ringThought.SetActive(false);
             if (answerPrompt != null) answerPrompt.SetActive(false);
@@ -38,11 +41,12 @@ namespace SecretsThatBreathe
             kemText.maxVisibleCharacters = tonText.maxVisibleCharacters = 0;
             if (khemFlowing == null) khemFlowing = new FlowingDialogue(khemDialogue, presentation);
             if (tonFlowing == null) tonFlowing = new FlowingDialogue(tonDialogue, presentation);
+            if (tonRequestFlowing == null && tonRequestDialogue.IsValid) tonRequestFlowing = new FlowingDialogue(tonRequestDialogue, presentation);
         }
         public IEnumerator PlayLine(TMP_Text source, bool isKhem)
         {
             flowing?.Hide();
-            flowing = isKhem ? khemFlowing : tonFlowing;
+            flowing = source == tonRequestSentence && tonRequestFlowing != null ? tonRequestFlowing : isKhem ? khemFlowing : tonFlowing;
             yield return flowing.Play(source != null ? source.text : "");
         }
     }

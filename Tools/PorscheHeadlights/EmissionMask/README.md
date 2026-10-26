@@ -1,0 +1,11 @@
+# Selective headlight emission — 2026-10-26
+
+DRL brightness revision: the DRL mask is attenuated to 35% of its previous linear light intensity. The central projector mask and material HDR color remain unchanged. The sRGB encoding is accounted for when attenuating the texture. `Headlights_before_drl_dimming.png` preserves the previous mask; `drl_dimming_validation.json` records the pixel comparison.
+
+Updated `Assets/Model Palm/Porsche V.2/Material/Headlights.mat` in place. Both original `Headlight_Left` and `Headlight_Right` prefab renderers already reference this material. Only the Emission Map and HDR Emission Color changed. The material still uses the original URP Lit shader, base atlas and original UVs. Geometry, normals, pivots, transforms, object/component IDs, headlight spotlights and rear lights were not edited.
+
+The new `Texture/Headlights_EmissionMask.png` contains white masks for the central projector apertures and the two side DRL arcs on each lens. Glass, rim and housing are black. HDR color is (3, 3, 3); it can be adjusted on the Headlights material. `_EMISSION` and `BakedEmissive` remain enabled. The 4096-square map preserves the small original atlas islands; mipmaps and bilinear sampling remain enabled and compression is disabled to avoid block artifacts around the tiny emissive features. One new texture is shared by both headlights; 632 headlight triangles and two mesh objects remain unchanged.
+
+`Headlights_before_selective_emission.mat` is the pre-edit material backup. `../build_headlight_emission.py` and `../inspect_emission_uv.py` reproduce the mask and inspection images from the actual Unity mesh positions/UVs. `Left_base.png` and `Right_base.png` show the original atlas on those meshes. The corresponding `*_emission.png` images show only the new emission map, reprojected through the same triangles. These are CPU diagnostic UV reprojections, not Unity scene/Bloom captures.
+
+Validation: texture GUID resolves, both prefab material bindings remain correct, only the two intended material properties changed, and existing mesh assets have no Git diff. No screen control was used. Live Unity reimport, in-scene Bloom and a standalone player build were not verified in this pass.

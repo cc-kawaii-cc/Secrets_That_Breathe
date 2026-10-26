@@ -37,7 +37,7 @@ namespace SecretsThatBreathe.Editor
                     if (dialogue != null && (label == dialogue.firstThought || label == dialogue.secondThought || label == dialogue.thirdThought))
                         authoredDialogue = true;
                     for (var parent = label.transform; parent != null; parent = parent.parent)
-                        if (parent.name == "FlowingDialogue") { authoredDialogue = true; break; }
+                        if (parent.name == "FlowingDialogue" || parent.GetComponent<LawyerRoomIntro>() != null) { authoredDialogue = true; break; }
                     if (!authoredDialogue && font != null && label.font != font)
                     {
                         Undo.RecordObject(label, "Restore Kanit Medium UI font");

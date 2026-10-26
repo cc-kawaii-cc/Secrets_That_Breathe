@@ -10,7 +10,8 @@ namespace SecretsThatBreathe
         public TMP_Text firstThought, secondThought, thirdThought;
         public TMP_Text thankYouLine;
 
-        [HideInInspector] public string visitorName = "ลุง";
+        [HideInInspector] public string visitorName = "ลุงป้อง";
+        [HideInInspector] public int typingAudioSetupRevision;
         [HideInInspector] public string khemName = "เข้ม";
         public DialogueCanvasView khemDialogue = new DialogueCanvasView();
         public DialogueCanvasView visitorDialogue = new DialogueCanvasView();

@@ -1,0 +1,1132 @@
+{
+  "source": "FD V.2/FD.fbx",
+  "globalSettings": {
+    "UpAxis": [
+      1
+    ],
+    "UpAxisSign": [
+      1
+    ],
+    "FrontAxis": [
+      2
+    ],
+    "FrontAxisSign": [
+      1
+    ],
+    "CoordAxis": [
+      0
+    ],
+    "CoordAxisSign": [
+      1
+    ],
+    "OriginalUpAxis": [
+      -1
+    ],
+    "OriginalUpAxisSign": [
+      1
+    ],
+    "UnitScaleFactor": [
+      1.0
+    ],
+    "OriginalUnitScaleFactor": [
+      1.0
+    ],
+    "AmbientColor": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "DefaultCamera": [
+      "Producer Perspective"
+    ],
+    "TimeMode": [
+      11
+    ],
+    "TimeSpanStart": [
+      0
+    ],
+    "TimeSpanStop": [
+      46186158000
+    ],
+    "CustomFrameRate": [
+      24.0
+    ]
+  },
+  "meshes": [
+    {
+      "id": 309371362,
+      "name": "Body",
+      "vertices": 13909,
+      "polygons": 15277,
+      "triangles": 27203,
+      "boundsMin": [
+        -88.49999904632568,
+        16.902020573616028,
+        -226.99999809265137
+      ],
+      "boundsMax": [
+        88.49999904632568,
+        142.99999475479126,
+        226.99999809265137
+      ],
+      "materials": [
+        "tripo_mat_2fc8db08",
+        "Material.007"
+      ],
+      "modelProperties": {
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "InheritType": [
+          1
+        ]
+      },
+      "layers": {
+        "LayerElementNormal": [
+          {
+            "name": "Version",
+            "props": [
+              101
+            ]
+          },
+          {
+            "name": "Name",
+            "props": [
+              ""
+            ]
+          },
+          {
+            "name": "MappingInformationType",
+            "props": [
+              "ByPolygonVertex"
+            ]
+          },
+          {
+            "name": "ReferenceInformationType",
+            "props": [
+              "IndexToDirect"
+            ]
+          },
+          {
+            "name": "Normals",
+            "props": [
+              "array(48855)"
+            ]
+          },
+          {
+            "name": "NormalsIndex",
+            "props": [
+              "array(57757)"
+            ]
+          }
+        ],
+        "LayerElementUV": [
+          {
+            "name": "Version",
+            "props": [
+              101
+            ]
+          },
+          {
+            "name": "Name",
+            "props": [
+              "tripo_3849e561_65c3_48a1_bd80_299dccd9069d_NewUVMap"
+            ]
+          },
+          {
+            "name": "MappingInformationType",
+            "props": [
+              "ByPolygonVertex"
+            ]
+          },
+          {
+            "name": "ReferenceInformationType",
+            "props": [
+              "IndexToDirect"
+            ]
+          },
+          {
+            "name": "UV",
+            "props": [
+              "array(56932)"
+            ]
+          },
+          {
+            "name": "UVIndex",
+            "props": [
+              "array(57757)"
+            ]
+          }
+        ],
+        "LayerElementMaterial": [
+          {
+            "name": "Version",
+            "props": [
+              101
+            ]
+          },
+          {
+            "name": "Name",
+            "props": [
+              ""
+            ]
+          },
+          {
+            "name": "MappingInformationType",
+            "props": [
+              "ByPolygon"
+            ]
+          },
+          {
+            "name": "ReferenceInformationType",
+            "props": [
+              "IndexToDirect"
+            ]
+          },
+          {
+            "name": "Materials",
+            "props": [
+              "array(15277)"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 719083289,
+      "name": "Front_left_wheel",
+      "vertices": 96,
+      "polygons": 35,
+      "triangles": 154,
+      "boundsMin": [
+        51.75392031669617,
+        0.9542962536215782,
+        110.25097370147705
+      ],
+      "boundsMax": [
+        77.75686979293823,
+        62.66286373138428,
+        171.9595193862915
+      ],
+      "materials": [
+        "Material.009",
+        "Material.008"
+      ],
+      "modelProperties": {
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "InheritType": [
+          1
+        ]
+      },
+      "layers": {
+        "LayerElementNormal": [
+          {
+            "name": "Version",
+            "props": [
+              101
+            ]
+          },
+          {
+            "name": "Name",
+            "props": [
+              ""
+            ]
+          },
+          {
+            "name": "MappingInformationType",
+            "props": [
+              "ByPolygonVertex"
+            ]
+          },
+          {
+            "name": "ReferenceInformationType",
+            "props": [
+              "IndexToDirect"
+            ]
+          },
+          {
+            "name": "Normals",
+            "props": [
+              "array(105)"
+            ]
+          },
+          {
+            "name": "NormalsIndex",
+            "props": [
+              "array(224)"
+            ]
+          }
+        ],
+        "LayerElementUV": [
+          {
+            "name": "Version",
+            "props": [
+              101
+            ]
+          },
+          {
+            "name": "Name",
+            "props": [
+              "UVMap"
+            ]
+          },
+          {
+            "name": "MappingInformationType",
+            "props": [
+              "ByPolygonVertex"
+            ]
+          },
+          {
+            "name": "ReferenceInformationType",
+            "props": [
+              "IndexToDirect"
+            ]
+          },
+          {
+            "name": "UV",
+            "props": [
+              "array(324)"
+            ]
+          },
+          {
+            "name": "UVIndex",
+            "props": [
+              "array(224)"
+            ]
+          }
+        ],
+        "LayerElementMaterial": [
+          {
+            "name": "Version",
+            "props": [
+              101
+            ]
+          },
+          {
+            "name": "Name",
+            "props": [
+              ""
+            ]
+          },
+          {
+            "name": "MappingInformationType",
+            "props": [
+              "ByPolygon"
+            ]
+          },
+          {
+            "name": "ReferenceInformationType",
+            "props": [
+              "IndexToDirect"
+            ]
+          },
+          {
+            "name": "Materials",
+            "props": [
+              "array(35)"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 749945605,
+      "name": "Front_right_wheel",
+      "vertices": 96,
+      "polygons": 35,
+      "triangles": 154,
+      "boundsMin": [
+        -77.13099122047424,
+        0.9543007239699364,
+        110.25094985961914
+      ],
+      "boundsMax": [
+        -51.10125541687012,
+        62.66286373138428,
+        171.9595193862915
+      ],
+      "materials": [
+        "Material.008",
+        "Material.009"
+      ],
+      "modelProperties": {
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "InheritType": [
+          1
+        ]
+      },
+      "layers": {
+        "LayerElementNormal": [
+          {
+            "name": "Version",
+            "props": [
+              101
+            ]
+          },
+          {
+            "name": "Name",
+            "props": [
+              ""
+            ]
+          },
+          {
+            "name": "MappingInformationType",
+            "props": [
+              "ByPolygonVertex"
+            ]
+          },
+          {
+            "name": "ReferenceInformationType",
+            "props": [
+              "IndexToDirect"
+            ]
+          },
+          {
+            "name": "Normals",
+            "props": [
+              "array(105)"
+            ]
+          },
+          {
+            "name": "NormalsIndex",
+            "props": [
+              "array(224)"
+            ]
+          }
+        ],
+        "LayerElementUV": [
+          {
+            "name": "Version",
+            "props": [
+              101
+            ]
+          },
+          {
+            "name": "Name",
+            "props": [
+              "UVMap"
+            ]
+          },
+          {
+            "name": "MappingInformationType",
+            "props": [
+              "ByPolygonVertex"
+            ]
+          },
+          {
+            "name": "ReferenceInformationType",
+            "props": [
+              "IndexToDirect"
+            ]
+          },
+          {
+            "name": "UV",
+            "props": [
+              "array(324)"
+            ]
+          },
+          {
+            "name": "UVIndex",
+            "props": [
+              "array(224)"
+            ]
+          }
+        ],
+        "LayerElementMaterial": [
+          {
+            "name": "Version",
+            "props": [
+              101
+            ]
+          },
+          {
+            "name": "Name",
+            "props": [
+              ""
+            ]
+          },
+          {
+            "name": "MappingInformationType",
+            "props": [
+              "ByPolygon"
+            ]
+          },
+          {
+            "name": "ReferenceInformationType",
+            "props": [
+              "IndexToDirect"
+            ]
+          },
+          {
+            "name": "Materials",
+            "props": [
+              "array(35)"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 798351625,
+      "name": "License_plate",
+      "vertices": 8,
+      "polygons": 2,
+      "triangles": 4,
+      "boundsMin": [
+        -16.33569449186325,
+        38.06295394897461,
+        -214.63243961334229
+      ],
+      "boundsMax": [
+        17.664314806461334,
+        86.2519919872284,
+        227.1462917327881
+      ],
+      "materials": [
+        "Material.010"
+      ],
+      "modelProperties": {
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "InheritType": [
+          1
+        ]
+      },
+      "layers": {
+        "LayerElementNormal": [
+          {
+            "name": "Version",
+            "props": [
+              101
+            ]
+          },
+          {
+            "name": "Name",
+            "props": [
+              ""
+            ]
+          },
+          {
+            "name": "MappingInformationType",
+            "props": [
+              "ByPolygonVertex"
+            ]
+          },
+          {
+            "name": "ReferenceInformationType",
+            "props": [
+              "IndexToDirect"
+            ]
+          },
+          {
+            "name": "Normals",
+            "props": [
+              "array(6)"
+            ]
+          },
+          {
+            "name": "NormalsIndex",
+            "props": [
+              "array(8)"
+            ]
+          }
+        ],
+        "LayerElementUV": [
+          {
+            "name": "Version",
+            "props": [
+              101
+            ]
+          },
+          {
+            "name": "Name",
+            "props": [
+              "UVMap"
+            ]
+          },
+          {
+            "name": "MappingInformationType",
+            "props": [
+              "ByPolygonVertex"
+            ]
+          },
+          {
+            "name": "ReferenceInformationType",
+            "props": [
+              "IndexToDirect"
+            ]
+          },
+          {
+            "name": "UV",
+            "props": [
+              "array(16)"
+            ]
+          },
+          {
+            "name": "UVIndex",
+            "props": [
+              "array(8)"
+            ]
+          }
+        ],
+        "LayerElementMaterial": [
+          {
+            "name": "Version",
+            "props": [
+              101
+            ]
+          },
+          {
+            "name": "Name",
+            "props": [
+              ""
+            ]
+          },
+          {
+            "name": "MappingInformationType",
+            "props": [
+              "AllSame"
+            ]
+          },
+          {
+            "name": "ReferenceInformationType",
+            "props": [
+              "IndexToDirect"
+            ]
+          },
+          {
+            "name": "Materials",
+            "props": [
+              "array(1)"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 854486423,
+      "name": "Light",
+      "vertices": 920,
+      "polygons": 910,
+      "triangles": 1648,
+      "boundsMin": [
+        -77.89178490638733,
+        59.82425808906555,
+        -204.59940433502197
+      ],
+      "boundsMax": [
+        78.08823585510254,
+        87.40125298500061,
+        201.05080604553223
+      ],
+      "materials": [
+        "tripo_mat_2fc8db08"
+      ],
+      "modelProperties": {
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "InheritType": [
+          1
+        ]
+      },
+      "layers": {
+        "LayerElementNormal": [
+          {
+            "name": "Version",
+            "props": [
+              101
+            ]
+          },
+          {
+            "name": "Name",
+            "props": [
+              ""
+            ]
+          },
+          {
+            "name": "MappingInformationType",
+            "props": [
+              "ByPolygonVertex"
+            ]
+          },
+          {
+            "name": "ReferenceInformationType",
+            "props": [
+              "IndexToDirect"
+            ]
+          },
+          {
+            "name": "Normals",
+            "props": [
+              "array(2847)"
+            ]
+          },
+          {
+            "name": "NormalsIndex",
+            "props": [
+              "array(3468)"
+            ]
+          }
+        ],
+        "LayerElementUV": [
+          {
+            "name": "Version",
+            "props": [
+              101
+            ]
+          },
+          {
+            "name": "Name",
+            "props": [
+              "tripo_3849e561_65c3_48a1_bd80_299dccd9069d_NewUVMap"
+            ]
+          },
+          {
+            "name": "MappingInformationType",
+            "props": [
+              "ByPolygonVertex"
+            ]
+          },
+          {
+            "name": "ReferenceInformationType",
+            "props": [
+              "IndexToDirect"
+            ]
+          },
+          {
+            "name": "UV",
+            "props": [
+              "array(3504)"
+            ]
+          },
+          {
+            "name": "UVIndex",
+            "props": [
+              "array(3468)"
+            ]
+          }
+        ],
+        "LayerElementMaterial": [
+          {
+            "name": "Version",
+            "props": [
+              101
+            ]
+          },
+          {
+            "name": "Name",
+            "props": [
+              ""
+            ]
+          },
+          {
+            "name": "MappingInformationType",
+            "props": [
+              "AllSame"
+            ]
+          },
+          {
+            "name": "ReferenceInformationType",
+            "props": [
+              "IndexToDirect"
+            ]
+          },
+          {
+            "name": "Materials",
+            "props": [
+              "array(1)"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 361399487,
+      "name": "Steering wheel",
+      "vertices": 445,
+      "polygons": 432,
+      "triangles": 852,
+      "boundsMin": [
+        13.849610090255737,
+        72.50078320503235,
+        36.7059051990509
+      ],
+      "boundsMax": [
+        49.01387095451355,
+        110.5303168296814,
+        60.88079810142517
+      ],
+      "materials": [
+        "tripo_mat_2fc8db08"
+      ],
+      "modelProperties": {
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "InheritType": [
+          1
+        ]
+      },
+      "layers": {
+        "LayerElementNormal": [
+          {
+            "name": "Version",
+            "props": [
+              101
+            ]
+          },
+          {
+            "name": "Name",
+            "props": [
+              ""
+            ]
+          },
+          {
+            "name": "MappingInformationType",
+            "props": [
+              "ByPolygonVertex"
+            ]
+          },
+          {
+            "name": "ReferenceInformationType",
+            "props": [
+              "IndexToDirect"
+            ]
+          },
+          {
+            "name": "Normals",
+            "props": [
+              "array(1335)"
+            ]
+          },
+          {
+            "name": "NormalsIndex",
+            "props": [
+              "array(1716)"
+            ]
+          }
+        ],
+        "LayerElementUV": [
+          {
+            "name": "Version",
+            "props": [
+              101
+            ]
+          },
+          {
+            "name": "Name",
+            "props": [
+              "tripo_3849e561_65c3_48a1_bd80_299dccd9069d_NewUVMap"
+            ]
+          },
+          {
+            "name": "MappingInformationType",
+            "props": [
+              "ByPolygonVertex"
+            ]
+          },
+          {
+            "name": "ReferenceInformationType",
+            "props": [
+              "IndexToDirect"
+            ]
+          },
+          {
+            "name": "UV",
+            "props": [
+              "array(1940)"
+            ]
+          },
+          {
+            "name": "UVIndex",
+            "props": [
+              "array(1716)"
+            ]
+          }
+        ],
+        "LayerElementMaterial": [
+          {
+            "name": "Version",
+            "props": [
+              101
+            ]
+          },
+          {
+            "name": "Name",
+            "props": [
+              ""
+            ]
+          },
+          {
+            "name": "MappingInformationType",
+            "props": [
+              "AllSame"
+            ]
+          },
+          {
+            "name": "ReferenceInformationType",
+            "props": [
+              "IndexToDirect"
+            ]
+          },
+          {
+            "name": "Materials",
+            "props": [
+              "array(1)"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 136816023,
+      "name": "Wheel",
+      "vertices": 192,
+      "polygons": 70,
+      "triangles": 308,
+      "boundsMin": [
+        -77.13099122047424,
+        0.9543007239699364,
+        -154.1009545326233
+      ],
+      "boundsMax": [
+        77.75688767433167,
+        62.66287565231323,
+        -92.39237308502197
+      ],
+      "materials": [
+        "Material.008",
+        "Material.009"
+      ],
+      "modelProperties": {
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "InheritType": [
+          1
+        ]
+      },
+      "layers": {
+        "LayerElementNormal": [
+          {
+            "name": "Version",
+            "props": [
+              101
+            ]
+          },
+          {
+            "name": "Name",
+            "props": [
+              ""
+            ]
+          },
+          {
+            "name": "MappingInformationType",
+            "props": [
+              "ByPolygonVertex"
+            ]
+          },
+          {
+            "name": "ReferenceInformationType",
+            "props": [
+              "IndexToDirect"
+            ]
+          },
+          {
+            "name": "Normals",
+            "props": [
+              "array(210)"
+            ]
+          },
+          {
+            "name": "NormalsIndex",
+            "props": [
+              "array(448)"
+            ]
+          }
+        ],
+        "LayerElementUV": [
+          {
+            "name": "Version",
+            "props": [
+              101
+            ]
+          },
+          {
+            "name": "Name",
+            "props": [
+              "UVMap"
+            ]
+          },
+          {
+            "name": "MappingInformationType",
+            "props": [
+              "ByPolygonVertex"
+            ]
+          },
+          {
+            "name": "ReferenceInformationType",
+            "props": [
+              "IndexToDirect"
+            ]
+          },
+          {
+            "name": "UV",
+            "props": [
+              "array(648)"
+            ]
+          },
+          {
+            "name": "UVIndex",
+            "props": [
+              "array(448)"
+            ]
+          }
+        ],
+        "LayerElementMaterial": [
+          {
+            "name": "Version",
+            "props": [
+              101
+            ]
+          },
+          {
+            "name": "Name",
+            "props": [
+              ""
+            ]
+          },
+          {
+            "name": "MappingInformationType",
+            "props": [
+              "ByPolygon"
+            ]
+          },
+          {
+            "name": "ReferenceInformationType",
+            "props": [
+              "IndexToDirect"
+            ]
+          },
+          {
+            "name": "Materials",
+            "props": [
+              "array(70)"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 949924764,
+      "name": "Window",
+      "vertices": 254,
+      "polygons": 196,
+      "triangles": 301,
+      "boundsMin": [
+        -68.26581954956055,
+        90.95956087112427,
+        -180.20273447036743
+      ],
+      "boundsMax": [
+        68.4622585773468,
+        133.43700170516968,
+        143.82950067520142
+      ],
+      "materials": [],
+      "modelProperties": {
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "InheritType": [
+          1
+        ]
+      },
+      "layers": {
+        "LayerElementNormal": [
+          {
+            "name": "Version",
+            "props": [
+              101
+            ]
+          },
+          {
+            "name": "Name",
+            "props": [
+              ""
+            ]
+          },
+          {
+            "name": "MappingInformationType",
+            "props": [
+              "ByPolygonVertex"
+            ]
+          },
+          {
+            "name": "ReferenceInformationType",
+            "props": [
+              "IndexToDirect"
+            ]
+          },
+          {
+            "name": "Normals",
+            "props": [
+              "array(783)"
+            ]
+          },
+          {
+            "name": "NormalsIndex",
+            "props": [
+              "array(693)"
+            ]
+          }
+        ],
+        "LayerElementUV": [
+          {
+            "name": "Version",
+            "props": [
+              101
+            ]
+          },
+          {
+            "name": "Name",
+            "props": [
+              "tripo_3849e561_65c3_48a1_bd80_299dccd9069d_NewUVMap"
+            ]
+          },
+          {
+            "name": "MappingInformationType",
+            "props": [
+              "ByPolygonVertex"
+            ]
+          },
+          {
+            "name": "ReferenceInformationType",
+            "props": [
+              "IndexToDirect"
+            ]
+          },
+          {
+            "name": "UV",
+            "props": [
+              "array(576)"
+            ]
+          },
+          {
+            "name": "UVIndex",
+            "props": [
+              "array(693)"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "totalTriangles": 30624
+}

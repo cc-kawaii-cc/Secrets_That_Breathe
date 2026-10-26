@@ -14,6 +14,7 @@ namespace SecretsThatBreathe
         [Min(.001f)] public float secondsPerCharacter = .05f;
         [Min(0f)] public float completedLineHold = 1f;
         [Min(1f)] public float scrollSpeed = 18f;
+        public AudioSource typingAudio;
         [HideInInspector] public Color sentenceColor = Color.white;
         [HideInInspector] public Color khemColor = new Color(.25f, .7f, 1f);
         [HideInInspector] public Color otherSpeakerColor = new Color(.08f, .22f, .14f);
@@ -27,6 +28,7 @@ namespace SecretsThatBreathe
         private readonly TMP_Text sentence, speaker;
         private readonly FlowingDialogueSettings settings;
         public bool ReadyToAdvance { get; private set; }
+        private bool typingSoundPaused;
 
         private readonly DialogueCanvasView view;
         private readonly Vector2 authoredPosition;
@@ -67,15 +69,19 @@ namespace SecretsThatBreathe
             SetPosition(y);
             float elapsed = 0f;
             int count = sentence.textInfo.characterCount;
+            if (count > 0 && settings.typingAudio != null) settings.typingAudio.Play();
             while (sentence.maxVisibleCharacters < count)
             {
+                UpdateTypingSoundPause();
                 elapsed += Time.deltaTime;
                 int visible = Mathf.Min(count, Mathf.FloorToInt(elapsed / Mathf.Max(.001f, settings.secondsPerCharacter)));
                 sentence.maxVisibleCharacters = visible;
+                if (visible >= count) StopTypingSound();
                 y = Mathf.Lerp(y, BaselineOffset(visible), 1f - Mathf.Exp(-settings.scrollSpeed * Time.deltaTime));
                 SetPosition(y);
                 yield return null;
             }
+            StopTypingSound();
             for (float held = 0f; held < settings.completedLineHold; held += Time.deltaTime)
             {
                 y = Mathf.Lerp(y, BaselineOffset(count), 1f - Mathf.Exp(-settings.scrollSpeed * Time.deltaTime));
@@ -88,6 +94,7 @@ namespace SecretsThatBreathe
 
         public IEnumerator ShowInstant(string text, float holdDuration)
         {
+            StopTypingSound();
             ReadyToAdvance = false;
             root.anchoredPosition = authoredPosition;
             sentence.rectTransform.anchoredPosition = authoredSentencePosition;
@@ -101,6 +108,26 @@ namespace SecretsThatBreathe
         }
 
         private float FirstBaselineOffset() => 0f;
+        private void UpdateTypingSoundPause()
+        {
+            var audio = settings.typingAudio;
+            if (audio == null) return;
+            if (Time.timeScale <= 0f && !typingSoundPaused)
+            {
+                audio.Pause();
+                typingSoundPaused = true;
+            }
+            else if (Time.timeScale > 0f && typingSoundPaused)
+            {
+                audio.UnPause();
+                typingSoundPaused = false;
+            }
+        }
+        private void StopTypingSound()
+        {
+            if (settings.typingAudio != null) settings.typingAudio.Stop();
+            typingSoundPaused = false;
+        }
         private static void AlignFontBaseline(TMP_Text label, Vector2 authored)
         {
             if (label.textInfo.characterCount == 0) return;
@@ -121,6 +148,7 @@ namespace SecretsThatBreathe
 
         public void Hide()
         {
+            StopTypingSound();
             ReadyToAdvance = false;
             root.anchoredPosition = authoredPosition;
             sentence.rectTransform.anchoredPosition = authoredSentencePosition;

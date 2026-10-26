@@ -1,0 +1,68 @@
+{
+  "lamps": [
+    {
+      "name": "FD_Headlight_Emission_Left",
+      "meshGUID": "9e883e2c81b84f0b8ea38a03edf3b302",
+      "meshPath": "Assets/Model Palm/FD V.2/Meshes/FD_Headlight_Emission_Left.asset",
+      "vertices": 1034,
+      "triangles": 2064,
+      "closedManifold": true,
+      "minTriangleArea": 2.5574680127017824e-07,
+      "volume": 6.308388615524259e-05,
+      "surfaceFitMaxOffset": 0.1534656246400692,
+      "surfaceRayCoverage": 1.0,
+      "front": true
+    },
+    {
+      "name": "FD_Taillight_Emission_Left",
+      "meshGUID": "702355388ab44e01a3473b1a4eae3e77",
+      "meshPath": "Assets/Model Palm/FD V.2/Meshes/FD_Taillight_Emission_Left.asset",
+      "vertices": 570,
+      "triangles": 1136,
+      "closedManifold": true,
+      "minTriangleArea": 3.404806749529275e-07,
+      "volume": 1.7642421531865553e-05,
+      "surfaceFitMaxOffset": 0.010247637206331817,
+      "surfaceRayCoverage": 1.0,
+      "front": false
+    },
+    {
+      "name": "FD_Headlight_Emission_Right",
+      "meshGUID": "e1492ff790364629bcdcb08e65fa9beb",
+      "meshPath": "Assets/Model Palm/FD V.2/Meshes/FD_Headlight_Emission_Right.asset",
+      "vertices": 1034,
+      "triangles": 2064,
+      "closedManifold": true,
+      "minTriangleArea": 2.5574680127017824e-07,
+      "volume": 6.308388615725025e-05,
+      "surfaceFitMaxOffset": 0.1529005375805963,
+      "surfaceRayCoverage": 1.0,
+      "front": true
+    },
+    {
+      "name": "FD_Taillight_Emission_Right",
+      "meshGUID": "1eda505a7f5b4a0a9a1aa44e23b63496",
+      "meshPath": "Assets/Model Palm/FD V.2/Meshes/FD_Taillight_Emission_Right.asset",
+      "vertices": 570,
+      "triangles": 1136,
+      "closedManifold": true,
+      "minTriangleArea": 3.404806749529275e-07,
+      "volume": 1.7642421531154317e-05,
+      "surfaceFitMaxOffset": 0.01229207296585555,
+      "surfaceRayCoverage": 0.9982394366197183,
+      "front": false
+    }
+  ],
+  "materials": {
+    "Headlights": "aade92a306174bb8ae9222d3b0c82989",
+    "Taillights": "bb9d3cbc3b67409fb372b556896632ba"
+  },
+  "newTriangles": 6400,
+  "originalTriangles": 30624,
+  "finalTriangles": 37024,
+  "originalMeshObjects": 8,
+  "finalMeshObjects": 12,
+  "newTextureCount": 0,
+  "usesCarTextures": false,
+  "coordinateConversion": "FBX centimetres to metres and X reflection, triangle winding reversed"
+}

@@ -1,0 +1,56 @@
+{
+  "allOriginalObjectComponentBlocksPreserved": true,
+  "onlyOriginalRootChildListChanged": true,
+  "originalSourceAndImporterUnchanged": true,
+  "textureReferencesOnNewMaterials": 0,
+  "newMaterialCount": 2,
+  "newEmitterObjectCount": 4,
+  "newTriangles": 2240,
+  "finalTriangles": 32864,
+  "finalMeshObjects": 12,
+  "triangleStage": "Unity native meshes; no additional modifiers",
+  "geometryChecks": [
+    {
+      "name": "FD_Headlight_Emission_Left",
+      "vertices": 322,
+      "triangles": 640,
+      "closedManifold": true,
+      "minimumFaceArea": 3.799202643744599e-06,
+      "surfaceOffset": 0.0044336979910512535
+    },
+    {
+      "name": "FD_Taillight_Emission_Left",
+      "vertices": 242,
+      "triangles": 480,
+      "closedManifold": true,
+      "minimumFaceArea": 1.434099238197818e-06,
+      "surfaceOffset": 0.004761375768273122
+    },
+    {
+      "name": "FD_Headlight_Emission_Right",
+      "vertices": 322,
+      "triangles": 640,
+      "closedManifold": true,
+      "minimumFaceArea": 3.7992026437446e-06,
+      "surfaceOffset": 0.0038487673497928352
+    },
+    {
+      "name": "FD_Taillight_Emission_Right",
+      "vertices": 242,
+      "triangles": 480,
+      "closedManifold": true,
+      "minimumFaceArea": 1.4340992381978181e-06,
+      "surfaceOffset": 0.00532305345545264
+    }
+  ],
+  "UV0": "Generated planar lamp coordinates; no texture dependency",
+  "UV1": "No lightmap unwrap; dynamic lamps",
+  "nativeMeshFormat": "Copied from valid Unity 6000.3 mesh serialization layout",
+  "verification": "Geometry topology/normal/tangent checks, prefab/file invariants and CPU rendering of actual generated meshes",
+  "notVerified": [
+    "Live Unity import and Bloom",
+    "Standalone build",
+    "Blender/FBX export",
+    "Brake or turn-signal animation"
+  ]
+}

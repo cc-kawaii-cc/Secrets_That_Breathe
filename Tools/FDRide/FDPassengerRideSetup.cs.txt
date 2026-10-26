@@ -1,0 +1,175 @@
+using System;
+using System.IO;
+using System.Linq;
+using SecretsThatBreathe;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
+using UnityEngine.SceneManagement;
+
+// Explicit one-use requests only. Importing this file never changes the scene.
+[InitializeOnLoad]
+public static class FDPassengerRideSetup
+{
+    const string ScenePath = "Assets/Nemo_Upgrade/MainScene_2_Evening.unity";
+    const string Work = "Tools/FDRide";
+    const string Request = Work + "/request.txt";
+    const string VerifyKey = "FDPassengerRideSetup.Verify";
+    static bool busy;
+
+    [Serializable] class Report
+    {
+        public bool success, oldRideDisabled, oldCarInactive, cameraTracksSeat, moving, controlsSuspended;
+        public string error, backup, car;
+        public Vector3 seatLocalPosition, steeringLocalCenter, start, end, runtimePosition;
+        public float raisedBy, speed, cameraSeatDistance, travelled;
+    }
+
+    static FDPassengerRideSetup()
+    {
+        EditorApplication.update += Poll;
+        EditorApplication.playModeStateChanged += OnPlayState;
+    }
+
+    static void Poll()
+    {
+        if (busy || EditorApplication.isCompiling || EditorApplication.isUpdating) return;
+        if (SessionState.GetBool(VerifyKey, false) && EditorApplication.isPlaying)
+        {
+            double began = SessionState.GetFloat(VerifyKey + ".began", -1);
+            if (began >= 0 && EditorApplication.timeSinceStartup - began > 1.5) VerifyRuntime();
+            return;
+        }
+        if (EditorApplication.isPlayingOrWillChangePlaymode || !File.Exists(Request)) return;
+        busy = true;
+        Directory.CreateDirectory(Work);
+        string operation = File.ReadAllText(Request).Trim();
+        File.Move(Request, Work + "/request-" + DateTime.UtcNow.ToString("yyyyMMdd-HHmmssfff") + ".consumed");
+        try
+        {
+            if (operation == "apply") Apply();
+            else if (operation == "verify")
+            {
+                if (SceneManager.GetActiveScene().path != ScenePath) throw new InvalidOperationException("Evening scene must be active.");
+                SessionState.SetBool(VerifyKey, true);
+                SessionState.SetFloat(VerifyKey + ".began", -1);
+                EditorApplication.isPlaying = true;
+            }
+            else throw new InvalidOperationException("Expected apply or verify.");
+        }
+        catch (Exception e) { Write("result.json", new Report { error = e.ToString() }); }
+        finally { busy = false; }
+    }
+
+    static void Apply()
+    {
+        Scene scene = SceneManager.GetSceneByPath(ScenePath);
+        if (!scene.IsValid() || !scene.isLoaded) throw new InvalidOperationException("Evening scene must be loaded.");
+        var roots = scene.GetRootGameObjects();
+        GameObject oldCar = roots.Single(o => o.name == "PorscheV.2");
+        GameObject fd = roots.Single(o => o.name == "FD");
+        var original = oldCar.GetComponent<PorschePassengerRide>();
+        if (original == null || original.driverSeat == null || original.playerCamera == null || original.playerRoot == null)
+            throw new InvalidOperationException("Original ride references are incomplete.");
+        if (fd.GetComponent<PorschePassengerRide>() != null) throw new InvalidOperationException("FD already has a ride; do not reapply the height increment.");
+        Renderer steering = fd.GetComponentsInChildren<Renderer>(true).Single(r => r.name == "Steering wheel");
+        Vector3 steeringCenter = fd.transform.InverseTransformPoint(steering.bounds.center);
+        string backup = Work + "/before-" + DateTime.UtcNow.ToString("yyyyMMdd-HHmmssfff") + ".unity";
+        if (!EditorSceneManager.SaveScene(scene, backup, true)) throw new IOException("Live scene backup failed.");
+
+        Undo.IncrementCurrentGroup(); int group = Undo.GetCurrentGroup();
+        Undo.SetCurrentGroupName("Switch opening car ride to FD");
+        Undo.RecordObjects(new UnityEngine.Object[] { oldCar, original, fd, fd.transform }, "Switch opening car ride to FD");
+        var ride = Undo.AddComponent<PorschePassengerRide>(fd);
+        EditorUtility.CopySerialized(original, ride);
+        var seatObject = new GameObject("DriverSeat");
+        Undo.RegisterCreatedObjectUndo(seatObject, "Create FD driver eye anchor");
+        seatObject.transform.SetParent(fd.transform, false);
+        // Put the eyes behind the actual FD steering wheel, 10 cm above the old eye height.
+        float eyeY = original.driverSeat.localPosition.y + .10f;
+        seatObject.transform.localPosition = new Vector3(steeringCenter.x, eyeY, steeringCenter.z - .55f);
+        seatObject.transform.localRotation = Quaternion.identity;
+        ride.driverSeat = seatObject.transform;
+        ride.playOnStart = true;
+        ride.enabled = true;
+        original.playOnStart = false;
+        original.enabled = false;
+        // Retain the Porsche in the hierarchy, but keep it out of the FD's route.
+        oldCar.SetActive(false);
+        fd.SetActive(true);
+        fd.transform.SetPositionAndRotation(ride.startPosition, oldCar.transform.rotation);
+        PrefabUtility.RecordPrefabInstancePropertyModifications(original);
+        PrefabUtility.RecordPrefabInstancePropertyModifications(oldCar);
+        PrefabUtility.RecordPrefabInstancePropertyModifications(fd);
+        PrefabUtility.RecordPrefabInstancePropertyModifications(fd.transform);
+        Undo.CollapseUndoOperations(group);
+        EditorSceneManager.MarkSceneDirty(scene);
+        if (!EditorSceneManager.SaveScene(scene)) throw new IOException("Scene save failed.");
+        Write("result.json", new Report {
+            success = ride.driverSeat.IsChildOf(fd.transform) && ride.playerCamera != null && ride.playerRoot != null,
+            car = fd.name, backup = backup, oldRideDisabled = !original.enabled,
+            oldCarInactive = !oldCar.activeSelf, seatLocalPosition = seatObject.transform.localPosition,
+            steeringLocalCenter = steeringCenter, raisedBy = .10f, speed = ride.speed,
+            start = ride.startPosition, end = ride.endPosition
+        });
+    }
+
+    static void OnPlayState(PlayModeStateChange state)
+    {
+        if (!SessionState.GetBool(VerifyKey, false)) return;
+        if (state == PlayModeStateChange.EnteredPlayMode)
+            SessionState.SetFloat(VerifyKey + ".began", (float)EditorApplication.timeSinceStartup);
+        if (state == PlayModeStateChange.EnteredEditMode) SessionState.SetBool(VerifyKey, false);
+    }
+
+    static void VerifyRuntime()
+    {
+        busy = true;
+        try
+        {
+            var scene = SceneManager.GetSceneByPath(ScenePath);
+            var fd = scene.GetRootGameObjects().Single(o => o.name == "FD");
+            var ride = fd.GetComponent<PorschePassengerRide>();
+            float gap = Vector3.Distance(ride.playerCamera.transform.position, ride.driverSeat.position);
+            float travelled = Vector3.Distance(fd.transform.position, ride.startPosition);
+            bool suspended = ride.suspendedControls.All(c => c == null || !c.enabled)
+                && ride.playerRoot.GetComponentsInChildren<CharacterController>(true).All(c => !c.enabled);
+            bool oldInactive = !scene.GetRootGameObjects().Single(o => o.name == "PorscheV.2").activeInHierarchy;
+            Capture(ride.playerCamera);
+            Write("runtime.json", new Report {
+                success = ride.IsMoving && travelled > .1f && gap < .01f && suspended && oldInactive,
+                car = fd.name, cameraTracksSeat = gap < .01f, cameraSeatDistance = gap,
+                travelled = travelled, moving = ride.IsMoving, controlsSuspended = suspended,
+                oldCarInactive = oldInactive, runtimePosition = fd.transform.position,
+                seatLocalPosition = ride.driverSeat.localPosition
+            });
+        }
+        catch (Exception e) { Write("runtime.json", new Report { error = e.ToString() }); }
+        finally { EditorApplication.isPlaying = false; busy = false; }
+    }
+
+    static void Capture(Camera camera)
+    {
+        var rt = new RenderTexture(1280, 720, 24);
+        var previous = RenderTexture.active;
+        var target = camera.targetTexture;
+        var image = new Texture2D(1280, 720, TextureFormat.RGB24, false);
+        try
+        {
+            rt.Create();
+            RenderPipeline.SubmitRenderRequest(camera, new UniversalRenderPipeline.SingleCameraRequest { destination = rt });
+            RenderTexture.active = rt;
+            image.ReadPixels(new Rect(0, 0, 1280, 720), 0, 0); image.Apply();
+            File.WriteAllBytes(Work + "/driver-view.png", image.EncodeToPNG());
+        }
+        finally
+        {
+            camera.targetTexture = target; RenderTexture.active = previous;
+            rt.Release(); UnityEngine.Object.DestroyImmediate(rt); UnityEngine.Object.DestroyImmediate(image);
+        }
+    }
+
+    static void Write(string name, Report report) { Directory.CreateDirectory(Work); File.WriteAllText(Work + "/" + name, JsonUtility.ToJson(report, true)); }
+}

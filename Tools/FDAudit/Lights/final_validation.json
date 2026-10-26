@@ -1,0 +1,24 @@
+{
+  "prefabSaved": true,
+  "onlyMaterialBindingsChanged": true,
+  "transformsPivotsAndSerializedIDsPreserved": true,
+  "sourceFBXUnchanged": true,
+  "originalSharedMaterialUnchanged": true,
+  "meshObjects": 8,
+  "triangles": 30624,
+  "newTriangles": 0,
+  "newTextures": 1,
+  "textureSize": [
+    4096,
+    4096
+  ],
+  "frontLightStyle": "One conventional white low-beam aperture per side, no DRL",
+  "rearLightStyle": "Continuous upper red lens areas, clear lower sections off",
+  "shader": "Existing URP Lit",
+  "verification": "FBX geometry/UV CPU diagnostic projections and file invariants",
+  "notVerified": [
+    "Live Unity import and scene Bloom",
+    "Standalone player build",
+    "Brake/turn-signal switching (not implemented)"
+  ]
+}

@@ -37,7 +37,7 @@ namespace SecretsThatBreathe.Editor
                 UnityEngine.Object.DestroyImmediate(t.gameObject);
             phone.presentation.completedLineHold = 1f;
             visitor.presentation.completedLineHold = 1f;
-            visitor.visitorName = "ลุง";
+            visitor.visitorName = "ลุงป้อง";
             foreach (var label in new[] { visitor.firstLine, visitor.secondLine, visitor.moneyLine, visitor.refuseLine,
                 visitor.firstThought, visitor.secondThought, visitor.thirdThought, visitor.thankYouLine })
             {
