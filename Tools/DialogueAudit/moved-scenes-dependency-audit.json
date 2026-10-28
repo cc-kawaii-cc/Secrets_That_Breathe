@@ -1,0 +1,94 @@
+{
+  "checked_meta_files": 18183,
+  "unique_external_scene_guids": 158,
+  "missing_external_assets": {
+    "Assets\\MainScenes\\From_PM\\Lawyer Room.unity": [
+      "72390543087f7934497d10cae04ddbc5"
+    ],
+    "Assets\\MainScenes\\From_PM\\MainScene_2_Evening.unity": []
+  },
+  "duplicate_referenced_guids": {},
+  "scenes": {
+    "Assets\\MainScenes\\From_PM\\Lawyer Room.unity": {
+      "blocks": 2116,
+      "undefined_local_references": {},
+      "missing_script_references": [],
+      "lighting_assets": [
+        {
+          "guid": "2637ee39967eb6747acd92cf522b4378",
+          "asset": [
+            "Assets\\MainScenes\\From_PM\\Lawyer Room\\LightingData.asset"
+          ]
+        },
+        {
+          "guid": "72390543087f7934497d10cae04ddbc5",
+          "asset": []
+        }
+      ]
+    },
+    "Assets\\MainScenes\\From_PM\\MainScene_2_Evening.unity": {
+      "blocks": 659,
+      "undefined_local_references": {},
+      "missing_script_references": [],
+      "lighting_assets": [
+        {
+          "guid": "03ff7b0a6217d444a81e909fe2367856",
+          "asset": [
+            "Assets\\MainScenes\\From_PM\\MainScene_2_Evening\\LightingData.asset"
+          ]
+        }
+      ]
+    }
+  },
+  "scene_files_changed": false,
+  "unity_builtin_guids_not_missing": [
+    "0000000000000000d000000000000000",
+    "0000000000000000e000000000000000",
+    "0000000000000000f000000000000000"
+  ],
+  "remaining_runtime_path_reference": {
+    "file": "Assets/SecretsThatBreathe/Scripts/LawyerRoomSeatingBootstrap.cs",
+    "effect": "fallback seating bootstrap skips the moved Lawyer Room; serialized core components are present"
+  },
+  "editor_path_reference_files": [
+    "Assets\\Editor\\PorscheLowBeamCookieSetup.cs",
+    "Assets\\SecretsThatBreathe\\Scripts\\Editor\\DialogueCanvasSetup.cs",
+    "Assets\\SecretsThatBreathe\\Scripts\\Editor\\DialoguePresentationUpgrade.cs",
+    "Assets\\SecretsThatBreathe\\Scripts\\Editor\\DialogueTypingAudioSetup.cs",
+    "Assets\\SecretsThatBreathe\\Scripts\\Editor\\ExitObjectiveSetup.cs",
+    "Assets\\SecretsThatBreathe\\Scripts\\Editor\\LawyerRoomSeatingSetup.cs",
+    "Assets\\SecretsThatBreathe\\Scripts\\Editor\\PhoneCallRequestCanvasSetup.cs",
+    "Assets\\SecretsThatBreathe\\Scripts\\Editor\\PorscheRideSetup.cs",
+    "Assets\\SecretsThatBreathe\\Scripts\\Editor\\QuotedTextStyleSetup.cs"
+  ],
+  "indirect_editor_users_of_old_shared_path": [
+    "Assets\\SecretsThatBreathe\\Scripts\\Editor\\A4DocumentInteractionSetup.cs",
+    "Assets\\SecretsThatBreathe\\Scripts\\Editor\\AirConditionerAudioSetup.cs",
+    "Assets\\SecretsThatBreathe\\Scripts\\Editor\\AuntTurnAudioSetup.cs",
+    "Assets\\SecretsThatBreathe\\Scripts\\Editor\\CanvasTextStackSetup.cs",
+    "Assets\\SecretsThatBreathe\\Scripts\\Editor\\ChairExplorationSetup.cs",
+    "Assets\\SecretsThatBreathe\\Scripts\\Editor\\ChairSmoothShadingSetup.cs",
+    "Assets\\SecretsThatBreathe\\Scripts\\Editor\\DocumentSearchSetup.cs",
+    "Assets\\SecretsThatBreathe\\Scripts\\Editor\\DrawerSearchScareSetup.cs",
+    "Assets\\SecretsThatBreathe\\Scripts\\Editor\\EmptyNoodleCupSetup.cs",
+    "Assets\\SecretsThatBreathe\\Scripts\\Editor\\FlashlightAudioSetup.cs",
+    "Assets\\SecretsThatBreathe\\Scripts\\Editor\\HorrorLightFlickerSetup.cs",
+    "Assets\\SecretsThatBreathe\\Scripts\\Editor\\ItemInspectionSetup.cs",
+    "Assets\\SecretsThatBreathe\\Scripts\\Editor\\MicrowaveInteractionSetup.cs",
+    "Assets\\SecretsThatBreathe\\Scripts\\Editor\\MiddleRoomThoughtSetup.cs",
+    "Assets\\SecretsThatBreathe\\Scripts\\Editor\\NoodleEatingAudioSetup.cs",
+    "Assets\\SecretsThatBreathe\\Scripts\\Editor\\PhoneCallAudioSetup.cs",
+    "Assets\\SecretsThatBreathe\\Scripts\\Editor\\PhoneCallSetup.cs",
+    "Assets\\SecretsThatBreathe\\Scripts\\Editor\\PhoneFlashlightSetup.cs",
+    "Assets\\SecretsThatBreathe\\Scripts\\Editor\\PhoneHandsetSetup.cs",
+    "Assets\\SecretsThatBreathe\\Scripts\\Editor\\PlayerFootstepsSetup.cs",
+    "Assets\\SecretsThatBreathe\\Scripts\\Editor\\RoomAmbienceSetup.cs",
+    "Assets\\SecretsThatBreathe\\Scripts\\Editor\\RoomBoxLookTargetSetup.cs",
+    "Assets\\SecretsThatBreathe\\Scripts\\Editor\\SeatCrosshairCleanup.cs",
+    "Assets\\SecretsThatBreathe\\Scripts\\Editor\\TestBookAnimationSetup.cs",
+    "Assets\\SecretsThatBreathe\\Scripts\\Editor\\ThaiTextDisplaySetup.cs",
+    "Assets\\SecretsThatBreathe\\Scripts\\Editor\\WaterLookTargetSetup.cs"
+  ],
+  "missing_lighting_settings_note": "The same LightingSettings GUID reference is present in the pre-Intro backup. This audit cannot establish when the asset became missing. LightingData assets exist; no lighting values or assets were modified.",
+  "validation_limit": "Direct serialized scene references and text-based path checks only; no Play Mode, build execution, Unity AssetDatabase verification, or transitive material/model dependency validation."
+}

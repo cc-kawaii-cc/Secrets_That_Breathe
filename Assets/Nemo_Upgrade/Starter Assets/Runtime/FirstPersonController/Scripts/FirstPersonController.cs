@@ -175,6 +175,17 @@ namespace StarterAssets
 
 		private void OnDisable() => _pendingMouseRotation = Vector2.zero;
 
+		// Used by scripted transitions while input remains suspended behind a fade.
+		public void ResetAfterTeleport(float pitchDegrees)
+		{
+			_speed = _rotationVelocity = 0f;
+			_verticalVelocity = -2f;
+			_pendingMouseRotation = Vector2.zero;
+			_cinemachineTargetPitch = Mathf.Clamp(pitchDegrees, BottomClamp, TopClamp);
+			if (CinemachineCameraTarget != null)
+				CinemachineCameraTarget.transform.localRotation = Quaternion.Euler(_cinemachineTargetPitch, 0f, 0f);
+		}
+
 		private void Move()
 		{
 			if (MovementLocked)

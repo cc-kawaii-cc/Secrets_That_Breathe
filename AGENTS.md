@@ -1,5 +1,9 @@
 # ข้อกำหนดประจำโปรเจกต์ Secrets_That_Breathe
 
+## UI ใน MainScene_2_Evening
+
+Canvas และ UI ที่สร้างหรือแก้ใน `Assets/MainScenes/From_PM/MainScene_2_Evening.unity` ให้จัดไว้ใต้ `SeatingCanvas` ทั้งหมด และบันทึกองค์ประกอบที่ผู้ใช้ต้องแก้ข้อความ/หน้าตาไว้ในฉาก เพื่อแก้ได้ใน Hierarchy/Inspector นอก Play Mode ไม่สร้าง Canvas แยกที่ root ตอนรันเกม ใช้ nested Canvas ใต้ SeatingCanvas ได้เมื่อจำเป็นต้องจัดลำดับภาพ
+
 ## งานโมเดล Blender
 
 ผู้ใช้ขอให้จดจำกฎ Blender ที่แนบมาไว้ในเครื่องเมื่อวันที่ 2026-10-17 ให้ใช้กฎนี้กับงานสร้าง ปรับปรุง และตรวจโมเดล Blender ในโปรเจกต์นี้ โดยเฉพาะ hard-surface props

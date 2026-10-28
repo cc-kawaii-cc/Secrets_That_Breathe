@@ -1,0 +1,67 @@
+{
+  "success": true,
+  "backup": "D:\\Unity\\ปี3\\Secrets_That_Breathe\\Tools\\RoadBlood\\BeforeAtlas-20261028-042225",
+  "atlas": "D:\\Unity\\ปี3\\Secrets_That_Breathe\\Assets\\SecretsThatBreathe\\Props\\RoadBlood\\Textures\\RoadBlood_Atlas.png",
+  "resolution": [
+    1024,
+    1024
+  ],
+  "pngBytes": 159460,
+  "windowsFormat": "BC7 RGBA + mipmaps",
+  "estimatedAtlasGPUMemoryBytes": 1398101,
+  "meshes": [
+    {
+      "name": "RoadBlood_Pool",
+      "beforeTriangles": 1576,
+      "afterTriangles": 2,
+      "vertices": 4,
+      "atlasTilePixels": [
+        0,
+        0,
+        512,
+        512
+      ]
+    },
+    {
+      "name": "RoadBlood_Drops",
+      "beforeTriangles": 864,
+      "afterTriangles": 2,
+      "vertices": 4,
+      "atlasTilePixels": [
+        512,
+        0,
+        512,
+        512
+      ]
+    },
+    {
+      "name": "RoadBlood_Smear",
+      "beforeTriangles": 1112,
+      "afterTriangles": 2,
+      "vertices": 4,
+      "atlasTilePixels": [
+        0,
+        512,
+        1024,
+        256
+      ]
+    }
+  ],
+  "totalBeforeTriangles": 3552,
+  "totalAfterTriangles": 6,
+  "preservedPrefabAndMeshGuids": true,
+  "preservedSourceMaterialColors": {
+    "thinLinear": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "denseLinear": [
+      0.07169801,
+      0.0,
+      0.0015933104
+    ]
+  },
+  "shaderTextureSamples": 1,
+  "playModeTested": false
+}

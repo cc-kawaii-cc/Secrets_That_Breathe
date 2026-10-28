@@ -9,6 +9,7 @@ namespace SecretsThatBreathe
         public TMP_Text firstLine, secondLine, moneyLine, refuseLine;
         public TMP_Text firstThought, secondThought, thirdThought;
         public TMP_Text thankYouLine;
+        public TMP_Text promiseLine;
 
         [HideInInspector] public string visitorName = "ลุงป้อง";
         [HideInInspector] public int typingAudioSetupRevision;
@@ -29,7 +30,7 @@ namespace SecretsThatBreathe
             DefaultFirstLine,
             "ลุงไปแจ้งความแล้ว... แต่ตำรวจเขาไม่รับแจ้ง บอกว่าคู่กรณีเป็นลูก ส.ส. ... สุดท้ายเขาสรุปว่าเป็นแค่อุบัติเหตุ",
             "ลุงเหลือเงินอยู่แค่นี้... ลุงขอจ้างหนูนะ ช่วยลูกลุงหน่อยนะลูก",
-            "เก็บเงินไว้ทำศพน้องเถอะลุง คดีนี้ผมทำให้ฟรี... ผมสัญญาว่าจะลากคอมันมาเข้าคุกให้ได้",
+            "เก็บเงินไว้ทำศพน้องเถอะลุง คดีนี้ผมทำให้ฟรี...",
             "จะดีหรอเข้ม ลุงเขาก็ดูไม่ค่อยมีเงินเท่าไหร่นะ",
             "เงินเก็บเราก็พอมีนะ ทำคดีช่วยลุงหน่อยไหม",
             "อย่าเลย ไม่ต้องรับเงินลุงมาหรอก"
@@ -53,6 +54,7 @@ namespace SecretsThatBreathe
             ui.secondThought = ui.EnsureLine(ui.secondThought, "06_ThoughtSecond", Quote(InitialLines[5]));
             ui.thirdThought = ui.EnsureLine(ui.thirdThought, "07_ThoughtThird", Quote(InitialLines[6]));
             ui.thankYouLine = ui.EnsureLine(ui.thankYouLine, "08_AuntThankYou", "ขอบคุณมากนะลูก");
+            ui.promiseLine = ui.EnsureLine(ui.promiseLine, "04b_KhemPromise", "ผมสัญญาว่าจะลากคอมันมาเข้าคุกให้ได้");
             return ui;
         }
 
@@ -75,10 +77,10 @@ namespace SecretsThatBreathe
         {
             HideAll();
             TMP_Text label = lineIndex == 0 ? firstLine : lineIndex == 1 ? secondLine : lineIndex == 2 ? moneyLine :
-                lineIndex == 4 ? refuseLine : lineIndex == 5 ? thankYouLine : thoughtIndex == 0 ? firstThought : thoughtIndex == 1 ? secondThought : thirdThought;
+                lineIndex == 4 ? refuseLine : lineIndex == 5 ? thankYouLine : lineIndex == 6 ? promiseLine : thoughtIndex == 0 ? firstThought : thoughtIndex == 1 ? secondThought : thirdThought;
             if (label != null)
             {
-                bool isKhem = lineIndex == 3 || lineIndex == 4;
+                bool isKhem = lineIndex == 3 || lineIndex == 4 || lineIndex == 6;
                 flowing = new FlowingDialogue(lineIndex == 3 ? thoughtDialogue : isKhem ? khemDialogue : visitorDialogue, presentation);
                 StartCoroutine(lineIndex == 3 ? flowing.ShowInstant(label.text, moneyThoughtHoldDuration) : flowing.Play(label.text));
             }
@@ -92,7 +94,7 @@ namespace SecretsThatBreathe
             khemDialogue.Hide();
             visitorDialogue.Hide();
             thoughtDialogue.Hide();
-            foreach (var label in new[] { firstLine, secondLine, moneyLine, refuseLine, firstThought, secondThought, thirdThought, thankYouLine })
+            foreach (var label in new[] { firstLine, secondLine, moneyLine, refuseLine, promiseLine, firstThought, secondThought, thirdThought, thankYouLine })
                 if (label != null) label.transform.parent.gameObject.SetActive(false);
         }
         private void OnDisable() => HideAll();

@@ -55,6 +55,10 @@ namespace SecretsThatBreathe
         public TMP_Text auntDialogueText;
         public TMP_Text exitObjectiveText;
         [Min(0f)] public float exitObjectiveDelay = 3f;
+        [Header("Thoughts after talking to Uncle Pong")]
+        public TMP_Text[] afterUncleThoughts;
+        [Min(.1f)] public float afterUncleThoughtDuration = 3f;
+        [Min(0f)] public float afterUncleThoughtGap = 2f;
         public AuntMoneyChoiceUI moneyChoiceUI;
         public AuntDialogueUI auntDialogueUI;
         public PostMealThoughtUI postMealThoughtUI;
@@ -287,6 +291,8 @@ namespace SecretsThatBreathe
         {
             Show(objectiveText, false); Show(searchPromptText, false); Show(searchingText, false); Show(auntDialogueText, false);
             Show(exitObjectiveText, false);
+            if (afterUncleThoughts != null)
+                foreach (var thought in afterUncleThoughts) Show(thought, false);
             if (auntDialogueUI != null) auntDialogueUI.HideAll();
             if (moneyChoiceUI != null) moneyChoiceUI.HideChoices();
             if (postMealThoughtUI != null) postMealThoughtUI.HideAll();
@@ -453,7 +459,8 @@ namespace SecretsThatBreathe
             if (DialogueLineIndex == 0) ShowDialogueLine(1);
             else if (DialogueLineIndex == 1) ShowDialogueLine(2);
             else if (DialogueLineIndex == 2 || DialogueLineIndex == 3) ShowMoneyChoices();
-            else if (DialogueLineIndex == 4) ShowDialogueLine(5);
+            else if (DialogueLineIndex == 4) ShowDialogueLine(6);
+            else if (DialogueLineIndex == 6) ShowDialogueLine(5);
             else if (DialogueLineIndex == 5) FinishDialogue();
             else return false;
             return true;
@@ -536,6 +543,16 @@ namespace SecretsThatBreathe
         private IEnumerator ShowExitObjectiveAfterDelay()
         {
             yield return new WaitForSeconds(Mathf.Max(0f, exitObjectiveDelay));
+            if (afterUncleThoughts != null)
+                foreach (var thought in afterUncleThoughts)
+                {
+                    if (Stage != StoryStage.Completed) { exitObjectiveRoutine = null; yield break; }
+                    if (thought == null) continue;
+                    Show(thought, true);
+                    yield return new WaitForSeconds(Mathf.Max(.1f, afterUncleThoughtDuration));
+                    Show(thought, false);
+                    yield return new WaitForSeconds(Mathf.Max(0f, afterUncleThoughtGap));
+                }
             if (Stage == StoryStage.Completed) Show(exitObjectiveText, true);
             exitObjectiveRoutine = null;
         }
@@ -665,6 +682,22 @@ namespace SecretsThatBreathe
             for (int i = 0; i < npcColliders.Length; i++) if (npcColliders[i] != null) npcColliders[i].enabled = npcColliderStates[i];
             npcColliders = null;
         }
+        public void SkipToExitForTesting()
+        {
+            CancelSequence();
+            if (scareAudioSource != null) scareAudioSource.Stop();
+            if (player != null)
+            {
+                player.ResetForTesting();
+                player.LockChairInteractions();
+            }
+            auntDismissed = true;
+            if (auntObject != null) auntObject.SetActive(false);
+            Stage = StoryStage.Completed;
+            Show(exitObjectiveText, true);
+            onSequenceFinished.Invoke();
+        }
+
         public void ResetForTesting()
         {
             CancelSequence();

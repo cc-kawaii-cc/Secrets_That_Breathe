@@ -121,7 +121,7 @@ namespace SecretsThatBreathe.Editor
                 MoveHintToCanvas(sequence.phone.intro.testSkipHint, canvas.transform);
             MoveHintToCanvas(sequence.testSkipHint, canvas.transform);
             if (sequence.testSkipAfterCallHint != null) return;
-            var existing = canvas.transform.Find("TestSkipAfterCallHint");
+            var existing = SeatingCanvasGroups.FindPanel(canvas, "TestSkipAfterCallHint");
             Undo.RecordObject(sequence, "Assign F3 testing hint");
             if (existing != null) sequence.testSkipAfterCallHint = existing.gameObject;
             else
@@ -133,14 +133,14 @@ namespace SecretsThatBreathe.Editor
                 rect.anchoredPosition = new Vector2(24f, -156f);
                 hint.alignment = TextAlignmentOptions.Left;
                 sequence.testSkipAfterCallHint = rect.gameObject;
-                rect.gameObject.SetActive(sequence.enableF3Skip);
             }
             Save(sequence);
             EditorSceneManager.MarkSceneDirty(sequence.gameObject.scene);
         }
         private static void MoveHintToCanvas(GameObject hint, Transform canvas)
         {
-            if (hint == null || hint.transform.parent == canvas) return;
+            if (hint == null || hint.transform.parent == canvas
+                || (hint.transform.parent != null && hint.transform.parent.name == "TestingShortcutHints")) return;
             var rect = hint.transform as RectTransform;
             Vector2 position = rect.anchoredPosition;
             Undo.SetTransformParent(rect, canvas, "Move testing shortcut directly under SeatingCanvas");

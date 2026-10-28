@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
@@ -12,16 +13,23 @@ namespace SecretsThatBreathe
     [DisallowMultipleComponent]
     public sealed class LawyerRoomIntro : MonoBehaviour
     {
-        [Header("Loading scene (enabled only in Lawyer Room Intro scene)")]
-        public bool loadGameplayScene;
-        public string gameplayScenePath = "Assets/Tonpalm/Lawyer Room.unity";
-
         [Header("Saved Canvas objects — edit text and colours on their TMP components")]
         public CanvasGroup screen;
         public CanvasGroup[] paragraphs;
         public CanvasGroup pressAnyKey;
 
+        [Header("Intro 2 — text and style belong to the saved Canvas")]
+        public TMP_Text secondIntroText;
+        public CanvasGroup secondIntroGroup;
+        [Tooltip("Plays only while Intro 2 characters are being revealed. Adjust Volume on this AudioSource.")]
+        public AudioSource secondIntroTypingAudio;
+        [Min(.001f)] public float secondIntroSecondsPerCharacter = .05f;
+        [Min(0f)] public float secondIntroHoldSeconds = 1f;
+        [Min(0f)] public float secondIntroFadeOutSeconds = 1f;
+
         [Header("Timing (real seconds)")]
+        [Tooltip("Black-screen wait before the first Intro 1 paragraph starts fading in.")]
+        [Min(0f)] public float firstTextDelaySeconds = 1.5f;
         [Min(0f)] public float textFadeSeconds = 1f;
         [Min(0f)] public float paragraphHoldSeconds = 3f;
         [Min(0f)] public float promptFadeSeconds = 1f;
@@ -29,10 +37,15 @@ namespace SecretsThatBreathe
         [Min(0f)] public float blackHoldSeconds = 0.25f;
         [Min(0f)] public float revealGameSeconds = 2f;
 
+        [Header("Gameplay ambience — starts with the game reveal")]
+        [Tooltip("These sources have Play On Awake disabled. Their saved Volume is the 100% level; Intro fades them in linearly with the picture.")]
+        public AudioSource[] gameplayAudioSources;
+
         [Header("Player controls suspended until the reveal finishes")]
         public Behaviour[] playerControls;
 
         private readonly List<Behaviour> suspended = new List<Behaviour>();
+        private readonly Dictionary<AudioSource, float> gameplayAudioVolumes = new Dictionary<AudioSource, float>();
         private float previousTimeScale;
         private bool ownsPause;
         private static LawyerRoomIntro owner;
@@ -49,29 +62,30 @@ namespace SecretsThatBreathe
 
         private static void CreateRuntimeCanvas(Scene scene, LoadSceneMode mode)
         {
-            if (scene.path != "Assets/Tonpalm/Lawyer Room.unity" || owner != null) return;
-            var prefab = Resources.Load<LawyerRoomIntro>("LawyerRoomIntroCanvas");
-            if (prefab == null)
+            if (scene.name != "Lawyer Room" || owner != null) return;
+            foreach (var root in scene.GetRootGameObjects())
             {
-                Debug.LogError("Lawyer Room Intro Canvas prefab is missing from Resources.");
+                var intro = root.GetComponentInChildren<LawyerRoomIntro>(true);
+                if (intro == null) continue;
+                intro.gameObject.SetActive(true);
                 return;
             }
-            var instance = Instantiate(prefab);
-            SceneManager.MoveGameObjectToScene(instance.gameObject, scene);
+            Debug.LogError("Lawyer Room Intro Canvas is missing from SeatingCanvas.");
         }
 
         private void Awake()
         {
-            // The loading screen persists into gameplay; hide the direct-Play copy.
+            // Only one runtime Intro may own the gameplay pause.
             if (owner != null && owner != this)
             {
                 gameObject.SetActive(false);
                 return;
             }
-            if (screen == null || pressAnyKey == null || paragraphs == null || paragraphs.Length != 3
+            if (screen == null || pressAnyKey == null || secondIntroText == null || secondIntroGroup == null
+                || paragraphs == null || paragraphs.Length != 3
                 || System.Array.Exists(paragraphs, p => p == null))
             {
-                Debug.LogError("Intro requires its screen, three paragraphs and key prompt.", this);
+                Debug.LogError("Assign the Intro screen, three paragraphs, key prompt and Intro 2 text/group.", this);
                 enabled = false;
                 if (screen != null) screen.gameObject.SetActive(false);
                 return;
@@ -85,20 +99,14 @@ namespace SecretsThatBreathe
             screen.blocksRaycasts = true;
             foreach (var paragraph in paragraphs) paragraph.alpha = 0f;
             pressAnyKey.alpha = 0f;
+            secondIntroGroup.alpha = 0f;
+            secondIntroText.maxVisibleCharacters = 0;
+            if (secondIntroTypingAudio != null) secondIntroTypingAudio.Stop();
+            PrepareGameplayAudio();
             SuspendSceneControls(gameObject.scene);
             if (playerControls != null)
                 foreach (var control in playerControls)
                     Suspend(control);
-            if (loadGameplayScene)
-            {
-                DontDestroyOnLoad(gameObject);
-                SceneManager.sceneLoaded += OnGameplayLoaded;
-            }
-        }
-
-        private void OnGameplayLoaded(Scene scene, LoadSceneMode mode)
-        {
-            if (scene.path == gameplayScenePath) SuspendSceneControls(scene);
         }
 
         private void SuspendSceneControls(Scene scene)
@@ -130,31 +138,26 @@ namespace SecretsThatBreathe
 
         private IEnumerator Start()
         {
-            // Present the black Canvas before starting disk IO / scene activation.
-            yield return null;
-            AsyncOperation loading = null;
-            if (loadGameplayScene)
-            {
-                if (!Application.CanStreamedLevelBeLoaded(gameplayScenePath))
-                {
-                    Debug.LogError("Add the Lawyer Room gameplay scene to the Build scene list.", this);
-                    yield break;
-                }
-                loading = SceneManager.LoadSceneAsync(gameplayScenePath, LoadSceneMode.Single);
-            }
-            // Let the loaded scene run Awake/Start and upload its first rendered frames.
+            // Let scene Start callbacks and the first rendered frames prepare resources
+            // behind the black Canvas. Gameplay remains paused throughout.
             yield return null;
             yield return null;
+            yield return null;
+            yield return new WaitForSecondsRealtime(Mathf.Max(0f, firstTextDelaySeconds));
             foreach (var paragraph in paragraphs)
             {
                 yield return Fade(paragraph, 1f, textFadeSeconds);
                 yield return new WaitForSecondsRealtime(paragraphHoldSeconds);
             }
 
-            // Keep the black cover while visible textures finish streaming.
-            while (loading != null && !loading.isDone) yield return null;
-            while (Texture.streamingTexturePendingLoadCount > 0)
+            // Require streaming to stay idle across frames before accepting input.
+            int readyFrames = 0;
+            while (readyFrames < 3)
+            {
+                readyFrames = Texture.streamingTexturePendingLoadCount == 0
+                    && Texture.streamingTextureLoadingCount == 0 ? readyFrames + 1 : 0;
                 yield return null;
+            }
             yield return Fade(pressAnyKey, 1f, promptFadeSeconds);
             // A held key from before the prompt cannot dismiss it.
             while (AnyButtonHeld()) yield return null;
@@ -171,11 +174,86 @@ namespace SecretsThatBreathe
             }
             foreach (var paragraph in paragraphs) paragraph.alpha = 0f;
             pressAnyKey.alpha = 0f;
+            yield return PlaySecondIntro();
             yield return new WaitForSecondsRealtime(blackHoldSeconds);
-            yield return Fade(screen, 0f, revealGameSeconds);
+            yield return RevealGame();
             ReleaseControls();
+            // Loading can finish after the window's focus callback has already run.
+            // Enter gameplay with mouse capture explicitly restored after enabling input.
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
             gameObject.SetActive(false);
-            if (loadGameplayScene) Destroy(gameObject);
+        }
+
+        private void PrepareGameplayAudio()
+        {
+            if (gameplayAudioSources == null) return;
+            foreach (var source in gameplayAudioSources)
+            {
+                if (source == null || gameplayAudioVolumes.ContainsKey(source)) continue;
+                gameplayAudioVolumes.Add(source, source.volume);
+                source.Stop();
+                source.volume = 0f;
+            }
+        }
+
+        private void StartGameplayAudio()
+        {
+            foreach (var entry in gameplayAudioVolumes)
+                if (entry.Key != null && entry.Key.isActiveAndEnabled && entry.Key.clip != null && !entry.Key.isPlaying)
+                    entry.Key.Play();
+        }
+
+        private IEnumerator RevealGame()
+        {
+            StartGameplayAudio();
+            float elapsed = 0f;
+            float duration = Mathf.Max(0f, revealGameSeconds);
+            while (elapsed < duration)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                float progress = Mathf.Clamp01(elapsed / duration);
+                // Visible picture and audio use the same linear 0-to-1 progress.
+                screen.alpha = 1f - progress;
+                foreach (var entry in gameplayAudioVolumes)
+                    if (entry.Key != null) entry.Key.volume = entry.Value * progress;
+                yield return null;
+            }
+            screen.alpha = 0f;
+            RestoreGameplayAudio();
+        }
+
+        private void RestoreGameplayAudio()
+        {
+            // Also recover ambience if Intro is manually disabled before it finishes.
+            StartGameplayAudio();
+            foreach (var entry in gameplayAudioVolumes)
+                if (entry.Key != null) entry.Key.volume = entry.Value;
+            gameplayAudioVolumes.Clear();
+        }
+
+        private IEnumerator PlaySecondIntro()
+        {
+            // Full opacity immediately; reveal characters instead of fading the text in.
+            secondIntroText.maxVisibleCharacters = 0;
+            secondIntroGroup.alpha = 1f;
+            secondIntroText.ForceMeshUpdate();
+            int count = secondIntroText.textInfo.characterCount;
+            float elapsed = 0f;
+            if (count > 0 && secondIntroTypingAudio != null && secondIntroTypingAudio.clip != null)
+                secondIntroTypingAudio.Play();
+            while (secondIntroText.maxVisibleCharacters < count)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                secondIntroText.maxVisibleCharacters = Mathf.Min(count,
+                    Mathf.FloorToInt(elapsed / Mathf.Max(.001f, secondIntroSecondsPerCharacter)));
+                if (secondIntroText.maxVisibleCharacters >= count && secondIntroTypingAudio != null)
+                    secondIntroTypingAudio.Stop();
+                yield return null;
+            }
+            if (secondIntroTypingAudio != null) secondIntroTypingAudio.Stop();
+            yield return new WaitForSecondsRealtime(secondIntroHoldSeconds);
+            yield return Fade(secondIntroGroup, 0f, secondIntroFadeOutSeconds);
         }
 
         private static IEnumerator Fade(CanvasGroup group, float target, float seconds)
@@ -225,8 +303,9 @@ namespace SecretsThatBreathe
 
         private void OnDisable()
         {
-            SceneManager.sceneLoaded -= OnGameplayLoaded;
             StopAllCoroutines();
+            if (secondIntroTypingAudio != null) secondIntroTypingAudio.Stop();
+            RestoreGameplayAudio();
             ReleaseControls();
             if (screen != null) screen.alpha = 0f;
             if (owner == this) owner = null;

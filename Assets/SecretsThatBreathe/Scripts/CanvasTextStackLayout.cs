@@ -54,6 +54,7 @@ namespace SecretsThatBreathe
         private bool Excluded(TMP_Text label)
         {
             if (label == null || TestKey.IsMatch(label.text ?? "")) return true;
+            if (label.GetComponentInParent<LawyerRoomIntro>(true) != null) return true;
             for (var item = label.transform; item != null && item != transform; item = item.parent)
                 if (item.name == "FlowingDialogue" || item.name.StartsWith("TestSkip") || item.name.StartsWith("CallRow")
                     || item.name == "Conversation" || item.name == "CallBackLines"

@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -21,6 +22,9 @@ namespace SecretsThatBreathe
         private bool cursorCaptured;
         private CursorLockMode previousLock;
         private bool previousVisible;
+        private Vector2 lastChoiceCursorPosition;
+        private bool hasChoiceCursorPosition;
+        private bool restoreChoiceCursorPending;
 
         public void ShowChoices()
         {
@@ -31,10 +35,36 @@ namespace SecretsThatBreathe
                 previousLock = Cursor.lockState;
                 previousVisible = Cursor.visible;
                 cursorCaptured = true;
+                restoreChoiceCursorPending = hasChoiceCursorPosition;
             }
             gameObject.SetActive(true);
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            ShowChoiceCursor();
+        }
+
+        private void LateUpdate()
+        {
+            // StarterAssetsInputs re-locks the cursor when the window gains focus.
+            // Apply the visible menu's cursor policy after focus callbacks, while
+            // preserving the gameplay cursor state captured by ShowChoices.
+            if (cursorCaptured && Application.isFocused)
+            {
+                ShowChoiceCursor();
+                if (restoreChoiceCursorPending && Mouse.current != null)
+                {
+                    // Restore once after unlocking; do not pin the mouse while choosing.
+                    var position = new Vector2(
+                        Mathf.Clamp(lastChoiceCursorPosition.x, 0f, Mathf.Max(0, Screen.width - 1)),
+                        Mathf.Clamp(lastChoiceCursorPosition.y, 0f, Mathf.Max(0, Screen.height - 1)));
+                    Mouse.current.WarpCursorPosition(position);
+                    restoreChoiceCursorPending = false;
+                }
+            }
+        }
+
+        private static void ShowChoiceCursor()
+        {
+            if (Cursor.lockState != CursorLockMode.None) Cursor.lockState = CursorLockMode.None;
+            if (!Cursor.visible) Cursor.visible = true;
         }
 
         public void PrepareButtons()
@@ -80,6 +110,13 @@ namespace SecretsThatBreathe
         {
             if (cursorCaptured)
             {
+                // Locking the gameplay cursor recentres it, so save the click position first.
+                if (Mouse.current != null)
+                {
+                    lastChoiceCursorPosition = Mouse.current.position.ReadValue();
+                    hasChoiceCursorPosition = true;
+                }
+                restoreChoiceCursorPending = false;
                 cursorCaptured = false;
                 Cursor.lockState = previousLock;
                 Cursor.visible = previousVisible;

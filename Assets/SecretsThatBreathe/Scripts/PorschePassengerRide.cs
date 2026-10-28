@@ -5,7 +5,7 @@ namespace SecretsThatBreathe
 {
     [DefaultExecutionOrder(20000)]
     [DisallowMultipleComponent]
-    public sealed class PorschePassengerRide : MonoBehaviour
+    public sealed partial class PorschePassengerRide : MonoBehaviour
     {
         [Header("Route (world positions)")]
         public Vector3 startPosition = new Vector3(209.3862f, 5.09909f, 142.75f);
@@ -13,6 +13,17 @@ namespace SecretsThatBreathe
         [Tooltip("Metres per second. Set to zero to pause. Can be changed during Play.")]
         [Min(0f)] public float speed = 1f;
         public bool playOnStart = true;
+
+        [Header("Optional smooth route (world positions)")]
+        [Tooltip("Corners between Start and End. Leave empty for the original straight ride.")]
+        public Vector3[] intermediateRoutePoints = new Vector3[0];
+        [Min(.1f)] public float cornerRadius = 5f;
+        [Tooltip("How quickly the car's heading follows the road curve.")]
+        [Min(.1f)] public float headingResponse = 6f;
+
+        [Header("Smooth arrival")]
+        [Tooltip("Distance before the destination at which braking begins. Zero keeps a constant-speed arrival.")]
+        [Min(0f)] public float brakingDistance = 12f;
 
         [Header("Passenger and camera")]
         [Tooltip("Move this child Transform to adjust the driver's eye position and forward direction.")]
@@ -32,15 +43,27 @@ namespace SecretsThatBreathe
         [Tooltip("Walking, seating and Cinemachine controls. Phone flashlight stays enabled.")]
         public Behaviour[] suspendedControls = new Behaviour[0];
 
+        [Header("Interior driving ambience")]
+        public AudioClip drivingInteriorClip;
+        [Range(0f, 1f)] public float drivingInteriorVolume = .45f;
+        [Tooltip("Optional source. If unassigned, a stereo 2D source is created on the car at runtime.")]
+        public AudioSource drivingInteriorAudio;
+
         public bool IsMoving { get; private set; }
         public bool HasArrived { get; private set; }
-        public float RemainingDistance => Vector3.Distance(transform.position, endPosition);
+        public float CurrentSpeed { get; private set; }
+        public float RemainingDistance => route != null ? Mathf.Max(0f, route.Length - routeDistance)
+            : Vector3.Distance(transform.position, endPosition);
+        private PassengerRidePath route;
+        private float routeDistance;
+        private SmoothRideStop arrivalStop;
         private bool initialized;
         private bool[] controlStates;
         private CharacterController[] characterControllers;
         private bool[] controllerStates;
         private Vector3 cameraOffsetInPlayer;
         private float originalFov, originalNearClip, yaw, pitch;
+        private bool drivingAudioPaused;
 
         private void Start()
         {
@@ -69,6 +92,8 @@ namespace SecretsThatBreathe
                 characterControllers[i].enabled = false;
             }
             initialized = true;
+            SetRidingFlashlightState(false);
+            ConfigureDrivingAudio();
             RestartRide();
             IsMoving = playOnStart;
             UpdatePassengerPose();
@@ -86,14 +111,57 @@ namespace SecretsThatBreathe
 
         private void Update()
         {
-            if (!initialized || Time.timeScale <= 0f) return;
+            if (!initialized || hasExited || Time.timeScale <= 0f) return;
+            UpdateExitInteraction();
+            if (exitInProgress) return;
             if (IsMoving)
             {
-                transform.position = Advance(transform.position, endPosition, speed, Time.deltaTime);
-                HasArrived = (transform.position - endPosition).sqrMagnitude < 0.000001f;
-                if (HasArrived) { transform.position = endPosition; IsMoving = false; }
+                float travel = 0f;
+                float requestedSpeed = Mathf.Max(0f, speed);
+                if (requestedSpeed > 0f)
+                {
+                    if (arrivalStop == null && brakingDistance > 0f && RemainingDistance <= brakingDistance)
+                        arrivalStop = new SmoothRideStop(RemainingDistance, requestedSpeed);
+                    if (arrivalStop != null)
+                    {
+                        float before = arrivalStop.RemainingDistance;
+                        arrivalStop.Advance(Time.deltaTime);
+                        travel = Mathf.Max(0f, before - arrivalStop.RemainingDistance);
+                        CurrentSpeed = arrivalStop.Speed;
+                    }
+                    else
+                    {
+                        CurrentSpeed = requestedSpeed;
+                        travel = requestedSpeed * Time.deltaTime;
+                    }
+                }
+                else CurrentSpeed = 0f;
+                if (route != null)
+                {
+                    routeDistance = Mathf.Min(route.Length, routeDistance + travel);
+                    route.Evaluate(routeDistance, out var position, out var forward);
+                    transform.position = position;
+                    if (forward.sqrMagnitude > .000001f)
+                        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(forward, Vector3.up),
+                            1f - Mathf.Exp(-Mathf.Max(.1f, headingResponse) * Time.deltaTime));
+                    HasArrived = routeDistance >= route.Length || (arrivalStop != null && arrivalStop.IsComplete);
+                }
+                else
+                {
+                    transform.position = Vector3.MoveTowards(transform.position, endPosition, travel);
+                    HasArrived = (transform.position - endPosition).sqrMagnitude < 0.000001f
+                        || (arrivalStop != null && arrivalStop.IsComplete);
+                }
+                if (HasArrived)
+                {
+                    transform.position = endPosition;
+                    if (route != null) routeDistance = route.Length;
+                    CurrentSpeed = 0f;
+                    IsMoving = false;
+                }
             }
-            if (Cursor.lockState != CursorLockMode.Locked || !Application.isFocused) return;
+            if (EveningDriveIntro.IsInputBlocked(gameObject.scene)
+                || Cursor.lockState != CursorLockMode.Locked || !Application.isFocused) return;
             Vector2 look = Mouse.current != null ? Mouse.current.delta.ReadValue() * mouseSensitivity : Vector2.zero;
             if (Gamepad.current != null)
                 look += Gamepad.current.rightStick.ReadValue() * (gamepadLookSpeed * Time.deltaTime);
@@ -103,7 +171,50 @@ namespace SecretsThatBreathe
 
         private void LateUpdate()
         {
-            if (initialized) UpdatePassengerPose();
+            if (!initialized || hasExited) return;
+            if (!passengerDetached) UpdatePassengerPose();
+            UpdateDrivingAudio();
+        }
+
+        private void ConfigureDrivingAudio()
+        {
+            if (drivingInteriorClip == null) return;
+            if (drivingInteriorAudio == null)
+            {
+                var host = new GameObject("DrivingInteriorAudio");
+                host.transform.SetParent(transform, false);
+                drivingInteriorAudio = host.AddComponent<AudioSource>();
+            }
+            drivingInteriorAudio.playOnAwake = false;
+            drivingInteriorAudio.loop = true;
+            drivingInteriorAudio.spatialBlend = 0f;
+            drivingInteriorAudio.dopplerLevel = 0f;
+            drivingInteriorAudio.clip = drivingInteriorClip;
+            drivingInteriorAudio.volume = 0f;
+        }
+
+        private void UpdateDrivingAudio()
+        {
+            if (drivingInteriorAudio == null || drivingInteriorClip == null) return;
+            // Keep the opening screen fade, and gradually silence the driving
+            // ambience with actual vehicle speed as the brakes bring it to rest.
+            float motionGain = IsMoving && speed > 0f ? Mathf.Clamp01(CurrentSpeed / speed) : 0f;
+            drivingInteriorAudio.volume = drivingInteriorVolume
+                * EveningDriveIntro.GetGameRevealAmount(gameObject.scene) * motionGain;
+            // Audio does not follow Time.timeScale automatically. Keep the intro
+            // silent until the existing text-fade cue releases vehicle movement.
+            bool shouldPlay = IsMoving && speed > 0f && Time.timeScale > 0f;
+            if (shouldPlay && !drivingInteriorAudio.isPlaying)
+            {
+                if (drivingAudioPaused) drivingInteriorAudio.UnPause();
+                else drivingInteriorAudio.Play();
+                drivingAudioPaused = false;
+            }
+            else if (!shouldPlay && drivingInteriorAudio.isPlaying)
+            {
+                drivingInteriorAudio.Pause();
+                drivingAudioPaused = true;
+            }
         }
 
         private void UpdatePassengerPose()
@@ -128,19 +239,34 @@ namespace SecretsThatBreathe
         public void RestartRide()
         {
             if (!Application.isPlaying || !initialized) return;
+            route = intermediateRoutePoints != null && intermediateRoutePoints.Length > 0
+                ? new PassengerRidePath(startPosition, intermediateRoutePoints, endPosition, cornerRadius) : null;
+            routeDistance = 0f;
+            arrivalStop = null;
+            CurrentSpeed = 0f;
             transform.position = startPosition;
+            if (route != null)
+            {
+                route.Evaluate(0f, out _, out var forward);
+                if (forward.sqrMagnitude > .000001f) transform.rotation = Quaternion.LookRotation(forward, Vector3.up);
+            }
             yaw = pitch = 0f;
             HasArrived = false;
             IsMoving = true;
         }
 
         [ContextMenu("Pause Ride (Play Mode)")]
-        public void PauseRide() { IsMoving = false; }
+        public void PauseRide() { IsMoving = false; CurrentSpeed = 0f; }
         [ContextMenu("Resume Ride (Play Mode)")]
         public void ResumeRide() { if (initialized) IsMoving = !HasArrived; }
 
         private void OnDisable()
         {
+            StopAllCoroutines();
+            CleanupExitUI();
+            if (drivingInteriorAudio != null && drivingInteriorClip != null) drivingInteriorAudio.Stop();
+            drivingAudioPaused = false;
+            CurrentSpeed = 0f;
             if (!initialized) return;
             for (int i = 0; i < suspendedControls.Length; i++)
                 if (suspendedControls[i] != null && suspendedControls[i] != this)
@@ -152,12 +278,20 @@ namespace SecretsThatBreathe
                 playerCamera.fieldOfView = originalFov;
                 playerCamera.nearClipPlane = originalNearClip;
             }
+            if (hasExited && enableFlashlightAfterExit) SetRidingFlashlightState(true);
         }
 
         private void OnDrawGizmosSelected()
         {
+            DrawExitGizmo();
             Gizmos.color = Color.cyan;
-            Gizmos.DrawLine(startPosition, endPosition);
+            if (intermediateRoutePoints != null && intermediateRoutePoints.Length > 0)
+            {
+                var preview = new PassengerRidePath(startPosition, intermediateRoutePoints, endPosition, cornerRadius);
+                for (int i = 1; i < preview.SampleCount; i++) Gizmos.DrawLine(preview.GetSample(i - 1), preview.GetSample(i));
+                foreach (var corner in intermediateRoutePoints) Gizmos.DrawWireSphere(corner, .35f);
+            }
+            else Gizmos.DrawLine(startPosition, endPosition);
             Gizmos.DrawWireSphere(startPosition, 0.3f);
             Gizmos.DrawWireSphere(endPosition, 0.3f);
             if (driverSeat == null) return;

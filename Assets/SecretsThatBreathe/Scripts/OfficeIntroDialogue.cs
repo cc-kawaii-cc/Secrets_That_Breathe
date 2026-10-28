@@ -21,7 +21,6 @@ namespace SecretsThatBreathe
         [Min(0f)] public float beforeFlashlightHintDelay = 2f;
         [HideInInspector] public float flashlightHintDuration = 3f;
         [Header("Testing shortcut")]
-        public bool enableF1Skip = true;
         public GameObject testSkipHint;
         public bool IsFinished { get; private set; }
         public bool HasStarted { get; private set; }
@@ -79,8 +78,7 @@ namespace SecretsThatBreathe
 
         private void Update()
         {
-            if (testSkipHint != null) testSkipHint.SetActive(enableF1Skip);
-            if (enableF1Skip && Time.timeScale > 0f && Keyboard.current != null
+            if (DocumentSearchSequence.TestingShortcutsEnabled(gameObject.scene) && Time.timeScale > 0f && Keyboard.current != null
                 && Keyboard.current.f1Key.wasPressedThisFrame)
             {
                 if (!DocumentSearchSequence.TrySkipToIncomingCall(gameObject.scene)) SkipToPhoneCall();
@@ -96,7 +94,6 @@ namespace SecretsThatBreathe
             HasStarted = true;
             FlashlightUnlocked = true;
             IsFinished = true; // The phone's existing waiting routine starts its ringing sequence.
-            if (testSkipHint != null) testSkipHint.SetActive(enableF1Skip);
         }
 
         private IEnumerator PlayDialogue()
@@ -166,7 +163,6 @@ namespace SecretsThatBreathe
                 rect.sizeDelta = new Vector2(900f, 60f);
                 hint.alignment = TextAlignmentOptions.Left;
                 intro.testSkipHint = rect.gameObject;
-                intro.testSkipHint.SetActive(intro.enableF1Skip);
             }
             return intro;
         }

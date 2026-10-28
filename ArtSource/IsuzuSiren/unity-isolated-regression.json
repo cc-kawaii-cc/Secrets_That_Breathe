@@ -1,0 +1,26 @@
+{
+    "success": true,
+    "ranWhilePlaying": false,
+    "assertions": 16,
+    "unityVersion": "6000.3.8f1",
+    "previewSceneOnly": true,
+    "checks": [
+        "Prefab imports",
+        "Controller deserializes without native constructor calls",
+        "Renderer and both actual Light references resolve",
+        "Left material bank peaks at phase zero",
+        "Real rotating Spot Lights are enabled and illuminated",
+        "Real Light transform rotates a quarter turn",
+        "Right material bank peaks on the opposite phase",
+        "Double flash starts on left real light",
+        "Double flash has a real dark interval",
+        "Second left real-light flash",
+        "Right real-light flash alternates",
+        "Siren off clears native emission blocks and disables both lights",
+        "OnDisable tolerates missing native caches after reload",
+        "OnEnable recreates native blocks and resumes flashing after reload",
+        "Normal component disable clears real lights and emission",
+        "No native creation or property-block errors in Unity"
+    ],
+    "error": ""
+}

@@ -22,6 +22,7 @@ namespace SecretsThatBreathe
         public TMP_Text unfinishedWorkThought;
         public GameObject testSkipHint;
         public GameObject testSkipAfterCallHint;
+        public GameObject testSkipExitHint;
         [Header("Timing")]
         [Min(.1f)] public float messageDuration = 3f;
         [Min(0f)] public float beforeCallBackThoughtDelay = 2f;
@@ -32,8 +33,9 @@ namespace SecretsThatBreathe
         [HideInInspector] public float returnToDeskDuration = 3f;
         [Min(0f)] public float afterChairMessageDelay = .5f;
         [HideInInspector] public int persistentReminderRevision;
-        public bool enableF2Skip = true;
-        public bool enableF3Skip = true;
+        [Header("F1-F4 testing shortcuts")]
+        [Tooltip("Enable or disable all four skip keys. Hint visibility is controlled separately on TestingShortcutHints.")]
+        public bool enableTestingShortcuts = true;
         public SearchStage Stage { get; private set; }
         public int CheckedCount => checkedItems.Count;
         public bool CanCallBack => Stage == SearchStage.ReadyToCallBack;
@@ -45,6 +47,8 @@ namespace SecretsThatBreathe
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void ResetInstances() => Instances.Clear();
+        public static bool TestingShortcutsEnabled(Scene scene) => Instances.TryGetValue(scene.handle, out var sequence)
+            && sequence != null && sequence.isActiveAndEnabled && sequence.enableTestingShortcuts;
         public static bool BlocksRoomInteractions(Scene scene) => Instances.TryGetValue(scene.handle, out var sequence)
             && sequence != null && sequence.isActiveAndEnabled && sequence.Stage != SearchStage.BeforeCall && sequence.Stage != SearchStage.Completed;
         public static bool BlocksChairInteractions(Scene scene) => Instances.TryGetValue(scene.handle, out var sequence)
@@ -132,12 +136,12 @@ namespace SecretsThatBreathe
         }
         private void Update()
         {
-            if (testSkipHint != null) testSkipHint.SetActive(enableF2Skip);
-            if (testSkipAfterCallHint != null) testSkipAfterCallHint.SetActive(enableF3Skip);
             if (Time.timeScale <= 0f) return;
-            if (enableF3Skip && Keyboard.current != null && Keyboard.current.f3Key.wasPressedThisFrame)
+            if (enableTestingShortcuts && Keyboard.current != null && Keyboard.current.f4Key.wasPressedThisFrame)
+                SkipToExit();
+            else if (enableTestingShortcuts && Keyboard.current != null && Keyboard.current.f3Key.wasPressedThisFrame)
                 SkipToAfterCallBack();
-            else if (enableF2Skip && Keyboard.current != null && Keyboard.current.f2Key.wasPressedThisFrame)
+            else if (enableTestingShortcuts && Keyboard.current != null && Keyboard.current.f2Key.wasPressedThisFrame)
                 SkipToSearch();
             bool searching = Stage == SearchStage.Searching;
             if (documents != null) foreach (var item in documents) if (item != null) item.Pulse(searching);
@@ -200,8 +204,28 @@ namespace SecretsThatBreathe
                     checkedItems.Add(item);
                 }
             StartCoroutine(ReturnToDesk(true));
-            if (testSkipHint != null) testSkipHint.SetActive(enableF2Skip);
-            if (testSkipAfterCallHint != null) testSkipAfterCallHint.SetActive(enableF3Skip);
+        }
+        public void SkipToExit()
+        {
+            if (phone == null || phone.player == null) return;
+            var story = phone.player.GetComponent<DrawerSearchScareSequence>();
+            if (story == null) return;
+            // Reuse the existing checkpoint reset to close phone/document/inspection
+            // UI and release seated or dialogue camera control before jumping ahead.
+            ResetCheckpointForTesting();
+            Stage = SearchStage.Completed;
+            reachedOwnDesk = true;
+            if (documents != null)
+                foreach (var item in documents)
+                {
+                    if (item == null) continue;
+                    item.Check();
+                    checkedItems.Add(item);
+                    item.Pulse(false);
+                }
+            story.SkipToExitForTesting();
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
         private void ResetCheckpointForTesting()
         {
