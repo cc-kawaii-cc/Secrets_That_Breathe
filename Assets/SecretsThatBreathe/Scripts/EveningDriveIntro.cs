@@ -19,6 +19,7 @@ namespace SecretsThatBreathe
 
         [Header("Real seconds")]
         [Min(0f)] public float blackDelaySeconds = 2f;
+        [Tooltip("Real seconds between characters. Lower values type faster.")]
         [Min(.001f)] public float secondsPerCharacter = .05f;
         [Min(0f)] public float completedTextHoldSeconds = 2f;
         [Min(0f)] public float textFadeOutSeconds = 1f;

@@ -58,6 +58,16 @@ RoomAmbience และ AirConditionerAudio ทั้งสองตัวถู�
 
 ## เสียงพิมพ์ Intro 2
 
-ใช้ Keyboard Typing By Nemo ระหว่างพิมพ์ข้อความ Intro 2 เท่านั้น เริ่มพร้อม typewriter และหยุดเมื่ออักษรสุดท้ายขึ้น รวมถึงหยุดเมื่อ Intro ถูกปิด ใช้ AudioSource ที่ `SeatingCanvas/LawyerRoomIntroCanvas/Intro2TypingAudio` ปรับ Volume ได้ตรงนี้ ค่าเริ่มต้น 0.35, 2D, Loop เปิด และ Play On Awake ปิด
+ใช้ Typing Keyboard2 By Nemo ระหว่างพิมพ์ข้อความ Intro 2 เท่านั้น เริ่มพร้อม typewriter และหยุดเมื่ออักษรสุดท้ายขึ้น รวมถึงหยุดเมื่อ Intro ถูกปิด ใช้ AudioSource ที่ `SeatingCanvas/LawyerRoomIntroCanvas/Intro2TypingAudio` ปรับ Volume ได้ตรงนี้ ค่าเริ่มต้น 0.35, 2D, Loop เปิด และ Play On Awake ปิด
 
-ไฟล์ต้นฉบับ `Assets/Keyboard Typing By Nemo.m4a` ยังคงอยู่ แปลงสำเนาที่ใช้กับ Unity เป็น `Assets/SecretsThatBreathe/Audio/Keyboard Typing By Nemo.wav` (PCM 16-bit stereo 44100 Hz) เพราะต้นฉบับถูก import เป็น DefaultImporter
+ไฟล์ต้นฉบับ `Assets/Typing Keyboard2 By Nemo.m4a` ยังคงอยู่ แปลงสำเนาที่ใช้กับ Unity เป็น `Assets/SecretsThatBreathe/Audio/Typing Keyboard2 By Nemo.wav` (PCM 16-bit stereo 44100 Hz) เพราะต้นฉบับถูก import เป็น DefaultImporter
+
+## ความเร็วพิมพ์
+
+กลับมาใช้เวลาเว้นต่ออักษรแบบเดิมแล้ว ทั้งสอง Intro ใช้เสียง Typing Keyboard2 By Nemo เล่นประกอบและหยุดเมื่อพิมพ์จบ โดยไม่ใช้ไฟล์จังหวะเสียง
+
+Lawyer Room: ปรับ Second Intro Seconds Per Character บน LawyerRoomIntroCanvas
+
+MainScene_2_Evening: ปรับ Seconds Per Character บน EveningDriveIntroCanvas
+
+ค่าน้อยพิมพ์เร็ว ค่ามากพิมพ์ช้า Pitch เปลี่ยนเฉพาะเสียง ไม่เปลี่ยนความเร็วตัวหนังสือ

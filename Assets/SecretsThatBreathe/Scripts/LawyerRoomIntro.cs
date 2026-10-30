@@ -23,6 +23,7 @@ namespace SecretsThatBreathe
         public CanvasGroup secondIntroGroup;
         [Tooltip("Plays only while Intro 2 characters are being revealed. Adjust Volume on this AudioSource.")]
         public AudioSource secondIntroTypingAudio;
+        [Tooltip("Real seconds between characters. Lower values type faster.")]
         [Min(.001f)] public float secondIntroSecondsPerCharacter = .05f;
         [Min(0f)] public float secondIntroHoldSeconds = 1f;
         [Min(0f)] public float secondIntroFadeOutSeconds = 1f;

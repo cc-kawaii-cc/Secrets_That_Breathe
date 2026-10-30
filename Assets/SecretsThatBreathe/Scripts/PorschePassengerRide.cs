@@ -38,6 +38,8 @@ namespace SecretsThatBreathe
         [Range(0f, 89f)] public float pitchLimit = 55f;
         [Min(0f)] public float mouseSensitivity = 0.08f;
         [Min(0f)] public float gamepadLookSpeed = 90f;
+        [Tooltip("Use the walking controller's Look input, sensitivity and mouse smoothing while seated.")]
+        public bool matchWalkingLook = true;
 
         [Header("Controls suspended only while riding")]
         [Tooltip("Walking, seating and Cinemachine controls. Phone flashlight stays enabled.")]
@@ -64,6 +66,10 @@ namespace SecretsThatBreathe
         private Vector3 cameraOffsetInPlayer;
         private float originalFov, originalNearClip, yaw, pitch;
         private bool drivingAudioPaused;
+        private StarterAssets.FirstPersonController walkingLook;
+        private StarterAssets.StarterAssetsInputs walkingInputs;
+        private PlayerInput walkingPlayerInput;
+        private Vector2 pendingMouseRotation;
 
         private void Start()
         {
@@ -76,6 +82,12 @@ namespace SecretsThatBreathe
             cameraOffsetInPlayer = playerRoot.InverseTransformPoint(playerCamera.transform.position);
             originalFov = playerCamera.fieldOfView;
             originalNearClip = playerCamera.nearClipPlane;
+            walkingLook = playerRoot.GetComponentInChildren<StarterAssets.FirstPersonController>(true);
+            if (walkingLook != null)
+            {
+                walkingInputs = walkingLook.GetComponent<StarterAssets.StarterAssetsInputs>();
+                walkingPlayerInput = walkingLook.GetComponent<PlayerInput>();
+            }
             controlStates = new bool[suspendedControls.Length];
             for (int i = 0; i < suspendedControls.Length; i++)
             {
@@ -160,20 +172,65 @@ namespace SecretsThatBreathe
                     IsMoving = false;
                 }
             }
-            if (EveningDriveIntro.IsInputBlocked(gameObject.scene)
-                || Cursor.lockState != CursorLockMode.Locked || !Application.isFocused) return;
-            Vector2 look = Mouse.current != null ? Mouse.current.delta.ReadValue() * mouseSensitivity : Vector2.zero;
-            if (Gamepad.current != null)
-                look += Gamepad.current.rightStick.ReadValue() * (gamepadLookSpeed * Time.deltaTime);
-            yaw = ClampLook(yaw + look.x, yawLimit);
-            pitch = ClampLook(pitch - look.y, pitchLimit);
         }
 
         private void LateUpdate()
         {
             if (!initialized || hasExited) return;
-            if (!passengerDetached) UpdatePassengerPose();
+            if (!passengerDetached)
+            {
+                UpdatePassengerLook();
+                UpdatePassengerPose();
+            }
             UpdateDrivingAudio();
+        }
+
+        private void UpdatePassengerLook()
+        {
+            if (exitInProgress || Time.timeScale <= 0f || EveningDriveIntro.IsInputBlocked(gameObject.scene)
+                || Cursor.lockState != CursorLockMode.Locked || !Application.isFocused
+                || (matchWalkingLook && walkingInputs != null && !walkingInputs.cursorInputForLook))
+            {
+                pendingMouseRotation = Vector2.zero;
+                return;
+            }
+
+            Vector2 rotation;
+            if (matchWalkingLook && walkingLook != null && walkingInputs != null && walkingPlayerInput != null)
+            {
+                // Use the same processed Look action as walking: pointer sensitivity,
+                // inversion and gamepad deadzone are already applied by Input System.
+                bool mouse = walkingPlayerInput.currentControlScheme == "KeyboardMouse";
+                if (mouse)
+                {
+                    pendingMouseRotation += walkingInputs.look * walkingLook.RotationSpeed;
+                    float response = walkingLook.MouseLookSmoothTime <= 0f ? 1f
+                        : 1f - Mathf.Exp(-Time.unscaledDeltaTime / walkingLook.MouseLookSmoothTime);
+                    rotation = pendingMouseRotation * response;
+                    pendingMouseRotation -= rotation;
+                }
+                else
+                {
+                    pendingMouseRotation = Vector2.zero;
+                    rotation = walkingInputs.look.sqrMagnitude >= .01f
+                        ? walkingInputs.look * (walkingLook.RotationSpeed * Time.deltaTime) : Vector2.zero;
+                }
+            }
+            else
+            {
+                pendingMouseRotation = Vector2.zero;
+                rotation = Mouse.current != null ? Mouse.current.delta.ReadValue() * mouseSensitivity : Vector2.zero;
+                if (Gamepad.current != null)
+                    rotation += Gamepad.current.rightStick.ReadValue() * (gamepadLookSpeed * Time.deltaTime);
+                rotation.y = -rotation.y;
+            }
+            float nextYaw = yaw + rotation.x;
+            float nextPitch = pitch + rotation.y;
+            yaw = ClampLook(nextYaw, yawLimit);
+            pitch = ClampLook(nextPitch, pitchLimit);
+            // Discard motion beyond the seat limit, so reversing the mouse responds immediately.
+            if (yaw != nextYaw) pendingMouseRotation.x = 0f;
+            if (pitch != nextPitch) pendingMouseRotation.y = 0f;
         }
 
         private void ConfigureDrivingAudio()
@@ -251,6 +308,7 @@ namespace SecretsThatBreathe
                 if (forward.sqrMagnitude > .000001f) transform.rotation = Quaternion.LookRotation(forward, Vector3.up);
             }
             yaw = pitch = 0f;
+            pendingMouseRotation = Vector2.zero;
             HasArrived = false;
             IsMoving = true;
         }
@@ -262,6 +320,7 @@ namespace SecretsThatBreathe
 
         private void OnDisable()
         {
+            pendingMouseRotation = Vector2.zero;
             StopAllCoroutines();
             CleanupExitUI();
             if (drivingInteriorAudio != null && drivingInteriorClip != null) drivingInteriorAudio.Stop();
