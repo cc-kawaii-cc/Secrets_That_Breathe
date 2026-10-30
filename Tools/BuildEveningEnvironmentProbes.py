@@ -51,11 +51,11 @@ for id,(kind,b) in blocks.items():
     name=re.search(r'propertyPath: m_Name\n      value: ([^\n]+)',b)
     if not name:continue
     name=name[1]
-    if not any(k in name for k in ['_Bush','MangoTree','ThaiPolice_IdleTalk','ThaiTrafficCone_Worn']):continue
+    if not any(k in name for k in ['_Bush','MangoTree','ThaiPolice_IdleTalk','ThaiTrafficCone_Worn']) and name!='isuzu':continue
     target=re.search(r'target: \{fileID: (-?\d+),[^\n]+\n      propertyPath: m_LocalPosition\.x',b)
     assert target,(id,name)
     m=instance_matrix(b,target[1]);targets.append((name,m[:3,3],m))
-crime=[t for t in targets if t[0].startswith(('ThaiPolice','ThaiTrafficCone'))]
+crime=[t for t in targets if t[0].startswith(('ThaiPolice','ThaiTrafficCone')) or t[0]=='isuzu']
 plants=[t for t in targets if '_Bush' in t[0] or 'MangoTree' in t[0]]
 assert len(crime)>=4 and len(plants)>0
 def add(probes,p):probes[tuple(round(float(v),3) for v in p)]=None
@@ -78,10 +78,11 @@ for name,p,m in plants:
 def group(name,first,probes):
     global s
     ids=(first,first+1,first+2)
+    owned='m_Name: '+name in s
     for id in ids:
         old=re.search(r'^--- !u!\d+ &'+str(id)+r'\n.*?(?=^---|\Z)',s,re.M|re.S)
         if old:
-            assert 'm_Name: '+name in s
+            assert owned
             s=s[:old.start()]+s[old.end():]
     header=f'''--- !u!1 &{ids[0]}
 GameObject:
@@ -134,7 +135,7 @@ group('Vegetation_LightProbes',731220001,plant_probes)
 # Keep the authored sky and warm fog. A dim neutral ambient floor prevents
 # completely unlit dynamic objects without adding emission to their materials.
 old_ambient=re.search(r'(?m)^  m_AmbientSkyColor: .*',s)[0]
-s=re.sub(r'(?m)^  m_AmbientSkyColor: .*','  m_AmbientSkyColor: {r: 0.14, g: 0.15, b: 0.17, a: 1}',s)
+s=re.sub(r'(?m)^  m_AmbientSkyColor: .*','  m_AmbientSkyColor: {r: 0.20, g: 0.21, b: 0.23, a: 1}',s)
 ids=re.findall(r'^--- !u!\d+ &(-?\d+)',s,re.M);assert len(ids)==len(set(ids))
 PATH.write_text(s,encoding='utf-8')
 report={'backup':str(backup.relative_to(ROOT)),'crimeObjects':len(crime),'vegetationObjects':len(plants),

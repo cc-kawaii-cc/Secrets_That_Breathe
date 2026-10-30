@@ -1,0 +1,39 @@
+{
+    "success": true,
+    "error": "",
+    "roles": [
+        {
+            "role": "Police",
+            "prefab": "Assets/SecretsThatBreathe/Characters/ThaiPolice/IdleTalk/ThaiPolice_IdleTalk.prefab",
+            "clip": "PoliceConversation",
+            "seconds": 8.0,
+            "height": 1.8000001907348633,
+            "maximumVertexMotion": 0.6284422278404236,
+            "maximumRootMotion": 0.0,
+            "loopError": 1.740613415528491e-18,
+            "triangles": 964,
+            "skinnedRenderers": 1,
+            "controllerAssigned": true,
+            "looped": true,
+            "glassesFollowsHead": true,
+            "animatorPlaybackVerified": true
+        },
+        {
+            "role": "Suit",
+            "prefab": "Assets/SecretsThatBreathe/Characters/NavySuitVillain/NavySuitVillain.prefab",
+            "clip": "SuitConversation",
+            "seconds": 8.0,
+            "height": 1.8499997854232789,
+            "maximumVertexMotion": 0.6018548011779785,
+            "maximumRootMotion": 0.0,
+            "loopError": 1.7037747201532887e-18,
+            "triangles": 1072,
+            "skinnedRenderers": 2,
+            "controllerAssigned": true,
+            "looped": true,
+            "glassesFollowsHead": true,
+            "animatorPlaybackVerified": true
+        }
+    ],
+    "pair": "Assets/SecretsThatBreathe/Characters/Conversation/PoliceAndSuit_Conversation.prefab"
+}

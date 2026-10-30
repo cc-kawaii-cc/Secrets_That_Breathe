@@ -1,0 +1,22 @@
+{
+  "prefab_guid": "45d1ac6644ce526ab190f1b9c84d77a6",
+  "model_guid": "476fa65328a35d579907ec5a29adc8c0",
+  "materials": {
+    "NavySuitVillain": "53355b41f051599f91b6a62e48eb5868",
+    "SunglassesBlack": "b3e07bbef85d55bba929744080fad7ac"
+  },
+  "meshes": {
+    "Body": {
+      "render_vertices": 694,
+      "triangles": 964,
+      "mesh_guid": "0fbf13dbb3de5299a29d98a298a8c625"
+    },
+    "Sunglasses": {
+      "render_vertices": 200,
+      "triangles": 108,
+      "mesh_guid": "054b0c7f2655560f9e09fb2885a861f3"
+    }
+  },
+  "collider": "capsule 1.85 m",
+  "static_standing_pose": true
+}
