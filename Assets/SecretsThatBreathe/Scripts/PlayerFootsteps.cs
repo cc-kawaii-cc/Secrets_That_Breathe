@@ -10,6 +10,12 @@ namespace SecretsThatBreathe
         public AudioSource audioSource;
         [Tooltip("Short recordings of one footstep each, not a looping walking track.")]
         public AudioClip[] footstepClips;
+        [Header("Ground surface clips (optional)")]
+        [Tooltip("Used on colliders whose object or parent name contains Road.")]
+        public AudioClip[] roadClips;
+        [Tooltip("Used on TerrainCollider surfaces.")]
+        public AudioClip[] terrainClips;
+        public LayerMask surfaceLayers = ~0;
         [HideInInspector] public int concreteClipsRevision;
         [HideInInspector] public int cadenceSettingsRevision;
         [Range(0f, 1f)] public float volume = .4f;
@@ -28,6 +34,8 @@ namespace SecretsThatBreathe
         private float travelled;
         private bool walking;
         private int lastClip = -1;
+        private AudioClip[] lastClips;
+        private readonly RaycastHit[] surfaceHits = new RaycastHit[32];
 
         private void Awake()
         {
@@ -80,23 +88,51 @@ namespace SecretsThatBreathe
         }
         private void PlayStep()
         {
-            if (audioSource == null || footstepClips == null || footstepClips.Length == 0) return;
+            AudioClip[] clips = GetSurfaceClips();
+            if (audioSource == null || clips == null || clips.Length == 0) return;
+            if (clips != lastClips) { lastClip = -1; lastClips = clips; }
             int validCount = 0;
-            for (int i = 0; i < footstepClips.Length; i++)
-                if (footstepClips[i] != null && i != lastClip) validCount++;
+            for (int i = 0; i < clips.Length; i++)
+                if (clips[i] != null && i != lastClip) validCount++;
             int selected = -1;
             if (validCount > 0)
             {
                 int choice = Random.Range(0, validCount);
-                for (int i = 0; i < footstepClips.Length; i++)
-                    if (footstepClips[i] != null && i != lastClip && choice-- == 0) { selected = i; break; }
+                for (int i = 0; i < clips.Length; i++)
+                    if (clips[i] != null && i != lastClip && choice-- == 0) { selected = i; break; }
             }
-            else if (lastClip >= 0 && lastClip < footstepClips.Length && footstepClips[lastClip] != null) selected = lastClip;
+            else if (lastClip >= 0 && lastClip < clips.Length && clips[lastClip] != null) selected = lastClip;
             if (selected < 0) return;
             lastClip = selected;
             audioSource.pitch = Random.Range(Mathf.Max(.1f, Mathf.Min(pitchRange.x, pitchRange.y)),
                 Mathf.Max(.1f, Mathf.Max(pitchRange.x, pitchRange.y)));
-            audioSource.PlayOneShot(footstepClips[selected], volume);
+            audioSource.PlayOneShot(clips[selected], volume);
+        }
+        private AudioClip[] GetSurfaceClips()
+        {
+            if (body == null || ((roadClips == null || roadClips.Length == 0)
+                && (terrainClips == null || terrainClips.Length == 0))) return footstepClips;
+            Bounds bounds = body.bounds;
+            int count = Physics.RaycastNonAlloc(bounds.center, Vector3.down, surfaceHits,
+                bounds.extents.y + .4f, surfaceLayers, QueryTriggerInteraction.Ignore);
+            Collider ground = null;
+            float nearest = float.PositiveInfinity;
+            for (int i = 0; i < count; i++)
+            {
+                Collider candidate = surfaceHits[i].collider;
+                if (candidate == null || candidate == body || candidate.transform.IsChildOf(transform)) continue;
+                if (surfaceHits[i].distance >= nearest) continue;
+                nearest = surfaceHits[i].distance;
+                ground = candidate;
+            }
+            // Resolve the nearest supporting collider first: a road can sit above terrain.
+            if (ground == null) return footstepClips;
+            if (ground is TerrainCollider)
+                return terrainClips != null && terrainClips.Length > 0 ? terrainClips : footstepClips;
+            for (Transform parent = ground.transform; parent != null; parent = parent.parent)
+                if (parent.name.IndexOf("Road", System.StringComparison.OrdinalIgnoreCase) >= 0)
+                    return roadClips != null && roadClips.Length > 0 ? roadClips : footstepClips;
+            return footstepClips;
         }
         private void ResetDistance()
         {

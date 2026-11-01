@@ -69,11 +69,12 @@ namespace SecretsThatBreathe
             source.volume = 0f;
         }
 
-        private void OnDisable()
+        public void StopExteriorForTesting()
         {
             if (sourceA != null) sourceA.Stop();
             if (sourceB != null) sourceB.Stop();
             requested = playing = false;
         }
+        private void OnDisable() => StopExteriorForTesting();
     }
 }

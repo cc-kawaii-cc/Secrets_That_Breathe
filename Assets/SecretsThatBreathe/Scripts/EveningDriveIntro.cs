@@ -43,6 +43,21 @@ namespace SecretsThatBreathe
             => IsInputBlocked(scene) && owner.screen != null
                 ? 1f - Mathf.Clamp01(owner.screen.alpha) : 1f;
 
+        public static void SkipForTesting(Scene scene)
+        {
+            if (owner == null || owner.gameObject.scene != scene) return;
+            var intro = owner;
+            intro.StopAllCoroutines();
+            if (intro.typingAudio != null) intro.typingAudio.Stop();
+            intro.storyGroup.alpha = 0f;
+            intro.screen.alpha = 0f;
+            intro.IsFinished = true;
+            intro.ReleaseControls();
+            intro.gameObject.SetActive(false);
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void ResetOwner() => owner = null;
 
