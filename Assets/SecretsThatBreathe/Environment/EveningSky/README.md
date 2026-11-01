@@ -13,6 +13,7 @@ Skybox Material โทนเย็น อ้างอิง MainScene_2_Evening:
 - Sky Brightness: ความสว่างของท้องฟ้ารวม ไม่ใช่ความแรง Directional Light
 - Cloud Coverage / Cloud Scale / Sunset Cloud Color: ปริมาณ ขนาด และสีของเมฆ
 - Sun Direction / Sun Height / Sun Brightness: ตำแหน่งและความสว่างของดวงอาทิตย์ที่วาดในท้องฟ้า ไม่เปลี่ยนทิศทางไฟจริง
+- Sun Brightness ปรับได้ 0–64 (ขยายจากเดิม 0–8) ค่าบน Material ปัจจุบันคือ 24 เพื่อให้ดวงอาทิตย์เด่นขึ้น โดยไม่เพิ่ม Sky Brightness หรือแสงไฟทั้งฉาก ทั้งนี้เมฆ, Sky Brightness และ Fog ยังลดทอนแสงดวงอาทิตย์ตามเดิม
 - Rotation: หมุนท้องฟ้าทั้งหมด
 - Use Scene Fog Color: ใช้สี Fog จาก Lighting; ปิดเพื่อเลือก Manual Fog Color เอง
 - Horizon Fade To Fog / Horizon Fade Height: ทำให้ขอบฟ้ากลืนกับสี Fog

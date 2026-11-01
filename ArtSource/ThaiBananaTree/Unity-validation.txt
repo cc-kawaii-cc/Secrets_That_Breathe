@@ -1,0 +1,93 @@
+PASS URP wind shader imported
+PASS Green LOD0 three material renderers
+PASS Fruit_LOD0 wind masks retained by FBX
+PASS Fruit_LOD0 UV mapping retained
+PASS Leaves_LOD0 wind masks retained by FBX
+PASS Leaves_LOD0 UV mapping retained
+PASS Trunk_LOD0 wind masks retained by FBX
+PASS Trunk_LOD0 UV mapping retained
+PASS Green metre scale and grounded Y-up LOD0
+Green LOD0: 3288 triangles, height 3.782 m
+PASS Green LOD1 three material renderers
+PASS Fruit_LOD1 wind masks retained by FBX
+PASS Fruit_LOD1 UV mapping retained
+PASS Leaves_LOD1 wind masks retained by FBX
+PASS Leaves_LOD1 UV mapping retained
+PASS Trunk_LOD1 wind masks retained by FBX
+PASS Trunk_LOD1 UV mapping retained
+PASS Green metre scale and grounded Y-up LOD1
+Green LOD1: 1696 triangles, height 3.613 m
+PASS Green LOD2 three material renderers
+PASS Fruit_LOD2 wind masks retained by FBX
+PASS Fruit_LOD2 UV mapping retained
+PASS Leaves_LOD2 wind masks retained by FBX
+PASS Leaves_LOD2 UV mapping retained
+PASS Trunk_LOD2 wind masks retained by FBX
+PASS Trunk_LOD2 UV mapping retained
+PASS Green metre scale and grounded Y-up LOD2
+Green LOD2: 630 triangles, height 3.497 m
+PASS Ripening LOD0 three material renderers
+PASS Fruit_LOD0 wind masks retained by FBX
+PASS Fruit_LOD0 UV mapping retained
+PASS Leaves_LOD0 wind masks retained by FBX
+PASS Leaves_LOD0 UV mapping retained
+PASS Trunk_LOD0 wind masks retained by FBX
+PASS Trunk_LOD0 UV mapping retained
+PASS Ripening metre scale and grounded Y-up LOD0
+Ripening LOD0: 3288 triangles, height 3.782 m
+PASS Ripening LOD1 three material renderers
+PASS Fruit_LOD1 wind masks retained by FBX
+PASS Fruit_LOD1 UV mapping retained
+PASS Leaves_LOD1 wind masks retained by FBX
+PASS Leaves_LOD1 UV mapping retained
+PASS Trunk_LOD1 wind masks retained by FBX
+PASS Trunk_LOD1 UV mapping retained
+PASS Ripening metre scale and grounded Y-up LOD1
+Ripening LOD1: 1696 triangles, height 3.613 m
+PASS Ripening LOD2 three material renderers
+PASS Fruit_LOD2 wind masks retained by FBX
+PASS Fruit_LOD2 UV mapping retained
+PASS Leaves_LOD2 wind masks retained by FBX
+PASS Leaves_LOD2 UV mapping retained
+PASS Trunk_LOD2 wind masks retained by FBX
+PASS Trunk_LOD2 UV mapping retained
+PASS Ripening metre scale and grounded Y-up LOD2
+Ripening LOD2: 630 triangles, height 3.497 m
+PASS Ripe LOD0 three material renderers
+PASS Fruit_LOD0 wind masks retained by FBX
+PASS Fruit_LOD0 UV mapping retained
+PASS Leaves_LOD0 wind masks retained by FBX
+PASS Leaves_LOD0 UV mapping retained
+PASS Trunk_LOD0 wind masks retained by FBX
+PASS Trunk_LOD0 UV mapping retained
+PASS Ripe metre scale and grounded Y-up LOD0
+Ripe LOD0: 3288 triangles, height 3.782 m
+PASS Ripe LOD1 three material renderers
+PASS Fruit_LOD1 wind masks retained by FBX
+PASS Fruit_LOD1 UV mapping retained
+PASS Leaves_LOD1 wind masks retained by FBX
+PASS Leaves_LOD1 UV mapping retained
+PASS Trunk_LOD1 wind masks retained by FBX
+PASS Trunk_LOD1 UV mapping retained
+PASS Ripe metre scale and grounded Y-up LOD1
+Ripe LOD1: 1696 triangles, height 3.613 m
+PASS Ripe LOD2 three material renderers
+PASS Fruit_LOD2 wind masks retained by FBX
+PASS Fruit_LOD2 UV mapping retained
+PASS Leaves_LOD2 wind masks retained by FBX
+PASS Leaves_LOD2 UV mapping retained
+PASS Trunk_LOD2 wind masks retained by FBX
+PASS Trunk_LOD2 UV mapping retained
+PASS Ripe metre scale and grounded Y-up LOD2
+Ripe LOD2: 630 triangles, height 3.497 m
+PASS Existing directional Wind Zone discovered without a separate controller
+PASS Wind Main zero stops all shader motion
+PASS Spherical Wind Zone radius respected
+PASS Spherical wind blows outward with distance falloff
+PASS Inactive Wind Zones do not move trees
+Changed pixels: 123623
+PASS GPU wind visibly changes the rendered leaves
+Changed pixels: 96028
+PASS GPU motion changes over time
+PASS Disabling the component clears its wind without altering shared materials
+PASS No URP shader errors after rendering

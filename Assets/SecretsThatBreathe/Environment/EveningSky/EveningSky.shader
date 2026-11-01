@@ -19,7 +19,7 @@ Shader "Secrets That Breathe/Skybox/Evening Clouds"
         _SunAzimuth ("Sun Direction", Range(0, 360)) = 245
         _SunElevation ("Sun Height", Range(-5, 45)) = 6
         _SunSize ("Sun Radius In Degrees", Range(0.05, 3)) = 0.6
-        _SunBrightness ("Sun Brightness", Range(0, 8)) = 2
+        _SunBrightness ("Sun Brightness", Range(0, 64)) = 2
         [Header(Fog Blending)]
         [Toggle] _UseSceneFogColor ("Use Scene Fog Color", Float) = 1
         _FogColor ("Manual Fog Color", Color) = (0, 0, 0, 1)
