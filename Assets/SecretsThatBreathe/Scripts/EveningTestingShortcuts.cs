@@ -21,7 +21,7 @@ namespace SecretsThatBreathe
             // Intro pauses time; allow the shortcut there, but respect a normal game pause.
             if (Time.timeScale <= 0f && !EveningDriveIntro.IsInputBlocked(gameObject.scene)) return;
             if (Keyboard.current.f1Key.wasPressedThisFrame) ride.SkipToExitForTesting();
-            else if (Keyboard.current.f2Key.wasPressedThisFrame) EveningDriveIntro.SkipForTesting(gameObject.scene);
+            else if (Keyboard.current.f2Key.wasPressedThisFrame) ride.SkipToDriveForTesting();
         }
     }
 }

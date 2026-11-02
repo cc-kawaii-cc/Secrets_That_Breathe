@@ -128,7 +128,13 @@ namespace SecretsThatBreathe
 
         private void EnsureEventSystem()
         {
-            if (FindFirstObjectByType<EventSystem>() != null) return;
+            var existing = FindFirstObjectByType<EventSystem>();
+            if (existing != null)
+            {
+                var module = existing.GetComponent<InputSystemUIInputModule>();
+                if (module != null && module.actionsAsset == null) module.AssignDefaultActions();
+                return;
+            }
             var system = new GameObject("SeatingEventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
             SceneManager.MoveGameObjectToScene(system, gameObject.scene);
             system.GetComponent<InputSystemUIInputModule>().AssignDefaultActions();

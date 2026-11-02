@@ -6,18 +6,7 @@ namespace SecretsThatBreathe
     {
         public bool SkipToExitForTesting()
         {
-            if (!Application.isPlaying || !initialized) return false;
-            EveningDriveIntro.SkipForTesting(gameObject.scene);
-            StopAllCoroutines();
-            exitInProgress = passengerDetached = hasExited = false;
-            enabled = true;
-            // Also re-enter the passenger checkpoint after a completed exit.
-            foreach (var control in suspendedControls)
-                if (control != null && control != this) control.enabled = false;
-            foreach (var controller in characterControllers)
-                if (controller != null) controller.enabled = false;
-            SetRidingFlashlightState(false);
-            if (exteriorAmbience != null) exteriorAmbience.StopExteriorForTesting();
+            if (!PrepareCheckpointForTesting()) return false;
             arrivalStop = null;
             route = intermediateRoutePoints != null && intermediateRoutePoints.Length > 0
                 ? new PassengerRidePath(startPosition, intermediateRoutePoints, endPosition, cornerRadius) : null;
@@ -42,10 +31,50 @@ namespace SecretsThatBreathe
             if (EnsureExitUI())
             {
                 exitBlack.alpha = 0f;
+                exitBlack.blocksRaycasts = false;
                 exitLabel.gameObject.SetActive(true);
             }
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+            return true;
+        }
+
+        public bool SkipToDriveForTesting()
+        {
+            if (!PrepareCheckpointForTesting()) return false;
+            RestartRide();
+            ClearWalkingInput();
+            UpdatePassengerPose();
+            Physics.SyncTransforms();
+            stoppedSeconds = 0f;
+            if (EnsureExitUI())
+            {
+                exitBlack.alpha = 0f;
+                exitBlack.blocksRaycasts = false;
+                exitLabel.gameObject.SetActive(false);
+            }
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            return true;
+        }
+
+        private bool PrepareCheckpointForTesting()
+        {
+            if (!Application.isPlaying || !initialized) return false;
+            EveningDriveIntro.SkipForTesting(gameObject.scene);
+            EveningPoliceEncounter.ResetForTesting(gameObject.scene);
+            StopAllCoroutines();
+            boardingForTransition = false;
+            exitInProgress = passengerDetached = hasExited = false;
+            enabled = true;
+            foreach (var control in suspendedControls)
+                if (control != null && control != this) control.enabled = false;
+            foreach (var controller in characterControllers)
+                if (controller != null) controller.enabled = false;
+            SetRidingFlashlightState(false);
+            if (exteriorAmbience != null) exteriorAmbience.StopExteriorForTesting();
+            if (doorAudio != null) doorAudio.Stop();
+            drivingAudioPaused = false;
             return true;
         }
     }

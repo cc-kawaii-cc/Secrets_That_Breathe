@@ -1,0 +1,58 @@
+{
+  "controller": 842000258,
+  "root": 842000001,
+  "rootRect": 842000002,
+  "views": {
+    "PoliceDialogueCanvas": {
+      "canvas": 842000153,
+      "motionRoot": 842000150,
+      "speaker": 842000147,
+      "sentence": 842000157
+    },
+    "KhemDialogueCanvas": {
+      "canvas": 842000173,
+      "motionRoot": 842000160,
+      "speaker": 842000169,
+      "sentence": 842000164
+    },
+    "NarrationCanvas": {
+      "canvas": 842000183,
+      "motionRoot": 842000175,
+      "speaker": 0,
+      "sentence": 842000182
+    }
+  },
+  "lines": {
+    "intro1": 842000015,
+    "intro2": 842000024,
+    "lieReply": 842000033,
+    "lawyerReply": 842000042,
+    "refused1": 842000051,
+    "refused2": 842000060,
+    "refused3": 842000069,
+    "sunglassesReply": 842000078,
+    "evidence1": 842000087,
+    "evidence2": 842000096,
+    "final1": 842000105,
+    "final2": 842000114,
+    "final3": 842000123,
+    "radioNarration": 842000132,
+    "threatNarration": 842000141,
+    "lieReply2": 842001007,
+    "lawyerReply2": 842001016,
+    "lawyerReply3": 842001025
+  },
+  "choices": [
+    842000201,
+    842000224
+  ],
+  "returnObjective": 842000238,
+  "boardingPrompt": 842000240,
+  "newBlocks": 291,
+  "stripped": [
+    842000254,
+    842000255,
+    842000256,
+    842000263
+  ]
+}

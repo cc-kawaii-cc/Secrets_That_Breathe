@@ -6,7 +6,7 @@ namespace SecretsThatBreathe
     [DefaultExecutionOrder(15000)]
     public sealed class PhoneFlashlightView : MonoBehaviour, IPhoneFlashlightPresentation
     {
-        public bool CanToggle => !OfficeIntroDialogue.IsFlashlightBlocking(gameObject.scene)
+        public bool CanToggle => !EveningPoliceEncounter.BlocksFlashlightToggle(gameObject.scene) && !OfficeIntroDialogue.IsFlashlightBlocking(gameObject.scene)
             && !PhoneCallInteraction.IsBusy(gameObject.scene) && !ItemInspectionInteraction.IsBusy(gameObject.scene);
         public void OnFlashlightActivationRequested() => OfficeIntroDialogue.NotifyFlashlightActivationRequested(gameObject.scene);
         public GameObject phonePrefab;

@@ -1,0 +1,17 @@
+PASS 320-triangle radio attached to the existing Chest bone
+PASS Standing finds the radio grip automatically
+PASS Standing wrist reaches radio: 0.0000 m
+PASS Standing fingers orient up along the radio
+PASS Standing elbow remains below shoulder
+PASS Standing arm raises and lowers smoothly: max 3.46 degrees/frame
+PASS Standing hand fully returns to underlying animation: 0.000 degrees
+PASS IdleTalk finds the radio grip automatically
+PASS IdleTalk wrist reaches radio: 0.0003 m
+PASS IdleTalk fingers orient up along the radio
+PASS IdleTalk elbow remains below shoulder
+PASS IdleTalk arm raises and lowers smoothly: max 8.55 degrees/frame
+PASS IdleTalk hand fully returns to underlying animation: 0.000 degrees
+PASS Four-second non-looping Generic left-arm clip saved
+PASS Real Animator + runtime IK evaluated at 60 FPS; head and character root remain unchanged
+
+PASS actual Play Mode: raises, contacts the radio, holds, lowers; captures taken after LateUpdate

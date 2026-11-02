@@ -1,0 +1,24 @@
+{
+  "result": "PASS",
+  "originalUITransformsPreserved": true,
+  "originalSerializedIDsPreserved": true,
+  "noAdditionalCanvasRoots": true,
+  "separateEditableSources": {
+    "choiceLie": {
+      "choice": "SeatingCanvas/PoliceEncounter/ChoiceDialogue/ChoiceTexts/01_Lie/PromptText",
+      "spoken": "SeatingCanvas/PoliceEncounter/SpokenDialogue/SpokenLines/lieReply/PromptText"
+    },
+    "choiceLawyer": {
+      "choice": "SeatingCanvas/PoliceEncounter/ChoiceDialogue/ChoiceTexts/02_Lawyer/PromptText",
+      "spoken": "SeatingCanvas/PoliceEncounter/SpokenDialogue/SpokenLines/lawyerReply/PromptText"
+    },
+    "choiceSunglasses": {
+      "choice": "SeatingCanvas/PoliceEncounter/ChoiceDialogue/ChoiceTexts/03_SunglassesMan/PromptText",
+      "spoken": "SeatingCanvas/PoliceEncounter/SpokenDialogue/SpokenLines/sunglassesReply/PromptText"
+    },
+    "choiceEvidence": {
+      "choice": "SeatingCanvas/PoliceEncounter/ChoiceDialogue/ChoiceTexts/04_Evidence/PromptText",
+      "spoken": "SeatingCanvas/PoliceEncounter/SpokenDialogue/SpokenLines/evidenceReply/PromptText"
+    }
+  }
+}

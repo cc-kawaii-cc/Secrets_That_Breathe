@@ -44,7 +44,7 @@ namespace SecretsThatBreathe
             speaker = view.speaker;
             authoredPosition = root.anchoredPosition;
             authoredSentencePosition = sentence.rectTransform.anchoredPosition;
-            authoredSpeakerPosition = speaker.rectTransform.anchoredPosition;
+            authoredSpeakerPosition = speaker != null ? speaker.rectTransform.anchoredPosition : Vector2.zero;
             Hide();
         }
 
@@ -59,7 +59,7 @@ namespace SecretsThatBreathe
             sentence.text = Regex.Replace(content, @"<pos=[^>]*>", "");
             sentence.maxVisibleCharacters = 0;
             sentence.ForceMeshUpdate();
-            speaker.ForceMeshUpdate();
+            if (speaker != null) speaker.ForceMeshUpdate();
             if (view.normalizeFontBaseline)
             {
                 AlignFontBaseline(sentence, authoredSentencePosition);
@@ -98,7 +98,7 @@ namespace SecretsThatBreathe
             ReadyToAdvance = false;
             root.anchoredPosition = authoredPosition;
             sentence.rectTransform.anchoredPosition = authoredSentencePosition;
-            speaker.rectTransform.anchoredPosition = authoredSpeakerPosition;
+            if (speaker != null) speaker.rectTransform.anchoredPosition = authoredSpeakerPosition;
             sentence.text = text ?? "";
             sentence.maxVisibleCharacters = int.MaxValue;
             view.canvas.gameObject.SetActive(true);
@@ -130,7 +130,7 @@ namespace SecretsThatBreathe
         }
         private static void AlignFontBaseline(TMP_Text label, Vector2 authored)
         {
-            if (label.textInfo.characterCount == 0) return;
+            if (label == null || label.textInfo.characterCount == 0) return;
             // Thai marks can increase TMP's first-line ascent. Keep the configured
             // font baseline stable without changing the Canvas's authored layout.
             float ascent = label.font.faceInfo.ascentLine * label.fontSize / label.font.faceInfo.pointSize;
@@ -152,7 +152,7 @@ namespace SecretsThatBreathe
             ReadyToAdvance = false;
             root.anchoredPosition = authoredPosition;
             sentence.rectTransform.anchoredPosition = authoredSentencePosition;
-            speaker.rectTransform.anchoredPosition = authoredSpeakerPosition;
+            if (speaker != null) speaker.rectTransform.anchoredPosition = authoredSpeakerPosition;
             view.canvas.gameObject.SetActive(false);
         }
     }
