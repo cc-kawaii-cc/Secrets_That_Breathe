@@ -21124,6 +21124,26 @@ MonoBehaviour:
   radioGrip: {fileID: 0}
   radioElbowDirection: {x: -0.45, y: -0.8, z: 0.15}
   radioHandOffset: {x: -0.18, y: 1.5, z: 0.13}
+  naturalRadioPose: 1
+  radioUseShoulderReach: 1
+  radioShoulderReach: {x: 0.06, y: -0.15, z: 0.44}
+  radioUpperArmOutDegrees: 21
+  radioElbowBackLimit: 0.03
+  radioPalmOffset: 0.02
+  radioTargetOffset: {x: 0, y: 0, z: 0}
+  radioPalmRoll: 0.85
+  radioMaxPalmRollDegrees: 75
+  radioHoldSway: 0.004
+  naturalPush: 1
+  pushReadyReach: {x: -0.06, y: 0.18, z: 0.28}
+  pushExtendReach: {x: -0.04, y: 0.08, z: 0.98}
+  pushReadyElbow: {x: -0.2, y: -1, z: 0.5}
+  pushExtendElbow: {x: -0.35, y: -1, z: 0}
+  pushPalmFacing: 1
+  radioLook: 1
+  radioLookDegrees: 35
+  previewRadio: 0
+  logRadioPose: 1
   gunReachSeconds: 0.55
   pushPrepareSeconds: 0.45
   pushExtendSeconds: 0.3
@@ -21133,6 +21153,7 @@ MonoBehaviour:
   gunGrip: {fileID: 0}
   gunHandOffset: {x: 0.22, y: 0.92, z: 0.05}
   pushingHandOffset: {x: -0.18, y: 1.3, z: 0.68}
+  poseVersion: 6
 --- !u!114 &842000258
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34770,6 +34791,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
+  showCrosshair: 0
   lineThickness: 1.5
   outlineVersion: 1
 --- !u!222 &1987101013
@@ -37111,8 +37133,8 @@ SceneRoots:
   - {fileID: 2122602504}
   - {fileID: 1752053072}
   - {fileID: 731200012}
-  - {fileID: 535603499}
   - {fileID: 508456878}
+  - {fileID: 535603499}
   - {fileID: 1232563271}
   - {fileID: 214149906}
   - {fileID: 1012379275}

@@ -105,7 +105,18 @@ namespace SecretsThatBreathe
         {
             if (range == null || policeRoot == null || sunglassesMan == null || firstChoices == null || secondChoices == null
                 || !policeDialogue.IsValid || !khemDialogue.IsValid || !narrationDialogue.IsValid)
-            { Debug.LogError("Assign the saved PoliceEncounter actors, range and Canvas references.", this); enabled = false; }
+            { Debug.LogError("Assign the saved PoliceEncounter actors, range and Canvas references.", this); enabled = false; return; }
+            // Both officers stand still while Khem talks to them, so give them a breathing layer.
+            AttachBreathing();
+        }
+
+        private bool breathingAttached;
+        // Also called from LateUpdate: after Unity recompiles during Play Mode, Start is not run again.
+        private void AttachBreathing()
+        {
+            breathingAttached = true;
+            CharacterBreathing.Attach(policeRoot);
+            CharacterBreathing.Attach(sunglassesMan);
         }
 
         private void ChooseFirst() { if (IsRunning && activeChoices != null && selected < 0 && Time.timeScale > 0f) selected = 0; }
@@ -113,6 +124,7 @@ namespace SecretsThatBreathe
 
         private void LateUpdate()
         {
+            if (!breathingAttached && policeRoot != null && sunglassesMan != null) AttachBreathing();
             if (!triggered && Time.timeScale > 0f && range != null && range.IsPlayerInRange)
             {
                 player = range.player; ride = range.arrivalRide != null ? range.arrivalRide : ride;
@@ -338,7 +350,8 @@ namespace SecretsThatBreathe
         {
             if (!cameraOwned) return;
             cameraOwned = false; changingCamera = false; focusSubject = null;
-            policeRoot.rotation = policeRotation; sunglassesMan.rotation = manRotation;
+            if (policeRoot != null) policeRoot.rotation = policeRotation;
+            if (sunglassesMan != null) sunglassesMan.rotation = manRotation;
             if (policeAnimator != null)
             {
                 policeAnimator.runtimeAnimatorController = originalPoliceController;

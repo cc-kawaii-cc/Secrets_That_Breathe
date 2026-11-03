@@ -7,11 +7,14 @@ namespace SecretsThatBreathe
     [RequireComponent(typeof(CanvasRenderer))]
     public sealed class CrosshairDotGraphic : MaskableGraphic
     {
+        [Tooltip("Draws the small circle in the middle of the screen. Off by default; tick it to bring the circle back.")]
+        public bool showCrosshair = false;
         [Min(.1f)] public float lineThickness = 1.5f;
         [HideInInspector] public int outlineVersion;
         protected override void OnPopulateMesh(VertexHelper helper)
         {
             helper.Clear();
+            if (!showCrosshair) return;
             Rect rect = rectTransform.rect;
             Vector2 centre = rect.center;
             float radius = Mathf.Min(rect.width, rect.height) * .5f;
