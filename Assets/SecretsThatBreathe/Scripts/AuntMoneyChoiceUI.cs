@@ -19,6 +19,10 @@ namespace SecretsThatBreathe
         public Color highlightedTextColor = Color.white;
         [Range(1f, 1.25f)] public float highlightedTextScale = 1.08f;
         [Min(.01f)] public float hoverTransitionDuration = .12f;
+        [Header("Click area around the text")]
+        public bool fitClickAreaToText;
+        [Tooltip("Extra clickable space on each side, in Canvas units.")]
+        public Vector2 clickPadding = new Vector2(36f, 18f);
         private bool cursorCaptured;
         private CursorLockMode previousLock;
         private bool previousVisible;
@@ -28,7 +32,6 @@ namespace SecretsThatBreathe
 
         public void ShowChoices()
         {
-            PrepareButtons();
             EnsureEventSystem();
             if (!cursorCaptured)
             {
@@ -38,6 +41,7 @@ namespace SecretsThatBreathe
                 restoreChoiceCursorPending = hasChoiceCursorPosition;
             }
             gameObject.SetActive(true);
+            PrepareButtons();
             ShowChoiceCursor();
         }
 
@@ -104,6 +108,51 @@ namespace SecretsThatBreathe
             var feedback = button.GetComponent<MoneyChoiceButtonFeedback>();
             if (feedback == null) feedback = button.gameObject.AddComponent<MoneyChoiceButtonFeedback>();
             feedback.Configure(button, label, normalTextColor, highlightedTextColor, highlightedTextScale, hoverTransitionDuration);
+            if (fitClickAreaToText) FitClickArea(button, label);
+        }
+
+        [ContextMenu("Fit choice click areas to text")]
+        public void FitClickAreas()
+        {
+            if (!fitClickAreaToText) return;
+            FitClickArea(acceptButton, acceptLabel);
+            FitClickArea(refuseButton, refuseLabel);
+        }
+
+        private void FitClickArea(Button button, TMP_Text label)
+        {
+            if (button == null || label == null || label.transform.parent != button.transform) return;
+            var rect = (RectTransform)button.transform;
+            var textRect = label.rectTransform;
+            // Keep the authored wrapping width and text position. Only the invisible
+            // button changes size; resizing a stretched label would reflow the text.
+            Vector2 textSize = textRect.rect.size;
+            Vector3 textPosition = textRect.position;
+            label.ForceMeshUpdate(true);
+            if (label.textInfo.characterCount == 0) return;
+            Bounds bounds = label.textBounds;
+            var matrix = rect.worldToLocalMatrix * textRect.localToWorldMatrix;
+            Vector2 min = new Vector2(float.PositiveInfinity, float.PositiveInfinity);
+            Vector2 max = new Vector2(float.NegativeInfinity, float.NegativeInfinity);
+            // Include both normal and enlarged hover bounds so the hit target stays
+            // stable when the pointer highlights the label.
+            for (int scaleIndex = 0; scaleIndex < 2; scaleIndex++)
+            for (int corner = 0; corner < 4; corner++)
+            {
+                Vector3 point = new Vector3((corner & 1) == 0 ? bounds.min.x : bounds.max.x,
+                    (corner & 2) == 0 ? bounds.min.y : bounds.max.y, 0f);
+                point *= scaleIndex == 0 ? 1f : Mathf.Max(1f, highlightedTextScale);
+                Vector2 local = matrix.MultiplyPoint3x4(point);
+                min = Vector2.Min(min, local); max = Vector2.Max(max, local);
+            }
+            Vector3 centre = rect.TransformPoint((min + max) * .5f);
+            textRect.anchorMin = textRect.anchorMax = new Vector2(.5f, .5f);
+            textRect.sizeDelta = textSize;
+            rect.anchorMax = rect.anchorMin;
+            rect.pivot = new Vector2(.5f, .5f);
+            rect.sizeDelta = max - min + new Vector2(Mathf.Max(0f, clickPadding.x), Mathf.Max(0f, clickPadding.y)) * 2f;
+            rect.position = centre;
+            textRect.position = textPosition;
         }
 
         public void HideChoices()

@@ -3364,7 +3364,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
   m_UsePipelineSettings: 1
-  m_AdditionalLightsShadowResolutionTier: 2
+  m_AdditionalLightsShadowResolutionTier: 1
   m_CustomShadowLayers: 0
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
@@ -3783,53 +3783,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1953821844}
     m_Modifications:
-    - target: {fileID: 187583298283553947, guid: b752f770732eb384aad636b13bc66218, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 895182581069900901, guid: b752f770732eb384aad636b13bc66218, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1198978710819681059, guid: b752f770732eb384aad636b13bc66218, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1609961186432598415, guid: b752f770732eb384aad636b13bc66218, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1843737454203841332, guid: b752f770732eb384aad636b13bc66218, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2234525957799871547, guid: b752f770732eb384aad636b13bc66218, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2391779276442318036, guid: b752f770732eb384aad636b13bc66218, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2766611256362237470, guid: b752f770732eb384aad636b13bc66218, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3217757004960193262, guid: b752f770732eb384aad636b13bc66218, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5660984224705740823, guid: b752f770732eb384aad636b13bc66218, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 5915398154755711930, guid: b752f770732eb384aad636b13bc66218, type: 3}
       propertyPath: m_Name
       value: MangoTree_Update_NoFruit (1)
-      objectReference: {fileID: 0}
-    - target: {fileID: 5915398154755711930, guid: b752f770732eb384aad636b13bc66218, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7491093515592128083, guid: b752f770732eb384aad636b13bc66218, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3869,14 +3825,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7491093515592128083, guid: b752f770732eb384aad636b13bc66218, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7624405061821508060, guid: b752f770732eb384aad636b13bc66218, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9163559761112632135, guid: b752f770732eb384aad636b13bc66218, type: 3}
-      propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -7104,7 +7052,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
   m_UsePipelineSettings: 1
-  m_AdditionalLightsShadowResolutionTier: 2
+  m_AdditionalLightsShadowResolutionTier: 1
   m_CustomShadowLayers: 0
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
@@ -19396,7 +19344,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -100}
+  m_AnchoredPosition: {x: 0, y: -160}
   m_SizeDelta: {x: 1460, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &842000191
@@ -19691,6 +19639,8 @@ MonoBehaviour:
   highlightedTextColor: {r: 1, g: 1, b: 1, a: 1}
   highlightedTextScale: 1.08
   hoverTransitionDuration: 0.12
+  fitClickAreaToText: 1
+  clickPadding: {x: 36, y: 18}
 --- !u!1 &842000202
 GameObject:
   m_ObjectHideFlags: 0
@@ -19809,7 +19759,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 100}
+  m_AnchoredPosition: {x: 0, y: -20}
   m_SizeDelta: {x: 1460, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &842000207
@@ -19999,7 +19949,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -100}
+  m_AnchoredPosition: {x: 0, y: -160}
   m_SizeDelta: {x: 1460, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &842000214
@@ -20293,6 +20243,8 @@ MonoBehaviour:
   highlightedTextColor: {r: 1, g: 1, b: 1, a: 1}
   highlightedTextScale: 1.08
   hoverTransitionDuration: 0.12
+  fitClickAreaToText: 1
+  clickPadding: {x: 36, y: 18}
 --- !u!1 &842000225
 GameObject:
   m_ObjectHideFlags: 0
@@ -20411,7 +20363,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 100}
+  m_AnchoredPosition: {x: 0, y: -20}
   m_SizeDelta: {x: 1460, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &842000230
@@ -25934,7 +25886,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
   m_UsePipelineSettings: 1
-  m_AdditionalLightsShadowResolutionTier: 2
+  m_AdditionalLightsShadowResolutionTier: 1
   m_CustomShadowLayers: 0
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
@@ -26001,18 +25953,6 @@ PrefabInstance:
     - target: {fileID: 951339025139926921, guid: c41a8990a1b9cd644a371883adc1fb0d, type: 3}
       propertyPath: m_Name
       value: SiamWeed_Bush (1)
-      objectReference: {fileID: 0}
-    - target: {fileID: 951339025139926921, guid: c41a8990a1b9cd644a371883adc1fb0d, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6630401254701612825, guid: c41a8990a1b9cd644a371883adc1fb0d, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7148390918470691849, guid: c41a8990a1b9cd644a371883adc1fb0d, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -26183,6 +26123,10 @@ PrefabInstance:
     - target: {fileID: 951339025139926921, guid: c41a8990a1b9cd644a371883adc1fb0d, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7006048153750403788, guid: c41a8990a1b9cd644a371883adc1fb0d, type: 3}
+      propertyPath: m_LODs.Array.data[0].renderers.Array.data[0].renderer
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 7148390918470691849, guid: c41a8990a1b9cd644a371883adc1fb0d, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -30191,6 +30135,10 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8976742685483669073, guid: e629b493a49472440b0f2bdb47a423a1, type: 3}
+      propertyPath: m_LODs.Array.data[1].screenRelativeHeight
+      value: 0.103466325
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -32562,7 +32510,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 767316361547216777, guid: bca392387fe1513cbb040163148918ab, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 167.2471
+      value: 167.24709
       objectReference: {fileID: 0}
     - target: {fileID: 767316361547216777, guid: bca392387fe1513cbb040163148918ab, type: 3}
       propertyPath: m_LocalPosition.y
@@ -32574,7 +32522,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 767316361547216777, guid: bca392387fe1513cbb040163148918ab, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9455951
+      value: 0.9778009
       objectReference: {fileID: 0}
     - target: {fileID: 767316361547216777, guid: bca392387fe1513cbb040163148918ab, type: 3}
       propertyPath: m_LocalRotation.x
@@ -32582,7 +32530,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 767316361547216777, guid: bca392387fe1513cbb040163148918ab, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.32534605
+      value: 0.20953622
       objectReference: {fileID: 0}
     - target: {fileID: 767316361547216777, guid: bca392387fe1513cbb040163148918ab, type: 3}
       propertyPath: m_LocalRotation.z
@@ -32594,7 +32542,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 767316361547216777, guid: bca392387fe1513cbb040163148918ab, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 37.973
+      value: 24.19
       objectReference: {fileID: 0}
     - target: {fileID: 767316361547216777, guid: bca392387fe1513cbb040163148918ab, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -33625,14 +33573,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: MangoTree_Update (3)
       objectReference: {fileID: 0}
-    - target: {fileID: 752857752494969665, guid: 606ef8d603adb1d45a93ad8b97c5d75b, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1065808880405002021, guid: 606ef8d603adb1d45a93ad8b97c5d75b, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1239290620084831564, guid: 606ef8d603adb1d45a93ad8b97c5d75b, type: 3}
       propertyPath: m_LocalPosition.x
       value: -10.018082
@@ -33671,50 +33611,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1239290620084831564, guid: 606ef8d603adb1d45a93ad8b97c5d75b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1290159681568552311, guid: 606ef8d603adb1d45a93ad8b97c5d75b, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1667219906683080094, guid: 606ef8d603adb1d45a93ad8b97c5d75b, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1820417162841419247, guid: 606ef8d603adb1d45a93ad8b97c5d75b, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2779812198161436733, guid: 606ef8d603adb1d45a93ad8b97c5d75b, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3647932645004727902, guid: 606ef8d603adb1d45a93ad8b97c5d75b, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5036845968340932991, guid: 606ef8d603adb1d45a93ad8b97c5d75b, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6318323163523417285, guid: 606ef8d603adb1d45a93ad8b97c5d75b, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6598008416735434746, guid: 606ef8d603adb1d45a93ad8b97c5d75b, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8322580671977853829, guid: 606ef8d603adb1d45a93ad8b97c5d75b, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8736551713080889829, guid: 606ef8d603adb1d45a93ad8b97c5d75b, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9036456872183667767, guid: 606ef8d603adb1d45a93ad8b97c5d75b, type: 3}
-      propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -34623,21 +34519,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3275663501329096552, guid: 0f7ac94e5747ee749a0f00be42b1d94c, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4679970996869092897, guid: 0f7ac94e5747ee749a0f00be42b1d94c, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8858000353186277165, guid: 0f7ac94e5747ee749a0f00be42b1d94c, type: 3}
       propertyPath: m_Name
       value: Khoi_Bush (4)
-      objectReference: {fileID: 0}
-    - target: {fileID: 8858000353186277165, guid: 0f7ac94e5747ee749a0f00be42b1d94c, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -36454,7 +36338,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
   m_UsePipelineSettings: 1
-  m_AdditionalLightsShadowResolutionTier: 2
+  m_AdditionalLightsShadowResolutionTier: 1
   m_CustomShadowLayers: 0
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
@@ -36558,7 +36442,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1001, guid: 45d1ac6644ce526ab190f1b9c84d77a6, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 168.05742
+      value: 167.47737
       objectReference: {fileID: 0}
     - target: {fileID: 1001, guid: 45d1ac6644ce526ab190f1b9c84d77a6, type: 3}
       propertyPath: m_LocalPosition.y
@@ -36566,11 +36450,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1001, guid: 45d1ac6644ce526ab190f1b9c84d77a6, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 333.53543
+      value: 333.92297
       objectReference: {fileID: 0}
     - target: {fileID: 1001, guid: 45d1ac6644ce526ab190f1b9c84d77a6, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.17534457
+      value: -0.09474672
       objectReference: {fileID: 0}
     - target: {fileID: 1001, guid: 45d1ac6644ce526ab190f1b9c84d77a6, type: 3}
       propertyPath: m_LocalRotation.x
@@ -36578,7 +36462,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1001, guid: 45d1ac6644ce526ab190f1b9c84d77a6, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.98450714
+      value: 0.9955014
       objectReference: {fileID: 0}
     - target: {fileID: 1001, guid: 45d1ac6644ce526ab190f1b9c84d77a6, type: 3}
       propertyPath: m_LocalRotation.z
@@ -36590,7 +36474,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1001, guid: 45d1ac6644ce526ab190f1b9c84d77a6, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 200.197
+      value: 190.873
       objectReference: {fileID: 0}
     - target: {fileID: 1001, guid: 45d1ac6644ce526ab190f1b9c84d77a6, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
