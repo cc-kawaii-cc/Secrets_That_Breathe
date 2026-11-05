@@ -7,7 +7,7 @@ namespace SecretsThatBreathe
     {
         private bool boardingForTransition;
         // Called by the saved encounter controller. Leave the screen black and the
-        // walking controls suspended; the next scene is intentionally not chosen yet.
+        // walking controls suspended until the encounter loads its destination.
         public IEnumerator BoardForSceneTransition()
         {
             if (!hasExited || boardingForTransition || !EnsureExitUI()) yield break;
@@ -23,6 +23,7 @@ namespace SecretsThatBreathe
             yield return new WaitForSeconds(exitBlackHoldSeconds);
             if (closeDoorClip != null) doorAudio.PlayOneShot(closeDoorClip);
             exitBlack.alpha = 1f;
+            if (closeDoorClip != null) yield return new WaitForSecondsRealtime(closeDoorClip.length);
         }
     }
 }

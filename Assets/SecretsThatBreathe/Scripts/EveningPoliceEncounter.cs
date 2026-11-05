@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using StarterAssets;
 
 namespace SecretsThatBreathe
@@ -38,7 +39,8 @@ namespace SecretsThatBreathe
         public TMP_Text radioNarration, sunglassesReply, threatNarration;
         public AuntMoneyChoiceUI firstChoices, secondChoices;
         [Min(0f)] public float narrationHoldSeconds = 3f;
-        [Header("Return to the car (no destination scene assigned yet)")]
+        [Header("Return to the car")]
+        public string destinationScene = "Inside_Police_Station";
         public TMP_Text returnObjective, boardingPrompt;
         [Min(0f)] public float returnObjectiveDelay = 1f;
         [Min(.1f)] public float boardingDistance = 2f;
@@ -373,10 +375,19 @@ namespace SecretsThatBreathe
 
         private IEnumerator Board()
         {
+            if (!Application.CanStreamedLevelBeLoaded(destinationScene))
+            {
+                Debug.LogError("Destination scene is missing from the build: " + destinationScene, this);
+                yield break;
+            }
             boarding = true; Panel(returnObjective, false); Panel(boardingPrompt, false);
             yield return ride.BoardForSceneTransition();
             if (ride.HasExited) { boarding = false; Panel(returnObjective, true); yield break; }
             ReadyToChangeScene = true; onReadyToChangeScene.Invoke();
+            // The ride's saved black overlay stays opaque until the new scene's
+            // authored arrival overlay takes over in Awake.
+            yield return null;
+            yield return SceneManager.LoadSceneAsync(destinationScene, LoadSceneMode.Single);
         }
 
         private static void Panel(TMP_Text label, bool show)
