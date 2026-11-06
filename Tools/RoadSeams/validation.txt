@@ -1,0 +1,5 @@
+PASS Unity imports original road and generates one native Mesh asset with UV2
+PASS 3 tiles -> 1 renderer, 36 triangles, 6 x 30 metre road retained
+PASS original collider count/positions retained
+PASS shadow receiving and casting remain enabled
+Baked-lightmap appearance in the real Evening scene has NOT been validated; requires installation and rebake.

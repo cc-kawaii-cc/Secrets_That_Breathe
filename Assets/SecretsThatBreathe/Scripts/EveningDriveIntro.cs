@@ -27,6 +27,10 @@ namespace SecretsThatBreathe
         [Tooltip("Start the car once this fraction of the story text's opacity has faded away.")]
         [Range(0f, 1f)] public float movementStartTextFadeProgress = .7f;
         [Min(0f)] public float maximumStreamingWaitSeconds = 10f;
+        [Header("Prepare the drive while the screen is black")]
+        [Tooltip("Render views along the route before revealing the game, to prepare terrain, meshes and shader variants on their first use.")]
+        public bool warmUpDriveViews = true;
+        [Range(2, 24)] public int driveWarmupPositions = 12;
 
         public bool IsFinished { get; private set; }
         private readonly List<Behaviour> suspended = new List<Behaviour>();
@@ -35,6 +39,7 @@ namespace SecretsThatBreathe
         private CursorLockMode previousCursorLock;
         private bool previousCursorVisible;
         private static EveningDriveIntro owner;
+        private PorschePassengerRide warmingRide;
 
         public static bool IsInputBlocked(Scene scene)
             => owner != null && owner.ownsPause && owner.gameObject.scene == scene;
@@ -135,6 +140,16 @@ namespace SecretsThatBreathe
             yield return null;
             yield return null;
             yield return null;
+            if (warmUpDriveViews)
+            {
+                foreach (var ride in FindObjectsByType<PorschePassengerRide>(FindObjectsSortMode.None))
+                    if (ride.gameObject.scene == gameObject.scene)
+                    {
+                        warmingRide = ride;
+                        yield return ride.WarmUpDriveViews(driveWarmupPositions);
+                        warmingRide = null;
+                    }
+            }
             yield return new WaitForSecondsRealtime(blackDelaySeconds);
             storyGroup.alpha = 1f;
             storyText.ForceMeshUpdate();
@@ -228,6 +243,8 @@ namespace SecretsThatBreathe
         private void OnDisable()
         {
             StopAllCoroutines();
+            if (warmingRide != null) warmingRide.CancelDriveWarmup();
+            warmingRide = null;
             if (typingAudio != null) typingAudio.Stop();
             ReleaseControls();
             if (screen != null) screen.alpha = 0f;

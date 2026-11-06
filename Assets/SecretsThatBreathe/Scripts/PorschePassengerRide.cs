@@ -106,6 +106,8 @@ namespace SecretsThatBreathe
             initialized = true;
             SetRidingFlashlightState(false);
             ConfigureDrivingAudio();
+            if (GetComponent<RideFrameDiagnostics>() == null)
+                gameObject.AddComponent<RideFrameDiagnostics>();
             RestartRide();
             IsMoving = playOnStart;
             UpdatePassengerPose();

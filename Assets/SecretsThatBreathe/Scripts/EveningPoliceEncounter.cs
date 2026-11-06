@@ -21,6 +21,10 @@ namespace SecretsThatBreathe
         [Header("Police animation while talking to Khem")]
         [Tooltip("Idle Talk controller used by Uncle Pong. Original conversation controller is restored afterward.")]
         public RuntimeAnimatorController policePlayerTalkController;
+        [Header("Opening warning — authored Animator clip")]
+        [Min(0f)] public float openingPauseSeconds = .6f;
+        public string stopHandAnimationState = "Stop Hand";
+        [Min(.05f)] public float stopHandLowerSeconds = .65f;
         [Header("Lawyer Room camera timing")]
         [Min(.05f)] public float turnSeconds = .18f;
         [Range(0f, 1f)] public float zoomStartTurnFraction = .65f;
@@ -30,13 +34,20 @@ namespace SecretsThatBreathe
         [Min(.05f)] public float focusSeconds = .35f;
         [Range(10f, 90f)] public float sunglassesFieldOfView = 35f;
         [Min(.05f)] public float cameraReturnSeconds = .6f;
+        [Tooltip("Time for the police and sunglasses man to turn back toward each other after dialogue, independently of the camera return.")]
+        [Min(.05f)] public float actorReturnTurnSeconds = 1.5f;
         [Header("Edit sentence text/font/size/colour on Lines and NarrationLines")]
         public DialogueCanvasView policeDialogue = new DialogueCanvasView();
         public DialogueCanvasView khemDialogue = new DialogueCanvasView();
         public DialogueCanvasView narrationDialogue = new DialogueCanvasView();
+        public DialogueCanvasView stationRadioDialogue = new DialogueCanvasView();
         public FlowingDialogueSettings presentation = new FlowingDialogueSettings();
         public TMP_Text[] introduction, lieReplies, lawyerReplies, refusedReplies, evidenceReplies, finalPoliceReplies;
         public TMP_Text radioNarration, sunglassesReply, threatNarration;
+        public TMP_Text[] sunglassesReplies;
+        [Header("Radio exchange after the lie")]
+        public TMP_Text[] policeRadioCall, policeRadioRefusal;
+        public TMP_Text stationRadioReply;
         public AuntMoneyChoiceUI firstChoices, secondChoices;
         [Min(0f)] public float narrationHoldSeconds = 3f;
         [Header("Return to the car")]
@@ -213,22 +224,28 @@ namespace SecretsThatBreathe
             if (!soundStarted && scareAudio != null) scareAudio.Play();
             view.fieldOfView = scareFieldOfView; changingCamera = false;
             yield return new WaitForSeconds(dialogueStartDelay);
-            yield return SayAll(policeDialogue, introduction);
+            yield return OpeningWarning();
             yield return Pick(firstChoices); int first = selected;
             yield return SayAll(khemDialogue, first == 0 ? lieReplies : lawyerReplies);
             if (first == 0)
             {
                 gestures?.SetGesture(PoliceEncounterGestures.Gesture.Radio);
                 yield return Narrate(radioNarration, narrationHoldSeconds + (gestures != null ? gestures.radioRaiseSeconds : 0f));
+                yield return SayAll(policeDialogue, policeRadioCall);
+                if (stationRadioReply != null && stationRadioDialogue.IsValid)
+                    yield return Say(stationRadioDialogue, stationRadioReply);
                 gestures?.SetGesture(PoliceEncounterGestures.Gesture.Talk);
                 if (gestures != null) yield return new WaitForSeconds(gestures.radioLowerSeconds);
+                yield return SayAll(policeDialogue, policeRadioRefusal);
             }
             else yield return SayAll(policeDialogue, refusedReplies);
             yield return Pick(secondChoices); int second = selected;
             if (second == 0)
             {
                 yield return Focus(sunglassesMan, sunglassesFieldOfView);
-                yield return Say(khemDialogue, sunglassesReply);
+                if (sunglassesReplies != null && sunglassesReplies.Length > 0)
+                    yield return SayAll(khemDialogue, sunglassesReplies);
+                else yield return Say(khemDialogue, sunglassesReply);
                 yield return Focus(policeRoot, scareFieldOfView);
                 gestures?.SetGesture(PoliceEncounterGestures.Gesture.GunAndPush);
                 pushRoutine = StartCoroutine(PushBack());
@@ -240,6 +257,10 @@ namespace SecretsThatBreathe
             }
             else
             {
+                // Speak the selected apology before explaining Khem's rights.
+                // Reuse the saved sentence style and the authored choice text.
+                if (evidenceReplies != null && evidenceReplies.Length > 0 && secondChoices.refuseLabel != null)
+                    yield return Say(khemDialogue, evidenceReplies[0], textOverride: secondChoices.refuseLabel.text);
                 yield return SayAll(khemDialogue, evidenceReplies);
                 yield return SayAll(policeDialogue, finalPoliceReplies);
             }
@@ -250,15 +271,34 @@ namespace SecretsThatBreathe
             Completed = true; Panel(returnObjective, true);
         }
 
+        private IEnumerator OpeningWarning()
+        {
+            if (introduction == null || introduction.Length == 0) yield break;
+            yield return Say(policeDialogue, introduction[0]);
+            if (introduction.Length < 2) yield break;
+            yield return new WaitForSeconds(openingPauseSeconds);
+            bool hasStopAnimation = policeAnimator != null
+                && policeAnimator.HasState(0, Animator.StringToHash(stopHandAnimationState));
+            if (hasStopAnimation)
+                policeAnimator.CrossFadeInFixedTime(stopHandAnimationState, .15f, 0, 0f);
+            for (int i = 1; i < introduction.Length; i++)
+                if (introduction[i] != null) yield return Say(policeDialogue, introduction[i]);
+            if (hasStopAnimation)
+            {
+                policeAnimator.CrossFadeInFixedTime("Idle Talk", stopHandLowerSeconds, 0);
+                yield return new WaitForSeconds(stopHandLowerSeconds);
+            }
+        }
+
         private IEnumerator SayAll(DialogueCanvasView canvas, TMP_Text[] lines)
         {
             if (lines != null) foreach (var line in lines) if (line != null) yield return Say(canvas, line);
         }
 
-        private IEnumerator Say(DialogueCanvasView canvas, TMP_Text line, bool removeLieMarker = false)
+        private IEnumerator Say(DialogueCanvasView canvas, TMP_Text line, bool removeLieMarker = false, string textOverride = null)
         {
             flowing?.Hide(); ApplySentenceStyle(canvas, line); flowing = new FlowingDialogue(canvas, presentation);
-            string text = line != null ? line.text : "";
+            string text = textOverride ?? (line != null ? line.text : "");
             if (removeLieMarker) text = System.Text.RegularExpressions.Regex.Replace(text, @"^<color=[^>]+>\(โกหก\)</color>\s*", "");
             yield return flowing.Play(text);
         }
@@ -337,13 +377,18 @@ namespace SecretsThatBreathe
         {
             restoringCamera = true;
             changingCamera = true; Quaternion from = view.transform.rotation; float fov = view.fieldOfView;
-            for (float t = 0f; t < cameraReturnSeconds; t += Time.deltaTime)
+            Quaternion policeFrom = policeRoot.rotation, manFrom = sunglassesMan.rotation;
+            float cameraSeconds = Mathf.Max(.05f, cameraReturnSeconds);
+            float turnBackSeconds = Mathf.Max(.05f, actorReturnTurnSeconds);
+            float duration = Mathf.Max(cameraSeconds, turnBackSeconds);
+            for (float t = 0f; t < duration; t += Time.deltaTime)
             {
-                float a = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / Mathf.Max(.05f, cameraReturnSeconds)));
+                float a = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / cameraSeconds));
                 view.transform.SetPositionAndRotation(cameraPosition, Quaternion.Slerp(from, originalCameraRotation, a));
                 view.fieldOfView = Mathf.Lerp(fov, originalFov, a);
-                policeRoot.rotation = Quaternion.Slerp(policeRoot.rotation, policeRotation, a);
-                sunglassesMan.rotation = Quaternion.Slerp(sunglassesMan.rotation, manRotation, a); yield return null;
+                float turn = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / turnBackSeconds));
+                policeRoot.rotation = Quaternion.Slerp(policeFrom, policeRotation, turn);
+                sunglassesMan.rotation = Quaternion.Slerp(manFrom, manRotation, turn); yield return null;
             }
             Release();
         }
@@ -397,7 +442,7 @@ namespace SecretsThatBreathe
             label.transform.parent.gameObject.SetActive(show);
         }
         private void HideDialogue()
-        { flowing?.Hide(); policeDialogue.Hide(); khemDialogue.Hide(); narrationDialogue.Hide(); firstChoices?.HideChoices(); secondChoices?.HideChoices(); }
+        { flowing?.Hide(); policeDialogue.Hide(); khemDialogue.Hide(); narrationDialogue.Hide(); stationRadioDialogue.Hide(); firstChoices?.HideChoices(); secondChoices?.HideChoices(); }
         private void OnDisable()
         { StopAllCoroutines(); if (scareAudio != null) scareAudio.Stop(); gestures?.SetGesture(PoliceEncounterGestures.Gesture.Talk); HideDialogue(); Release(); }
         private void OnDestroy()
