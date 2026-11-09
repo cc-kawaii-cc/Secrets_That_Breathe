@@ -56,7 +56,7 @@ namespace SecretsThatBreathe.Editor
             source.playOnAwake = false;
             source.loop = true;
             source.spatialBlend = 0f;
-            source.volume = .35f;
+            source.volume = .2f;
             EditorUtility.SetDirty(source);
             return source;
         }

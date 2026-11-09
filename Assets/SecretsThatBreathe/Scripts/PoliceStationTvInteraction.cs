@@ -19,6 +19,8 @@ namespace SecretsThatBreathe
         public FirstPersonController player;
         [Tooltip("The TV Khem presses E at.")]
         public Transform tv;
+        [Tooltip("Adjust this trigger box to set where the TV can be used.")]
+        public BoxCollider interactionZone;
         [Tooltip("The screen that is hidden until the TV is turned on (TV_Screen_on).")]
         public GameObject screenOn;
         [Tooltip("The dark screen of the TV that is switched off. It is hidden when the TV turns on (TV_Screen_off). Can be empty.")]
@@ -59,7 +61,7 @@ namespace SecretsThatBreathe
         public bool IsRunning { get; private set; }
 
         private FlowingDialogue flowing;
-        private bool holdingControl, promptShown = true;   // true so the first SetPrompt(false) really hides the panel
+        private bool promptShown = true;   // true so the first SetPrompt(false) really hides the panel
         private Renderer[] tvRenderers;
 
         private void Awake()
@@ -77,7 +79,6 @@ namespace SecretsThatBreathe
 
         private void Update()
         {
-            if (holdingControl && player != null) player.MovementLocked = true;
             if (Completed || IsRunning) { SetPrompt(false); return; }
             bool ready = CanUse();
             SetPrompt(ready);
@@ -90,6 +91,8 @@ namespace SecretsThatBreathe
             if (Time.timeScale <= 0f || player == null || tv == null || !tv.gameObject.activeInHierarchy) return false;
             if (opening != null && !opening.Completed) return false;
             if (!player.isActiveAndEnabled || player.MovementLocked) return false;
+            if (interactionZone != null)
+                return InteractionLook.IsPointInBox(player.transform.position + Vector3.up * .9f, interactionZone);
             return InteractionLook.IsLookingAt(Camera.main, tvRenderers, lookAngle, interactDistance);
         }
 
@@ -112,8 +115,6 @@ namespace SecretsThatBreathe
         private IEnumerator Moment()
         {
             IsRunning = true;
-            holdingControl = true;
-            player.MovementLocked = true;
             SetPrompt(false);
             // 1. The TV turns on.
             if (screenOff != null) screenOff.SetActive(false);
@@ -126,8 +127,6 @@ namespace SecretsThatBreathe
             yield return SayAll(khemDialogue, khemLines);
             HideDialogue();
             yield return new WaitForSeconds(holdAfterLine);
-            holdingControl = false;
-            if (player != null) player.MovementLocked = false;
             IsRunning = false;
             Completed = true;
             onFinished.Invoke();
@@ -196,8 +195,6 @@ namespace SecretsThatBreathe
             HideDialogue();
             SetPrompt(false);
             if (music != null) { music.Stop(); music.volume = songVolume; }
-            if (holdingControl && player != null) player.MovementLocked = false;
-            holdingControl = false;
             IsRunning = false;
         }
 

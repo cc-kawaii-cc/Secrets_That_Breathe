@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.TextCore;
+using UnityEngine.SceneManagement;
 
 namespace SecretsThatBreathe
 {
@@ -9,6 +10,25 @@ namespace SecretsThatBreathe
     [DisallowMultipleComponent]
     public sealed class ThaiTextDisplay : MonoBehaviour, ITextPreprocessor
     {
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        private static void RegisterPoText()
+        {
+            SceneManager.sceneLoaded -= BindPoText;
+            SceneManager.sceneLoaded += BindPoText;
+        }
+
+        private static void BindPoText(Scene scene, LoadSceneMode mode)
+        {
+            if (scene.path != "Assets/MainScenes/From_PM/Po.unity") return;
+            foreach (var root in scene.GetRootGameObjects())
+            foreach (var text in root.GetComponentsInChildren<TMP_Text>(true))
+            {
+                var display = text.GetComponent<ThaiTextDisplay>();
+                if (display == null) display = text.gameObject.AddComponent<ThaiTextDisplay>();
+                display.Bind();
+            }
+        }
+
         private TMP_Text label;
         private ITextPreprocessor previous;
         public void Bind()

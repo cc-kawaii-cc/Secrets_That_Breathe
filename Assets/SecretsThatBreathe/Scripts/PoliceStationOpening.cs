@@ -130,8 +130,8 @@ namespace SecretsThatBreathe
             yield return walk;
             while (speaking || Time.time < lockEndTime) yield return null;
             EndLook();
+            if (holdingMovement && player != null) player.MovementLocked = false;
             holdingMovement = false;
-            if (player != null) player.MovementLocked = false;
             IsRunning = false;
             Completed = true;
             onFinished.Invoke();
@@ -316,7 +316,10 @@ namespace SecretsThatBreathe
         {
             yield return ReturnLook();
             yield return new WaitForSeconds(dialogueDelay);
-            lockEndTime = Time.time + movementLockSecondsAfterLine;
+            EndLook();
+            if (holdingMovement && player != null) player.MovementLocked = false;
+            holdingMovement = false;
+            lockEndTime = Time.time;
             foreach (var line in manPassesLines)
             {
                 if (line == null) continue;

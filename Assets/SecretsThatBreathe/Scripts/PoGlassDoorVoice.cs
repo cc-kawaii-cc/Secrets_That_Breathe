@@ -79,8 +79,8 @@ namespace SecretsThatBreathe
             return false;
         }
 
-        // Always drawn in the Scene view so the boxes can be seen (and lined up with the doors) without selecting anything.
-        private void OnDrawGizmos()
+        // Show the interaction area while its controller is selected, like the CCTV area.
+        private void OnDrawGizmosSelected()
         {
             if (triggerZones == null) return;
             var previous = Gizmos.matrix;

@@ -56,6 +56,10 @@ namespace SecretsThatBreathe
         [Min(5f)] public float zoomMaxDegreesPerSecond = 40f;
         [Tooltip("How fast the mouse turns the view while it is zoomed in on the TV, in degrees per mouse pixel (times the player's normal look speed). Lower = slower, smoother. Raise it if the zoomed view feels too slow.")]
         [Range(.002f, .3f)] public float zoomedLookDegreesPerPixel = .02f;
+        [Tooltip("Extra inward margin in degrees at the edges of the monitor area.")]
+        [Min(0f)] public float monitorEdgeInsetDegrees = 1f;
+        [Tooltip("Additional viewing range to the left, in degrees.")]
+        [Min(0f)] public float monitorExtraLeftDegrees = 3f;
 
         [Header("Timing")]
         [Min(0f)] public float dialogueDelay = .4f;
@@ -67,6 +71,9 @@ namespace SecretsThatBreathe
         public FlowingDialogueSettings presentation = new FlowingDialogueSettings();
         [Tooltip("Said while the view is zoomed in on the TV. Saved text labels; edit the wording in the Hierarchy.")]
         public TMP_Text[] khemLines;
+        [Tooltip("Objective shown after the CCTV dialogue.")]
+        public GameObject returnToEntranceObjective;
+        [Min(0f)] public float objectiveDelay = 2f;
 
         [Header("After the zoom")]
         [Tooltip("Said in his normal view once the zoom has finished (the last line). Saved text labels; edit the wording in the Hierarchy.")]
@@ -110,6 +117,7 @@ namespace SecretsThatBreathe
             SetPrompt(false);
             SetMessage(false);
             SetGoBack(false);
+            if (returnToEntranceObjective != null) returnToEntranceObjective.SetActive(false);
         }
 
         private void Start()
@@ -155,6 +163,7 @@ namespace SecretsThatBreathe
         {
             WentBack = true;
             IsRunning = true;
+            if (returnToEntranceObjective != null) returnToEntranceObjective.SetActive(false);
             holdingControl = true;
             player.MovementLocked = true;
             SetGoBack(false);
@@ -267,7 +276,11 @@ namespace SecretsThatBreathe
             targetYaw = startYaw;
             targetPitch = startPitch;
             waited = 0f;
-            while (waited < 3.5f && (!LookArrived() || (virtualCamera != null && Mathf.Abs(fov - targetFov) > .6f)))
+            // Wait for the actual lens and view to settle before handing control back.
+            // A loose tolerance here made EndLook snap the remaining FOV in one frame.
+            while (waited < 8f && (Mathf.Abs(Mathf.DeltaAngle(yaw, targetYaw)) > .05f ||
+                   Mathf.Abs(pitch - targetPitch) > .05f ||
+                   (virtualCamera != null && Mathf.Abs(fov - targetFov) > .02f)))
             { waited += Time.deltaTime; yield return null; }
             // 5. Back in his own view: the last line.
             if (khemLinesAfterZoom != null && khemLinesAfterZoom.Length > 0)
@@ -283,6 +296,12 @@ namespace SecretsThatBreathe
 
         private bool LookArrived() =>
             Mathf.Abs(Mathf.DeltaAngle(yaw, targetYaw)) <= 1.5f && Mathf.Abs(pitch - targetPitch) <= 1.5f;
+
+        private IEnumerator ShowReturnObjective()
+        {
+            yield return new WaitForSeconds(objectiveDelay);
+            if (!WentBack && returnToEntranceObjective != null) returnToEntranceObjective.SetActive(true);
+        }
 
         private void EnableMonitorLook()
         {
@@ -312,7 +331,25 @@ namespace SecretsThatBreathe
                     }
                 }
             }
+            // The limits describe the camera centre, not the screen edge. Account
+            // for the visible field of view so the view cannot travel a full half
+            // screen beyond the outer monitors.
+            float verticalHalfFov = (virtualCamera != null ? virtualCamera.Lens.FieldOfView : zoomFieldOfView) * .5f;
+            float aspect = Camera.main != null ? Camera.main.aspect : 16f / 9f;
+            float horizontalHalfFov = Mathf.Atan(Mathf.Tan(verticalHalfFov * Mathf.Deg2Rad) * aspect) * Mathf.Rad2Deg;
+            InsetMonitorLimits(ref minMonitorYaw, ref maxMonitorYaw, horizontalHalfFov + monitorEdgeInsetDegrees);
+            InsetMonitorLimits(ref minMonitorPitch, ref maxMonitorPitch, verticalHalfFov + monitorEdgeInsetDegrees);
+            minMonitorYaw -= Mathf.Max(0f, monitorExtraLeftDegrees);
+            targetYaw = monitorCenterYaw + Mathf.Clamp(Mathf.DeltaAngle(monitorCenterYaw, targetYaw), minMonitorYaw, maxMonitorYaw);
+            targetPitch = Mathf.Clamp(targetPitch, minMonitorPitch, maxMonitorPitch);
             freeMonitorLook = true;
+        }
+
+        private static void InsetMonitorLimits(ref float min, ref float max, float inset)
+        {
+            float centre = (min + max) * .5f;
+            min = Mathf.Min(min + inset, centre);
+            max = Mathf.Max(max - inset, centre);
         }
 
         private void Finish()
@@ -333,6 +370,8 @@ namespace SecretsThatBreathe
                 ApplySentenceStyle(canvas, line);
                 flowing = new FlowingDialogue(canvas, presentation);
                 yield return flowing.Play(line.text);
+                if (lines == khemLines && line.text.Contains("กลับไปดูที่เกิดเหตุ"))
+                    StartCoroutine(ShowReturnObjective());
             }
         }
 

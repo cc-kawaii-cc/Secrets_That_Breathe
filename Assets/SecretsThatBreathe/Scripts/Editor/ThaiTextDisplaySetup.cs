@@ -24,6 +24,7 @@ namespace SecretsThatBreathe.Editor
         private static void Install()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode) return;
+            InstallPoText();
             var scene = SceneManager.GetSceneByPath(LawyerRoomSeatingSetup.ScenePath);
             if (!scene.IsValid() || !scene.isLoaded) return;
             var font = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/Nemo_Upgrade/Font/Kanit/Kanit-Medium SDF.asset");
@@ -65,6 +66,25 @@ namespace SecretsThatBreathe.Editor
                     EditorUtility.SetDirty(label);
                     changed = true;
                 }
+            }
+            if (changed) EditorSceneManager.MarkSceneDirty(scene);
+        }
+
+        private static void InstallPoText()
+        {
+            var scene = SceneManager.GetSceneByPath("Assets/MainScenes/From_PM/Po.unity");
+            if (!scene.IsValid() || !scene.isLoaded) return;
+            bool changed = false;
+            foreach (var root in scene.GetRootGameObjects())
+            foreach (var label in root.GetComponentsInChildren<TMP_Text>(true))
+            {
+                var display = label.GetComponent<ThaiTextDisplay>();
+                if (display != null) continue;
+                display = Undo.AddComponent<ThaiTextDisplay>(label.gameObject);
+                display.Bind();
+                EditorUtility.SetDirty(display);
+                EditorUtility.SetDirty(label);
+                changed = true;
             }
             if (changed) EditorSceneManager.MarkSceneDirty(scene);
         }
