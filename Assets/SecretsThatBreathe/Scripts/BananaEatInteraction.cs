@@ -74,7 +74,7 @@ namespace SecretsThatBreathe
         // Adds the component to every banana tree in the scene that does not have it yet. Returns how many were added.
         public static int AttachToScene(Scene scene)
         {
-            if (!scene.isLoaded) return 0;
+            if (!scene.isLoaded || scene.path == "Assets/MainScenes/From_PM/MainScene_2_Evening.unity") return 0;
             int added = 0;
             foreach (GameObject root in scene.GetRootGameObjects()) added += Attach(root.transform);
             return added;

@@ -68,6 +68,7 @@ namespace SecretsThatBreathe
             // While the player is riding in the car or is locked into a scene, these are switched off.
             if (body == null || !body.enabled) return null;
             Scene scene = player.gameObject.scene;
+            if (scene.path == "Assets/MainScenes/From_PM/MainScene_2_Evening.unity") return null;
             if (Busy(scene)) return null;
 
             Vector3 feet = player.transform.position;
@@ -75,7 +76,7 @@ namespace SecretsThatBreathe
             float bestDistance = float.MaxValue;
             foreach (var tree in BananaEatInteraction.All)
             {
-                if (tree == null || !tree.isActiveAndEnabled || tree.BananasLeft <= 0) continue;
+                if (tree == null || tree.gameObject.scene != scene || !tree.isActiveAndEnabled || tree.BananasLeft <= 0) continue;
                 Vector3 offset = tree.Center - feet;
                 if (Mathf.Abs(offset.y) > tree.heightTolerance) continue;
                 offset.y = 0f;
