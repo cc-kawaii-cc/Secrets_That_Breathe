@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 
@@ -7,6 +8,7 @@ namespace SecretsThatBreathe
     public sealed class AuntDialogueUI : MonoBehaviour
     {
         public TMP_Text firstLine, secondLine, moneyLine, refuseLine;
+        public TMP_Text[] firstLineContinuations, secondLineContinuations, moneyLineContinuations, refuseLineContinuations;
         public TMP_Text firstThought, secondThought, thirdThought;
         public TMP_Text thankYouLine;
         public TMP_Text promiseLine;
@@ -21,7 +23,8 @@ namespace SecretsThatBreathe
         [Min(0f)] public float moneyThoughtHoldDuration = 3f;
         public FlowingDialogueSettings presentation = new FlowingDialogueSettings();
         private FlowingDialogue flowing;
-        public bool ReadyToAdvance => flowing != null && flowing.ReadyToAdvance;
+        private bool playingContinuations;
+        public bool ReadyToAdvance => !playingContinuations && flowing != null && flowing.ReadyToAdvance;
 
         // Defaults seed newly created Canvas objects only. Existing TMP text is never overwritten.
         public const string DefaultFirstLine = "หนู... หนูใช่ทนายเข้มใช่มั้ยลูก... ช่วยลุงด้วยนะ ลูกสาวลุง... โดนรถชนตาย";
@@ -50,15 +53,13 @@ namespace SecretsThatBreathe
             ui.secondLine = ui.EnsureLine(ui.secondLine, "02_AuntSecondLine", InitialLines[1]);
             ui.moneyLine = ui.EnsureLine(ui.moneyLine, "03_AuntMoneyLine", InitialLines[2]);
             ui.refuseLine = ui.EnsureLine(ui.refuseLine, "04_KhemRefuseMoney", InitialLines[3]);
-            ui.firstThought = ui.EnsureLine(ui.firstThought, "05_ThoughtFirst", Quote(InitialLines[4]));
-            ui.secondThought = ui.EnsureLine(ui.secondThought, "06_ThoughtSecond", Quote(InitialLines[5]));
-            ui.thirdThought = ui.EnsureLine(ui.thirdThought, "07_ThoughtThird", Quote(InitialLines[6]));
+            ui.firstThought = ui.EnsureLine(ui.firstThought, "05_ThoughtFirst", "(" + InitialLines[4] + ")");
+            ui.secondThought = ui.EnsureLine(ui.secondThought, "06_ThoughtSecond", "(" + InitialLines[5] + ")");
+            ui.thirdThought = ui.EnsureLine(ui.thirdThought, "07_ThoughtThird", "(" + InitialLines[6] + ")");
             ui.thankYouLine = ui.EnsureLine(ui.thankYouLine, "08_AuntThankYou", "ขอบคุณมากนะลูก");
             ui.promiseLine = ui.EnsureLine(ui.promiseLine, "04b_KhemPromise", "ผมสัญญาว่าจะลากคอมันมาเข้าคุกให้ได้");
             return ui;
         }
-
-        private static string Quote(string text) { return "\"" + (text ?? "").Trim().Trim('"') + "\""; }
 
         private TMP_Text EnsureLine(TMP_Text reference, string name, string initialText)
         {
@@ -82,14 +83,29 @@ namespace SecretsThatBreathe
             {
                 bool isKhem = lineIndex == 3 || lineIndex == 4 || lineIndex == 6;
                 flowing = new FlowingDialogue(lineIndex == 3 ? thoughtDialogue : isKhem ? khemDialogue : visitorDialogue, presentation);
-                StartCoroutine(lineIndex == 3 ? flowing.ShowInstant(label.text, moneyThoughtHoldDuration) : flowing.Play(label.text));
+                var continuations = lineIndex == 0 ? firstLineContinuations : lineIndex == 1 ? secondLineContinuations :
+                    lineIndex == 2 ? moneyLineContinuations : lineIndex == 4 ? refuseLineContinuations : null;
+                if (continuations != null && continuations.Length > 0)
+                    StartCoroutine(PlaySentences(label, continuations));
+                else
+                    StartCoroutine(lineIndex == 3 ? flowing.ShowInstant(label.text, moneyThoughtHoldDuration) : flowing.Play(label.text));
             }
             return label;
+        }
+
+        private IEnumerator PlaySentences(TMP_Text first, TMP_Text[] continuations)
+        {
+            playingContinuations = true;
+            yield return flowing.Play(first.text);
+            foreach (var sentence in continuations)
+                if (sentence != null) yield return flowing.Play(sentence.text);
+            playingContinuations = false;
         }
 
         public void HideAll()
         {
             StopAllCoroutines();
+            playingContinuations = false;
             flowing?.Hide();
             khemDialogue.Hide();
             visitorDialogue.Hide();

@@ -69,7 +69,7 @@ namespace SecretsThatBreathe
 
         private PlayerSeatController player;
         private InputAction eat;
-        private bool wasSeated, awaitingRelease, captured, previousLookLock;
+        private bool wasSeated, awaitingRelease, captured;
         private float elapsed;
         private Vector3 originalLocalPosition, originalLocalScale, startCentre, localMeshCentre;
         private Quaternion originalLocalRotation, startRotation;
@@ -186,8 +186,6 @@ namespace SecretsThatBreathe
             originalLocalPosition = mealObject.localPosition;
             originalLocalRotation = mealObject.localRotation;
             originalLocalScale = mealObject.localScale;
-            previousLookLock = player.SeatedLookLocked;
-            player.SeatedLookLocked = true;
             colliders = mealObject.GetComponentsInChildren<Collider>(true);
             colliderStates = new bool[colliders.Length];
             for (int i = 0; i < colliders.Length; i++) { colliderStates[i] = colliders[i].enabled; colliders[i].enabled = false; }
@@ -309,7 +307,6 @@ namespace SecretsThatBreathe
                 bodies[i].isKinematic = kinematicStates[i];
                 bodies[i].detectCollisions = collisionStates[i];
             }
-            if (player != null) player.SeatedLookLocked = previousLookLock;
             CurrentTiltDegrees = 0f;
             captured = false;
             mealObject = null;

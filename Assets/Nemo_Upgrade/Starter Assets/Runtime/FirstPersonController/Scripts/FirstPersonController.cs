@@ -141,29 +141,7 @@ namespace StarterAssets
 
 		private void CameraRotation()
 		{
-			if (Time.timeScale <= 0f || !_input.cursorInputForLook)
-			{
-				_pendingMouseRotation = Vector2.zero;
-				return;
-			}
-			bool mouseInput = IsCurrentDeviceMouse;
-			Vector2 rotation;
-			if (mouseInput)
-			{
-				// Accumulate angular displacement so smoothing doesn't lose slow mouse input
-				// or change sensitivity with frame rate. Consume the remainder after input stops.
-				_pendingMouseRotation += _input.look * RotationSpeed;
-				float response = MouseLookSmoothTime <= 0f ? 1f
-					: 1f - Mathf.Exp(-Time.unscaledDeltaTime / MouseLookSmoothTime);
-				rotation = _pendingMouseRotation * response;
-				_pendingMouseRotation -= rotation;
-			}
-			else
-			{
-				_pendingMouseRotation = Vector2.zero;
-				rotation = _input.look.sqrMagnitude >= _threshold
-					? _input.look * (RotationSpeed * Time.deltaTime) : Vector2.zero;
-			}
+			Vector2 rotation = ReadLookRotation(ref _pendingMouseRotation);
 			if (rotation.x == 0f && rotation.y == 0f) return;
 			float pitch = _cinemachineTargetPitch + rotation.y;
 			_cinemachineTargetPitch = ClampAngle(pitch, BottomClamp, TopClamp);
@@ -171,6 +149,34 @@ namespace StarterAssets
 			_rotationVelocity = rotation.x;
 			CinemachineCameraTarget.transform.localRotation = Quaternion.Euler(_cinemachineTargetPitch, 0f, 0f);
 			transform.Rotate(Vector3.up * _rotationVelocity);
+		}
+
+		public Vector2 ReadLookRotation(ref Vector2 pendingMouseRotation)
+		{
+			if (Time.timeScale <= 0f || _input == null || !_input.cursorInputForLook)
+			{
+				pendingMouseRotation = Vector2.zero;
+				return Vector2.zero;
+			}
+			bool mouseInput = IsCurrentDeviceMouse;
+			Vector2 rotation;
+			if (mouseInput)
+			{
+				// Accumulate angular displacement so smoothing doesn't lose slow mouse input
+				// or change sensitivity with frame rate. Consume the remainder after input stops.
+				pendingMouseRotation += _input.look * RotationSpeed;
+				float response = MouseLookSmoothTime <= 0f ? 1f
+					: 1f - Mathf.Exp(-Time.unscaledDeltaTime / MouseLookSmoothTime);
+				rotation = pendingMouseRotation * response;
+				pendingMouseRotation -= rotation;
+			}
+			else
+			{
+				pendingMouseRotation = Vector2.zero;
+				rotation = _input.look.sqrMagnitude >= _threshold
+					? _input.look * (RotationSpeed * Time.deltaTime) : Vector2.zero;
+			}
+			return rotation;
 		}
 
 		private void OnDisable() => _pendingMouseRotation = Vector2.zero;

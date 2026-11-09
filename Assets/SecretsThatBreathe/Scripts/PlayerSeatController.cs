@@ -69,6 +69,7 @@ namespace SecretsThatBreathe
         private bool controllerWasEnabled, captured;
         private bool standControlsHeld;
         private float yaw, pitch;
+        private Vector2 pendingMouseRotation;
 
         private void Awake()
         {
@@ -121,6 +122,7 @@ namespace SecretsThatBreathe
             sitFade.Clear();
             cameraAnimation.Begin(playerCamera.transform, startPosition, startRotation);
             yaw = pitch = 0f;
+            pendingMouseRotation = Vector2.zero;
             transition = StartCoroutine(SitTransition());
             onSitStarted.Invoke();
             return true;
@@ -158,11 +160,26 @@ namespace SecretsThatBreathe
         {
             if (State == SeatState.Exploring) return;
             if (chair == null || !chair.CanSit || playerCamera == null) { CancelSeating(); return; }
-            if (State != SeatState.Seated || SeatedLookLocked || Time.timeScale == 0f || Cursor.lockState != CursorLockMode.Locked) return;
-            Vector2 look = Mouse.current != null ? Mouse.current.delta.ReadValue() * mouseSensitivity : Vector2.zero;
-            if (Gamepad.current != null) look += Gamepad.current.rightStick.ReadValue() * gamepadLookSpeed * Time.deltaTime;
-            yaw = Mathf.Clamp(yaw + look.x, -yawLimit, yawLimit);
-            pitch = Mathf.Clamp(pitch - look.y, -pitchLimit, pitchLimit);
+            if (State != SeatState.Seated || SeatedLookLocked || Time.timeScale == 0f || Cursor.lockState != CursorLockMode.Locked)
+            {
+                pendingMouseRotation = Vector2.zero;
+                return;
+            }
+            Vector2 look;
+            if (firstPersonController != null)
+                look = firstPersonController.ReadLookRotation(ref pendingMouseRotation);
+            else
+            {
+                look = Mouse.current != null ? Mouse.current.delta.ReadValue() * mouseSensitivity : Vector2.zero;
+                if (Gamepad.current != null) look += Gamepad.current.rightStick.ReadValue() * gamepadLookSpeed * Time.deltaTime;
+                look.y = -look.y;
+            }
+            float nextYaw = yaw + look.x;
+            float nextPitch = pitch + look.y;
+            yaw = Mathf.Clamp(nextYaw, -yawLimit, yawLimit);
+            pitch = Mathf.Clamp(nextPitch, -pitchLimit, pitchLimit);
+            if (yaw != nextYaw) pendingMouseRotation.x = 0f;
+            if (pitch != nextPitch) pendingMouseRotation.y = 0f;
             cameraAnimation.SetPose(chair.seatedCameraPoint.position,
                 chair.seatedCameraPoint.rotation * Quaternion.Euler(pitch, yaw, 0f));
         }

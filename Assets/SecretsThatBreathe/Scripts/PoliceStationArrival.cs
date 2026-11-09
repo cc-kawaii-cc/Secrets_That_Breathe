@@ -27,6 +27,9 @@ namespace SecretsThatBreathe
         [Min(0f)] public float storyHoldSeconds = 2f;
         [Min(0f)] public float storyFadeSeconds = 1f;
 
+        [Tooltip("Looping ambience that fades in with the gameplay reveal.")]
+        public AudioSource[] gameplayAudioSources;
+
         readonly List<Behaviour> suspended = new List<Behaviour>();
         bool wasMovementLocked, ownsControls;
 
@@ -79,11 +82,24 @@ namespace SecretsThatBreathe
                 elapsed += Time.unscaledDeltaTime;
                 yield return null;
             }
+            var ambienceVolumes = new Dictionary<AudioSource, float>();
+            if (gameplayAudioSources != null)
+                foreach (var source in gameplayAudioSources)
+                {
+                    if (source == null || !source.isActiveAndEnabled || ambienceVolumes.ContainsKey(source)) continue;
+                    ambienceVolumes.Add(source, source.volume);
+                    source.volume = 0f;
+                    source.Play();
+                }
             for (elapsed = 0f; elapsed < revealSeconds; elapsed += Time.unscaledDeltaTime)
             {
                 blackScreen.alpha = 1f - Mathf.SmoothStep(0f, 1f, elapsed / Mathf.Max(.05f, revealSeconds));
+                foreach (var ambience in ambienceVolumes)
+                    if (ambience.Key != null) ambience.Key.volume = ambience.Value * Mathf.Clamp01(elapsed / revealSeconds);
                 yield return null;
             }
+            foreach (var ambience in ambienceVolumes)
+                if (ambience.Key != null) ambience.Key.volume = ambience.Value;
             blackScreen.alpha = 0f; blackScreen.blocksRaycasts = false;
             ReleaseControls();
         }

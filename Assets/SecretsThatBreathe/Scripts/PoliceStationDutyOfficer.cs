@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.Cinemachine;
 using StarterAssets;
 using TMPro;
 using UnityEngine;
@@ -23,6 +24,8 @@ namespace SecretsThatBreathe
         [Header("Starting the conversation")]
         [Tooltip("Khem must be this close (metres, along the floor) to the officer.")]
         [Min(.5f)] public float interactDistance = 3f;
+        [Tooltip("Total angle of the interaction area in front of the officer.")]
+        [Range(1f, 360f)] public float interactionAngle = 360f;
         [Tooltip("1 = looking straight at the officer. Khem must look roughly towards him to be offered the conversation.")]
         [Range(0f, 1f)] public float facingDotMinimum = .6f;
         [Tooltip("The saved '[E] ...' label. Edit its text in the Hierarchy.")]
@@ -35,6 +38,9 @@ namespace SecretsThatBreathe
         [Min(.5f)] public float lookAtHeight = 1.6f;
         [Tooltip("The officer slowly turns to face Khem while they talk.")]
         [Min(0f)] public float officerTurnSpeed = 6f;
+        [Tooltip("Degrees to subtract from the normal camera field of view during dialogue.")]
+        [Range(0f, 30f)] public float conversationZoom = 0f;
+        [Min(.05f)] public float zoomSeconds = .45f;
 
         [Header("Dialogue (same boxes, font and typing sound as MainScene_2_Evening)")]
         public DialogueCanvasView khemDialogue = new DialogueCanvasView();
@@ -42,6 +48,8 @@ namespace SecretsThatBreathe
         public FlowingDialogueSettings presentation = new FlowingDialogueSettings();
         [Tooltip("Saved text labels. Edit the wording in the Hierarchy.")]
         public TMP_Text[] khemAsksLines, officerRepliesLines, khemThoughtLines;
+        [Tooltip("Show thought labels at their authored positions without typing.")]
+        public bool showThoughtsInstantly;
         [Min(0f)] public float dialogueDelay = .3f;
 
         public UnityEvent onFinished = new UnityEvent();
@@ -49,6 +57,8 @@ namespace SecretsThatBreathe
         public bool IsRunning { get; private set; }
 
         private FlowingDialogue flowing;
+        private GameObject visibleThought;
+        private FirstPersonFlashlight suspendedFlashlight;
         private bool holdingControl, promptShown = true;   // true so the first SetPrompt(false) really hides the label
         private Quaternion officerStartRotation;
         // Khem's view
@@ -56,6 +66,8 @@ namespace SecretsThatBreathe
         private StarterAssetsInputs[] inputs;
         private bool[] inputLookEnabled;
         private Transform cameraTarget, officerHead;
+        private CinemachineCamera zoomCamera;
+        private float normalFov;
         private float yaw, pitch, targetYaw, targetPitch, yawVelocity, pitchVelocity;
 
         private void Awake()
@@ -71,6 +83,13 @@ namespace SecretsThatBreathe
             { Debug.LogError("Assign the duty officer, player, dialogue Canvases and lines.", this); enabled = false; return; }
             officerStartRotation = officer.rotation;
             officerHead = FindDeep(officer, "Head");
+            if (officerHead == null)
+                foreach (var animator in officer.GetComponentsInChildren<Animator>())
+                    if (animator.isActiveAndEnabled && animator.isHuman)
+                    {
+                        officerHead = animator.GetBoneTransform(HumanBodyBones.Head);
+                        if (officerHead != null) break;
+                    }
             // The officer stands still while talking, so give him the same breathing layer as the Evening police.
             CharacterBreathing.Attach(officer);
         }
@@ -93,12 +112,38 @@ namespace SecretsThatBreathe
             Vector3 toOfficer = officer.position - player.transform.position;
             toOfficer.y = 0f;
             if (toOfficer.sqrMagnitude > interactDistance * interactDistance || toOfficer.sqrMagnitude < .0001f) return false;
+            if (interactionAngle < 360f &&
+                Vector3.Angle(OfficerForward(), -toOfficer) > interactionAngle * .5f) return false;
             var view = Camera.main;
             if (view == null) return false;
             Vector3 forward = view.transform.forward;
             forward.y = 0f;
             if (forward.sqrMagnitude < .0001f) return false;
             return Vector3.Dot(forward.normalized, toOfficer.normalized) >= facingDotMinimum;
+        }
+
+        private Vector3 OfficerForward()
+        {
+            return Vector3.ProjectOnPlane(officer.forward, Vector3.up).normalized;
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            if (officer == null) return;
+            Gizmos.color = Color.yellow;
+            Vector3 origin = officer.position + Vector3.up * .05f;
+            Vector3 forward = OfficerForward();
+            Vector3 first = origin + Quaternion.AngleAxis(-interactionAngle * .5f, Vector3.up) * forward * interactDistance;
+            Vector3 previous = first;
+            if (interactionAngle < 360f) Gizmos.DrawLine(origin, first);
+            for (int i = 1; i <= 32; i++)
+            {
+                float angle = Mathf.Lerp(-interactionAngle * .5f, interactionAngle * .5f, i / 32f);
+                Vector3 point = origin + Quaternion.AngleAxis(angle, Vector3.up) * forward * interactDistance;
+                Gizmos.DrawLine(previous, point);
+                previous = point;
+            }
+            if (interactionAngle < 360f) Gizmos.DrawLine(origin, previous);
         }
 
         private void SetPrompt(bool show)
@@ -135,7 +180,25 @@ namespace SecretsThatBreathe
             SetPrompt(false);
             holdingControl = true;
             player.MovementLocked = true;
+            var flashlight = player.GetComponent<FirstPersonFlashlight>();
+            if (flashlight != null && flashlight.enabled)
+            {
+                suspendedFlashlight = flashlight;
+                flashlight.enabled = false; // OnDisable switches off the lamp and puts the phone away.
+            }
             BeginLook();
+            if (conversationZoom > 0f)
+            {
+                var view = Camera.main;
+                var brain = view != null ? view.GetComponent<CinemachineBrain>() : null;
+                zoomCamera = brain != null ? brain.ActiveVirtualCamera as CinemachineCamera : null;
+                if (zoomCamera == null) zoomCamera = player.transform.root.GetComponentInChildren<CinemachineCamera>();
+                if (zoomCamera != null)
+                {
+                    normalFov = zoomCamera.Lens.FieldOfView;
+                    yield return ZoomTo(Mathf.Max(15f, normalFov - conversationZoom));
+                }
+            }
             float waited = 0f;
             while (looking && waited < 1.5f
                 && (Mathf.Abs(Mathf.DeltaAngle(yaw, targetYaw)) > 1.5f || Mathf.Abs(pitch - targetPitch) > 1.5f))
@@ -143,8 +206,10 @@ namespace SecretsThatBreathe
             yield return new WaitForSeconds(dialogueDelay);
             yield return SayAll(khemDialogue, khemAsksLines);
             yield return SayAll(officerDialogue, officerRepliesLines);
-            yield return SayAll(khemDialogue, khemThoughtLines);   // his thought; then he says nothing more
+            if (showThoughtsInstantly) yield return ShowThoughts();
+            else yield return SayAll(khemDialogue, khemThoughtLines);
             HideDialogue();
+            if (zoomCamera != null) yield return ZoomTo(normalFov);
             Finish();
             Completed = true;
             onFinished.Invoke();
@@ -152,10 +217,43 @@ namespace SecretsThatBreathe
 
         private void Finish()
         {
+            RestoreZoom();
             EndLook();
+            RestoreFlashlight();
             holdingControl = false;
             if (player != null) player.MovementLocked = false;
             IsRunning = false;
+        }
+
+        private IEnumerator ZoomTo(float targetFov)
+        {
+            float startFov = zoomCamera.Lens.FieldOfView;
+            for (float elapsed = 0f; elapsed < zoomSeconds && zoomCamera != null; elapsed += Time.deltaTime)
+            {
+                SetFov(Mathf.SmoothStep(startFov, targetFov, elapsed / zoomSeconds));
+                yield return null;
+            }
+            SetFov(targetFov);
+        }
+
+        private void SetFov(float value)
+        {
+            if (zoomCamera == null) return;
+            var lens = zoomCamera.Lens;
+            lens.FieldOfView = value;
+            zoomCamera.Lens = lens;
+        }
+
+        private void RestoreZoom()
+        {
+            if (zoomCamera != null) SetFov(normalFov);
+            zoomCamera = null;
+        }
+
+        private void RestoreFlashlight()
+        {
+            if (suspendedFlashlight != null) suspendedFlashlight.enabled = true;
+            suspendedFlashlight = null;
         }
 
         private IEnumerator SayAll(DialogueCanvasView canvas, TMP_Text[] lines)
@@ -168,6 +266,22 @@ namespace SecretsThatBreathe
                 ApplySentenceStyle(canvas, line);
                 flowing = new FlowingDialogue(canvas, presentation);
                 yield return flowing.Play(line.text);
+            }
+        }
+
+        private IEnumerator ShowThoughts()
+        {
+            HideDialogue();
+            if (khemThoughtLines == null) yield break;
+            foreach (var line in khemThoughtLines)
+            {
+                if (line == null) continue;
+                visibleThought = line.transform.parent.gameObject;
+                line.maxVisibleCharacters = int.MaxValue;
+                visibleThought.SetActive(true);
+                yield return new WaitForSeconds(presentation.completedLineHold);
+                visibleThought.SetActive(false);
+                visibleThought = null;
             }
         }
 
@@ -237,6 +351,8 @@ namespace SecretsThatBreathe
 
         private void HideDialogue()
         {
+            if (visibleThought != null) visibleThought.SetActive(false);
+            visibleThought = null;
             if (Alive(khemDialogue) && Alive(officerDialogue)) flowing?.Hide();
             flowing = null;
             if (Alive(khemDialogue)) khemDialogue.Hide();
@@ -247,7 +363,9 @@ namespace SecretsThatBreathe
         {
             StopAllCoroutines();
             HideDialogue();
+            RestoreZoom();
             EndLook();
+            RestoreFlashlight();
             if (holdingControl && player != null) player.MovementLocked = false;
             holdingControl = false;
             IsRunning = false;

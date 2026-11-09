@@ -14,12 +14,17 @@ namespace SecretsThatBreathe
     [DefaultExecutionOrder(-9000)]
     public sealed class PoliceStationOpening : MonoBehaviour
     {
+        private const float DefaultWaypointCornerRadius = .8f;
+
         [Header("Scene objects")]
         public PoliceStationArrival arrival;
         public FirstPersonController player;
         public Transform sunglassesMan;
         public Animator sunglassesAnimator;
-        [Tooltip("Start, the point beside Khem, and the exit at the door. Move these markers in the scene.")]
+        [Tooltip("Optional door that silences the man's footsteps when he walks into it.")]
+        public Collider footstepStopDoor;
+        [InspectorName("Waypoints")]
+        [Tooltip("Move the waypoint objects in the Scene view. The man follows this list in order.")]
         public Transform[] route;
         [Tooltip("Index of the route point where the man passes Khem (1 = beside Khem). The view returns to normal and the line appears there.")]
         [Min(0)] public int khemSpeaksAtRoutePoint = 1;
@@ -27,7 +32,11 @@ namespace SecretsThatBreathe
         [Header("Walking")]
         [Min(.1f)] public float walkSpeed = .95f;
         [Min(30f)] public float turnDegreesPerSecond = 360f;
-        [Tooltip("The man starts walking when the black screen has faded below this opacity (0.02 = when Khem can see).")]
+        [Tooltip("Follow straight segments instead of rounding corners.")]
+        public bool useStraightWaypoints;
+        [Tooltip("How far from each waypoint the path starts rounding the corner. Old scenes with a zero value use the default.")]
+        [Min(.05f)] public float waypointCornerRadius = DefaultWaypointCornerRadius;
+        [Tooltip("Black screen opacity required to start walking. Set to 1 to start as the screen begins to reveal, after the intro text disappears.")]
         [Range(0f, 1f)] public float startWhenBlackScreenBelow = .02f;
 
         [Header("Khem's movement")]
@@ -72,6 +81,33 @@ namespace SecretsThatBreathe
 
         private void Awake() => HideDialogue();
 
+        private void OnValidate()
+        {
+            if (waypointCornerRadius <= 0f) waypointCornerRadius = DefaultWaypointCornerRadius;
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            if (route == null) return;
+            Gizmos.color = Color.cyan;
+            bool showCurve = !useStraightWaypoints && route.Length >= 2 &&
+                System.Array.TrueForAll(route, point => point != null);
+            if (showCurve)
+            {
+                var path = BuildWalkingPath();
+                for (int i = 1; i < path.SampleCount; i++)
+                    Gizmos.DrawLine(path.GetSample(i - 1), path.GetSample(i));
+            }
+            for (int i = 0; i < route.Length; i++)
+            {
+                if (route[i] == null) continue;
+                Vector3 position = route[i].position;
+                Gizmos.DrawWireSphere(position, .18f);
+                if (!showCurve && i > 0 && route[i - 1] != null)
+                    Gizmos.DrawLine(route[i - 1].position, position);
+            }
+        }
+
         private IEnumerator Start()
         {
             if (!Valid()) { Debug.LogError("Assign the station opening actors, route, player and dialogue Canvas.", this); enabled = false; yield break; }
@@ -85,7 +121,8 @@ namespace SecretsThatBreathe
             // Let the arrival script place Khem first (it does this a few frames in, behind the black screen).
             for (int i = 0; i < 5; i++) yield return null;
             if (lookAtManWhileHeApproaches) BeginLook();
-            while (BlackAmount() > startWhenBlackScreenBelow) yield return null;
+            while (BlackAmount() >= 1f || BlackAmount() > startWhenBlackScreenBelow)
+                yield return null;
             var walk = StartCoroutine(WalkRoute());
             yield return walk;
             while (speaking || Time.time < lockEndTime) yield return null;
@@ -192,7 +229,9 @@ namespace SecretsThatBreathe
         private IEnumerator WalkRoute()
         {
             if (sunglassesAnimator != null) sunglassesAnimator.speed = 1f;
-            for (int i = 1; i < route.Length; i++)
+            var footsteps = footstepStopDoor != null ? sunglassesMan.GetComponent<AnimatedFootsteps>() : null;
+            if (!useStraightWaypoints) yield return WalkCurvedRoute(footsteps);
+            else for (int i = 1; i < route.Length; i++)
             {
                 Vector3 target = route[i].position;
                 while ((target - sunglassesMan.position).sqrMagnitude > .0004f)
@@ -200,16 +239,71 @@ namespace SecretsThatBreathe
                     Vector3 position = sunglassesMan.position;
                     Vector3 flat = Vector3.ProjectOnPlane(target - position, Vector3.up);
                     if (flat.sqrMagnitude > .0001f)
+                    {
                         sunglassesMan.rotation = Quaternion.RotateTowards(sunglassesMan.rotation,
-                            Quaternion.LookRotation(flat.normalized, Vector3.up), turnDegreesPerSecond * Time.deltaTime);
-                    sunglassesMan.position = Vector3.MoveTowards(position, target, walkSpeed * Time.deltaTime);
+                            Quaternion.LookRotation(flat, Vector3.up), turnDegreesPerSecond * Time.deltaTime);
+                    }
+                    Vector3 nextPosition = Vector3.MoveTowards(position, target, walkSpeed * Time.deltaTime);
+                    MoveMan(nextPosition, footsteps);
                     yield return null;
                 }
-                if (i == khemSpeaksAtRoutePoint && !passStarted) { passStarted = true; speaking = true; StartCoroutine(PassKhemAndSpeak()); }
+                if (i == khemSpeaksAtRoutePoint) StartPass();
             }
             // Out through the door.
             if (sunglassesAnimator != null) sunglassesAnimator.speed = 0f;
             sunglassesMan.gameObject.SetActive(false);
+        }
+
+        private PassengerRidePath BuildWalkingPath()
+        {
+            var corners = new Vector3[route.Length - 2];
+            for (int i = 0; i < corners.Length; i++) corners[i] = route[i + 1].position;
+            float radius = waypointCornerRadius > 0f ? waypointCornerRadius : DefaultWaypointCornerRadius;
+            return new PassengerRidePath(route[0].position, corners, route[route.Length - 1].position, radius);
+        }
+
+        private IEnumerator WalkCurvedRoute(AnimatedFootsteps footsteps)
+        {
+            var path = BuildWalkingPath();
+            float passDistance = 0f, sampleDistance = 0f, closest = float.PositiveInfinity;
+            Vector3 passPoint = route[khemSpeaksAtRoutePoint].position;
+            for (int i = 0; i < path.SampleCount; i++)
+            {
+                Vector3 sample = path.GetSample(i);
+                if (i > 0) sampleDistance += Vector3.Distance(path.GetSample(i - 1), sample);
+                float distanceToPass = (sample - passPoint).sqrMagnitude;
+                if (distanceToPass >= closest) continue;
+                closest = distanceToPass;
+                passDistance = sampleDistance;
+            }
+
+            float distance = 0f;
+            do
+            {
+                distance = Mathf.Min(path.Length, distance + walkSpeed * Time.deltaTime);
+                path.Evaluate(distance, out Vector3 position, out Vector3 tangent);
+                sunglassesMan.rotation = FaceRotation(Vector3.zero, tangent, sunglassesMan.rotation);
+                MoveMan(position, footsteps);
+                if (distance >= passDistance && !passStarted) StartPass();
+                yield return null;
+            } while (distance < path.Length);
+        }
+
+        private void MoveMan(Vector3 position, AnimatedFootsteps footsteps)
+        {
+            Vector3 previous = sunglassesMan.position;
+            Vector3 step = position - previous;
+            if (footsteps != null && footsteps.enabled && step.sqrMagnitude > 0f &&
+                footstepStopDoor.Raycast(new Ray(previous + Vector3.up, step.normalized), out _, step.magnitude + .15f))
+                footsteps.enabled = false;
+            sunglassesMan.position = position;
+        }
+
+        private void StartPass()
+        {
+            passStarted = true;
+            speaking = true;
+            StartCoroutine(PassKhemAndSpeak());
         }
 
         private static Quaternion FaceRotation(Vector3 from, Vector3 to, Quaternion fallback)
