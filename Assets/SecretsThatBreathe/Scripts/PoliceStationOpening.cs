@@ -62,6 +62,8 @@ namespace SecretsThatBreathe
         public FlowingDialogueSettings presentation = new FlowingDialogueSettings();
         [Tooltip("Saved text labels. Edit the wording in the Hierarchy.")]
         public TMP_Text[] manPassesLines;
+        public bool showPassThoughtInstantly;
+        [Min(0f)] public float passThoughtHoldSeconds = 3f;
         [Min(0f)] public float dialogueDelay = .15f;
 
         public UnityEvent onFinished = new UnityEvent();
@@ -70,6 +72,7 @@ namespace SecretsThatBreathe
 
         private enum LookState { Off, Following, Returning }
         private FlowingDialogue flowing;
+        private GameObject visiblePassThought;
         private bool speaking, holdingMovement, passStarted;
         private float lockEndTime = float.PositiveInfinity;
         // Khem's view
@@ -203,8 +206,8 @@ namespace SecretsThatBreathe
             returnElapsed = 0f;
             look = LookState.Returning;   // keeps its current turning speed and eases back to the normal view
             while (look == LookState.Returning && returnElapsed < lookSmoothSeconds * 6f
-                && (Mathf.Abs(Mathf.DeltaAngle(lookYaw, baseYaw)) > .4f || Mathf.Abs(lookPitch - basePitch) > .4f
-                    || Mathf.Abs(yawVelocity) > 1.5f))
+                && (Mathf.Abs(Mathf.DeltaAngle(lookYaw, baseYaw)) > .1f || Mathf.Abs(lookPitch - basePitch) > .1f
+                    || Mathf.Abs(yawVelocity) > .5f || Mathf.Abs(pitchVelocity) > .5f))
                 yield return null;
             EndLook();
         }
@@ -214,11 +217,7 @@ namespace SecretsThatBreathe
             if (look == LookState.Off) return;
             look = LookState.Off;
             if (player != null && cameraTarget != null)
-            {
-                lookYaw = baseYaw; lookPitch = basePitch;
-                ApplyLook();
-                player.ResetAfterTeleport(basePitch);   // the controller continues from this view
-            }
+                player.SyncLookPitch(Mathf.DeltaAngle(0f, cameraTarget.localEulerAngles.x));
             if (inputs != null)
                 for (int i = 0; i < inputs.Length; i++)
                     if (inputs[i] != null) { inputs[i].look = Vector2.zero; inputs[i].cursorInputForLook = inputLookEnabled[i]; }
@@ -321,6 +320,16 @@ namespace SecretsThatBreathe
             foreach (var line in manPassesLines)
             {
                 if (line == null) continue;
+                if (showPassThoughtInstantly)
+                {
+                    visiblePassThought = line.transform.parent.gameObject;
+                    line.maxVisibleCharacters = int.MaxValue;
+                    visiblePassThought.SetActive(true);
+                    yield return new WaitForSeconds(passThoughtHoldSeconds);
+                    visiblePassThought.SetActive(false);
+                    visiblePassThought = null;
+                    continue;
+                }
                 flowing?.Hide();
                 ApplySentenceStyle(khemDialogue, line);
                 flowing = new FlowingDialogue(khemDialogue, presentation);
@@ -346,6 +355,8 @@ namespace SecretsThatBreathe
 
         private void HideDialogue()
         {
+            if (visiblePassThought != null) visiblePassThought.SetActive(false);
+            visiblePassThought = null;
             if (!DialogueAlive) { flowing = null; return; }
             flowing?.Hide();
             khemDialogue.Hide();

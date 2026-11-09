@@ -50,6 +50,7 @@ namespace SecretsThatBreathe
         public TMP_Text[] khemAsksLines, officerRepliesLines, khemThoughtLines;
         [Tooltip("Show thought labels at their authored positions without typing.")]
         public bool showThoughtsInstantly;
+        [Min(0f)] public float thoughtHoldSeconds = 3f;
         [Min(0f)] public float dialogueDelay = .3f;
 
         public UnityEvent onFinished = new UnityEvent();
@@ -279,7 +280,7 @@ namespace SecretsThatBreathe
                 visibleThought = line.transform.parent.gameObject;
                 line.maxVisibleCharacters = int.MaxValue;
                 visibleThought.SetActive(true);
-                yield return new WaitForSeconds(presentation.completedLineHold);
+                yield return new WaitForSeconds(thoughtHoldSeconds);
                 visibleThought.SetActive(false);
                 visibleThought = null;
             }

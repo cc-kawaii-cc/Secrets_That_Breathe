@@ -184,12 +184,18 @@ namespace StarterAssets
 		// Used by scripted transitions while input remains suspended behind a fade.
 		public void ResetAfterTeleport(float pitchDegrees)
 		{
-			_speed = _rotationVelocity = 0f;
+			_speed = 0f;
 			_verticalVelocity = -2f;
-			_pendingMouseRotation = Vector2.zero;
-			_cinemachineTargetPitch = Mathf.Clamp(pitchDegrees, BottomClamp, TopClamp);
+			SyncLookPitch(pitchDegrees);
 			if (CinemachineCameraTarget != null)
 				CinemachineCameraTarget.transform.localRotation = Quaternion.Euler(_cinemachineTargetPitch, 0f, 0f);
+		}
+
+		public void SyncLookPitch(float pitchDegrees)
+		{
+			_rotationVelocity = 0f;
+			_pendingMouseRotation = Vector2.zero;
+			_cinemachineTargetPitch = Mathf.Clamp(pitchDegrees, BottomClamp, TopClamp);
 		}
 
 		private void Move()

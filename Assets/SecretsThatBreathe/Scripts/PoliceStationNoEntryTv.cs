@@ -30,6 +30,8 @@ namespace SecretsThatBreathe
         public Transform signLocation;
         [Tooltip("The TV Khem's view zooms in on.")]
         public Transform tv;
+        public BoxCollider interactionZone;
+        public Transform[] monitorLookTargets;
         [Tooltip("The object named \"end\" (the exit doors). After the moment, Khem looks at it and presses E to go back to the scene.")]
         public Transform endLocation;
 
@@ -94,6 +96,8 @@ namespace SecretsThatBreathe
         private Transform cameraTarget;
         private float yaw, pitch, targetYaw, targetPitch, yawVelocity, pitchVelocity;
         private float startYaw, startPitch;
+        private bool freeMonitorLook;
+        private float monitorCenterYaw, minMonitorYaw, maxMonitorYaw, minMonitorPitch, maxMonitorPitch;
         // Zoom
         private CinemachineCamera virtualCamera;
         private float baseFov, fov, targetFov, fovVelocity;
@@ -131,6 +135,8 @@ namespace SecretsThatBreathe
             if (opening != null && !opening.Completed) return false;
             if (duty != null && !duty.Completed) return false;
             if (!player.isActiveAndEnabled || player.MovementLocked) return false;
+            if (interactionZone != null)
+                return InteractionLook.IsPointInBox(player.transform.position + Vector3.up * .9f, interactionZone);
             return InteractionLook.IsLookingAt(Camera.main, signRenderers, lookAngle, interactDistance);
         }
 
@@ -206,6 +212,12 @@ namespace SecretsThatBreathe
             if (!IsRunning) return;
             if (looking && cameraTarget != null && player != null)
             {
+                if (freeMonitorLook && Mouse.current != null && Cursor.lockState == CursorLockMode.Locked)
+                {
+                    Vector2 delta = Mouse.current.delta.ReadValue() * player.RotationSpeed;
+                    targetYaw = monitorCenterYaw + Mathf.Clamp(Mathf.DeltaAngle(monitorCenterYaw, targetYaw) + delta.x, minMonitorYaw, maxMonitorYaw);
+                    targetPitch = Mathf.Clamp(targetPitch - delta.y, minMonitorPitch, maxMonitorPitch);
+                }
                 yaw = Mathf.SmoothDampAngle(yaw, targetYaw, ref yawVelocity, lookSmoothSeconds, lookMaxDegreesPerSecond, Time.deltaTime);
                 pitch = Mathf.SmoothDamp(pitch, targetPitch, ref pitchVelocity, lookSmoothSeconds, lookMaxDegreesPerSecond * .5f, Time.deltaTime);
                 ApplyLook();
@@ -226,10 +238,13 @@ namespace SecretsThatBreathe
             player.MovementLocked = true;
             SetPrompt(false);
             // 0. The text of the sign, to read.
-            SetMessage(true);
-            yield return new WaitForSeconds(messageSeconds);
-            SetMessage(false);
-            yield return new WaitForSeconds(.3f);
+            if (interactionZone == null)
+            {
+                SetMessage(true);
+                yield return new WaitForSeconds(messageSeconds);
+                SetMessage(false);
+                yield return new WaitForSeconds(.3f);
+            }
             BeginLook();
             // 1. Turn towards the TV.
             float waited = 0f;
@@ -238,11 +253,13 @@ namespace SecretsThatBreathe
             targetFov = zoomFieldOfView;
             waited = 0f;
             while (virtualCamera != null && waited < 3f && Mathf.Abs(fov - targetFov) > .6f) { waited += Time.deltaTime; yield return null; }
+            EnableMonitorLook();
             yield return new WaitForSeconds(dialogueDelay);
             // 3. Khem speaks.
             yield return SayAll(khemDialogue, khemLines);
             HideDialogue();
             yield return new WaitForSeconds(holdAfterLines);
+            freeMonitorLook = false;
             // 4. Zoom out and look back the way he was facing.
             targetFov = baseFov;
             targetYaw = startYaw;
@@ -264,6 +281,37 @@ namespace SecretsThatBreathe
 
         private bool LookArrived() =>
             Mathf.Abs(Mathf.DeltaAngle(yaw, targetYaw)) <= 1.5f && Mathf.Abs(pitch - targetPitch) <= 1.5f;
+
+        private void EnableMonitorLook()
+        {
+            if (!looking || monitorLookTargets == null || monitorLookTargets.Length == 0) return;
+            monitorCenterYaw = targetYaw;
+            minMonitorYaw = maxMonitorYaw = 0f;
+            minMonitorPitch = maxMonitorPitch = targetPitch;
+            foreach (var monitor in monitorLookTargets)
+            {
+                if (monitor == null) continue;
+                foreach (var renderer in monitor.GetComponentsInChildren<Renderer>())
+                {
+                    Bounds bounds = renderer.bounds;
+                    for (int i = 0; i < 8; i++)
+                    {
+                        Vector3 corner = new Vector3(
+                            (i & 1) == 0 ? bounds.min.x : bounds.max.x,
+                            (i & 2) == 0 ? bounds.min.y : bounds.max.y,
+                            (i & 4) == 0 ? bounds.min.z : bounds.max.z);
+                        Vector3 direction = corner - cameraTarget.position;
+                        float cornerYaw = Mathf.DeltaAngle(monitorCenterYaw, Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg);
+                        float cornerPitch = -Mathf.Atan2(direction.y, new Vector2(direction.x, direction.z).magnitude) * Mathf.Rad2Deg;
+                        minMonitorYaw = Mathf.Min(minMonitorYaw, cornerYaw);
+                        maxMonitorYaw = Mathf.Max(maxMonitorYaw, cornerYaw);
+                        minMonitorPitch = Mathf.Min(minMonitorPitch, cornerPitch);
+                        maxMonitorPitch = Mathf.Max(maxMonitorPitch, cornerPitch);
+                    }
+                }
+            }
+            freeMonitorLook = true;
+        }
 
         private void Finish()
         {
@@ -347,13 +395,14 @@ namespace SecretsThatBreathe
 
         private void EndLook()
         {
+            freeMonitorLook = false;
             if (virtualCamera != null) { SetFov(baseFov); virtualCamera = null; }
             if (!looking) return;
             looking = false;
             if (player != null && cameraTarget != null)
             {
                 ApplyLook();
-                player.ResetAfterTeleport(pitch);   // the controller continues from the view Khem now has
+                player.SyncLookPitch(pitch);
             }
             if (inputs != null)
                 for (int i = 0; i < inputs.Length; i++)
@@ -386,7 +435,15 @@ namespace SecretsThatBreathe
 
         private void OnDrawGizmosSelected()
         {
-            if (signLocation != null)
+            if (interactionZone != null)
+            {
+                Gizmos.color = Color.cyan;
+                Matrix4x4 previous = Gizmos.matrix;
+                Gizmos.matrix = interactionZone.transform.localToWorldMatrix;
+                Gizmos.DrawWireCube(interactionZone.center, interactionZone.size);
+                Gizmos.matrix = previous;
+            }
+            else if (signLocation != null)
             {
                 Gizmos.color = new Color(1f, .35f, .2f, .9f);
                 DrawCircle(signLocation.position, interactDistance);
