@@ -3,6 +3,7 @@
 // (GameObject > 3D Object > Wind Zone). Directional zones are recommended.
 // Works for GameObjects, Terrain Trees and Terrain Details (Instanced Mesh).
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace RiceField
 {
@@ -20,6 +21,9 @@ namespace RiceField
         /// <summary>Optional: force a specific WindZone instead of auto-detecting one.</summary>
         public static WindZone OverrideZone;
 
+        [SerializeField, Tooltip("Optional wind source for rice in this scene.")]
+        private WindZone windZone;
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void CreateDriver()
         {
@@ -32,7 +36,7 @@ namespace RiceField
 
         void Update()
         {
-            Push(Time.unscaledTime);
+            if (s_Instance == this) Push(Time.unscaledTime);
         }
 
         void OnDestroy()
@@ -85,6 +89,14 @@ namespace RiceField
 
         static WindZone FindZone()
         {
+            var activeScene = SceneManager.GetActiveScene();
+            foreach (var driver in Object.FindObjectsByType<RiceFieldWind>(FindObjectsInactive.Exclude, FindObjectsSortMode.None))
+            {
+                if (driver.isActiveAndEnabled && driver.gameObject.scene == activeScene
+                    && driver.windZone != null && driver.windZone.gameObject.activeInHierarchy)
+                    return driver.windZone;
+            }
+
             var zones = Object.FindObjectsByType<WindZone>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
             WindZone best = null;
             foreach (var z in zones)

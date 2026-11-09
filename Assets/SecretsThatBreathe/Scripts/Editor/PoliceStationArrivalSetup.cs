@@ -75,7 +75,8 @@ namespace SecretsThatBreathe.Editor
                 rect.offsetMin = rect.offsetMax = Vector2.zero;
                 var overlay = panel.GetComponent<Canvas>(); overlay.overrideSorting = true; overlay.sortingOrder = 32700;
                 var image = panel.GetComponent<Image>(); image.color = Color.black; image.raycastTarget = true;
-                var group = panel.GetComponent<CanvasGroup>(); group.alpha = 1f; group.blocksRaycasts = true;
+                // Arrival shows the overlay in Awake. Save it hidden for scene editing.
+                var group = panel.GetComponent<CanvasGroup>(); group.alpha = 0f; group.blocksRaycasts = false;
                 var arrival = panel.GetComponent<PoliceStationArrival>();
                 arrival.blackScreen = group; arrival.arrivalPoint = point; arrival.player = player;
                 arrival.initializeArrivalFromDoor = false;

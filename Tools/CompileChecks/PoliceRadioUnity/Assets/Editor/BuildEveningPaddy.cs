@@ -9,6 +9,84 @@ public static class BuildEveningPaddy
     static readonly float[] NearDividers = { .19f, .45f, .74f };
     static readonly float[] FarDividers = { .26f, .53f, .79f };
 
+    public static void SplitWetMudLayers()
+    {
+        try
+        {
+            var terrain = AssetDatabase.LoadAssetAtPath<TerrainData>(PathToTerrain);
+            var original = AssetDatabase.LoadAssetAtPath<TerrainLayer>("Assets/PaddyStage/TL_Paddy_WetMud.terrainlayer");
+            var natural = AssetDatabase.LoadAssetAtPath<TerrainLayer>("Assets/PaddyStage/TL_Paddy_WetMud_Natural10m.terrainlayer");
+            if (terrain == null || original == null || natural == null) throw new InvalidOperationException("Missing terrain or wet mud layer.");
+            var previousLayers = terrain.terrainLayers;
+            int paintedSlot = Array.IndexOf(previousLayers, original);
+            if (paintedSlot < 0 || Array.IndexOf(previousLayers, natural) >= 0) throw new InvalidOperationException("Unexpected WetMud layer assignment.");
+            var layers = new TerrainLayer[previousLayers.Length + 1];
+            Array.Copy(previousLayers, layers, previousLayers.Length);
+            layers[paintedSlot] = natural;
+            layers[previousLayers.Length] = original;
+            terrain.terrainLayers = layers;
+            EditorUtility.SetDirty(terrain);
+            AssetDatabase.SaveAssets();
+            File.WriteAllText("Assets/PaddyStage/wet-mud-split-result.txt", $"PASS natural slot: {paintedSlot}; original slot: {layers.Length - 1}");
+            EditorApplication.Exit(0);
+        }
+        catch (Exception e)
+        {
+            Debug.LogException(e);
+            EditorApplication.Exit(1);
+        }
+    }
+
+    public static void RunWetMud()
+    {
+        try
+        {
+            var terrain = AssetDatabase.LoadAssetAtPath<TerrainData>(PathToTerrain);
+            var mud = AssetDatabase.LoadAssetAtPath<TerrainLayer>("Assets/PaddyStage/TL_Paddy_WetMud.terrainlayer");
+            if (terrain == null || mud == null) throw new InvalidOperationException("Terrain or WetMud layer unavailable.");
+            var previousLayers = terrain.terrainLayers;
+            int width = terrain.alphamapWidth, depth = terrain.alphamapHeight;
+            var previousPaint = terrain.GetAlphamaps(0, 0, width, depth);
+            int mudIndex = Array.IndexOf(previousLayers, mud);
+            if (mudIndex < 0)
+            {
+                mudIndex = previousLayers.Length;
+                var layers = new TerrainLayer[mudIndex + 1];
+                Array.Copy(previousLayers, layers, mudIndex);
+                layers[mudIndex] = mud;
+                terrain.terrainLayers = layers;
+            }
+            int layerCount = terrain.terrainLayers.Length;
+            var paint = new float[depth, width, layerCount];
+            int painted = 0;
+            for (int z = 0; z < depth; z++)
+            for (int x = 0; x < width; x++)
+            {
+                float u = x / (float)(width - 1), v = z / (float)(depth - 1);
+                for (int layer = 0; layer < previousLayers.Length; layer++)
+                    paint[z, x, layer] = previousPaint[z, x, layer];
+                if (!Paddy(u * terrain.size.x, v * terrain.size.z, out _, out _)) continue;
+                float height = terrain.GetInterpolatedHeight(u, v);
+                float blend = Ease((4.84f - height) / .18f);
+                if (blend <= 0f) continue;
+                for (int layer = 0; layer < layerCount; layer++)
+                    paint[z, x, layer] = Mathf.Lerp(paint[z, x, layer], layer == mudIndex ? 1f : 0f, blend);
+                painted++;
+            }
+            if (painted < 1000) throw new InvalidOperationException("Paddy bed mask did not match the terrain.");
+            terrain.SetAlphamaps(0, 0, paint);
+            EditorUtility.SetDirty(terrain);
+            AssetDatabase.SaveAssets();
+            File.WriteAllText("Assets/PaddyStage/wet-mud-result.txt", $"PASS pixels: {painted}; layers: {layerCount}; wet mud index: {mudIndex}");
+            EditorApplication.Exit(0);
+        }
+        catch (Exception e)
+        {
+            Debug.LogException(e);
+            EditorApplication.Exit(1);
+        }
+    }
+
     public static void Run()
     {
         try
