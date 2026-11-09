@@ -54,6 +54,8 @@ namespace SecretsThatBreathe
         [Range(8f, 60f)] public float zoomFieldOfView = 24f;
         [Min(.05f)] public float zoomSmoothSeconds = .55f;
         [Min(5f)] public float zoomMaxDegreesPerSecond = 40f;
+        [Tooltip("How fast the mouse turns the view while it is zoomed in on the TV, in degrees per mouse pixel (times the player's normal look speed). Lower = slower, smoother. Raise it if the zoomed view feels too slow.")]
+        [Range(.002f, .3f)] public float zoomedLookDegreesPerPixel = .02f;
 
         [Header("Timing")]
         [Min(0f)] public float dialogueDelay = .4f;
@@ -214,7 +216,7 @@ namespace SecretsThatBreathe
             {
                 if (freeMonitorLook && Mouse.current != null && Cursor.lockState == CursorLockMode.Locked)
                 {
-                    Vector2 delta = Mouse.current.delta.ReadValue() * player.RotationSpeed;
+                    Vector2 delta = Mouse.current.delta.ReadValue() * (player.RotationSpeed * zoomedLookDegreesPerPixel);
                     targetYaw = monitorCenterYaw + Mathf.Clamp(Mathf.DeltaAngle(monitorCenterYaw, targetYaw) + delta.x, minMonitorYaw, maxMonitorYaw);
                     targetPitch = Mathf.Clamp(targetPitch - delta.y, minMonitorPitch, maxMonitorPitch);
                 }
