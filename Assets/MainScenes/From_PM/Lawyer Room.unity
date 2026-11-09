@@ -3724,7 +3724,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &153929661
 RectTransform:
   m_ObjectHideFlags: 0
@@ -20316,7 +20316,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &711300002
 RectTransform:
   m_ObjectHideFlags: 0
@@ -20540,7 +20540,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &711400002
 RectTransform:
   m_ObjectHideFlags: 0
@@ -21811,7 +21811,7 @@ MonoBehaviour:
   - {fileID: 487986470}
   lineDuration: 3
   betweenLinesDelay: 2
-  afterEveryoneLeftDelay: 7
+  afterEveryoneLeftDelay: 4
   darkRoomLineDuration: 3
   beforeFlashlightHintDelay: 1
   flashlightHintDuration: 3
@@ -35163,7 +35163,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "ลุงเหลือเงินอยู่แค่นี้"
+  m_text: "\u0E25\u0E38\u0E07\u0E40\u0E2B\u0E25\u0E37\u0E2D\u0E40\u0E07\u0E34\u0E19\u0E2D\u0E22\u0E39\u0E48\u0E41\u0E04\u0E48\u0E19\u0E35\u0E49"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a4ac3c26b49d5964f8e00bf2d9b461df, type: 2}
   m_sharedMaterial: {fileID: -326173176899279970, guid: a4ac3c26b49d5964f8e00bf2d9b461df, type: 2}
@@ -35758,7 +35758,7 @@ MonoBehaviour:
   lookAngle: 55
   lookDistance: 4
   afterMealThoughtDelay: 3
-  afterMealThoughtDuration: 2.5
+  afterMealThoughtDuration: 3
   afterMealThoughtGap: 1
   beforeDrawerObjectiveDelay: 3
   searchDuration: 4
@@ -40152,7 +40152,7 @@ MonoBehaviour:
   - {fileID: 1717863268}
   - {fileID: 1178848680}
   messageSetVersion: 1
-  messageDuration: 2.5
+  messageDuration: 3
   hintLayoutVersion: 1
 --- !u!1 &1449657383
 GameObject:
@@ -42628,7 +42628,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "ลุงไปแจ้งความแล้ว แต่ตำรวจเขาไม่รับแจ้ง"
+  m_text: "\u0E25\u0E38\u0E07\u0E44\u0E1B\u0E41\u0E08\u0E49\u0E07\u0E04\u0E27\u0E32\u0E21\u0E41\u0E25\u0E49\u0E27
+    \u0E41\u0E15\u0E48\u0E15\u0E33\u0E23\u0E27\u0E08\u0E40\u0E02\u0E32\u0E44\u0E21\u0E48\u0E23\u0E31\u0E1A\u0E41\u0E08\u0E49\u0E07"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a4ac3c26b49d5964f8e00bf2d9b461df, type: 2}
   m_sharedMaterial: {fileID: -326173176899279970, guid: a4ac3c26b49d5964f8e00bf2d9b461df, type: 2}
@@ -48639,18 +48640,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SecretsThatBreathe.AuntDialogueUI
   firstLine: {fileID: 1795912713}
+  secondLine: {fileID: 1569894177}
+  moneyLine: {fileID: 1203834015}
+  refuseLine: {fileID: 1879748197}
   firstLineContinuations:
   - {fileID: 4500000004}
   - {fileID: 4500000009}
   - {fileID: 4500000014}
-  secondLine: {fileID: 1569894177}
   secondLineContinuations:
   - {fileID: 4500000019}
   - {fileID: 4500000024}
-  moneyLine: {fileID: 1203834015}
   moneyLineContinuations:
   - {fileID: 4500000029}
-  refuseLine: {fileID: 1879748197}
   refuseLineContinuations:
   - {fileID: 4500000034}
   firstThought: {fileID: 849705275}
@@ -48752,7 +48753,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "หนู"
+  m_text: "\u0E2B\u0E19\u0E39"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a4ac3c26b49d5964f8e00bf2d9b461df, type: 2}
   m_sharedMaterial: {fileID: -326173176899279970, guid: a4ac3c26b49d5964f8e00bf2d9b461df, type: 2}
@@ -51124,7 +51125,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "เก็บเงินไว้ทำศพน้องเถอะลุง"
+  m_text: "\u0E40\u0E01\u0E47\u0E1A\u0E40\u0E07\u0E34\u0E19\u0E44\u0E27\u0E49\u0E17\u0E33\u0E28\u0E1E\u0E19\u0E49\u0E2D\u0E07\u0E40\u0E16\u0E2D\u0E30\u0E25\u0E38\u0E07"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a4ac3c26b49d5964f8e00bf2d9b461df, type: 2}
   m_sharedMaterial: {fileID: -326173176899279970, guid: a4ac3c26b49d5964f8e00bf2d9b461df, type: 2}
@@ -55302,7 +55303,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2020796095
 RectTransform:
   m_ObjectHideFlags: 0
@@ -56106,7 +56107,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2056101522
 RectTransform:
   m_ObjectHideFlags: 0
@@ -59314,83 +59315,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3943092832677970229, guid: 7492260a301ad5145b46a60c84445d4e, type: 3}
   m_PrefabInstance: {fileID: 2145319780}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &1356659115400679773
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 1449961938}
-    m_Modifications:
-    - target: {fileID: 1756167036608789758, guid: e0f9d6fb51f4397448521f532baf2233, type: 3}
-      propertyPath: m_Intensity
-      value: 0.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1756167036608789758, guid: e0f9d6fb51f4397448521f532baf2233, type: 3}
-      propertyPath: m_BoundingSphereOverride.w
-      value: 4.3712362e+24
-      objectReference: {fileID: 0}
-    - target: {fileID: 1756167036608789758, guid: e0f9d6fb51f4397448521f532baf2233, type: 3}
-      propertyPath: m_BoundingSphereOverride.x
-      value: 4.5452035e+30
-      objectReference: {fileID: 0}
-    - target: {fileID: 1756167036608789758, guid: e0f9d6fb51f4397448521f532baf2233, type: 3}
-      propertyPath: m_BoundingSphereOverride.y
-      value: 6.798895e-33
-      objectReference: {fileID: 0}
-    - target: {fileID: 1756167036608789758, guid: e0f9d6fb51f4397448521f532baf2233, type: 3}
-      propertyPath: m_BoundingSphereOverride.z
-      value: 1.4664299e-19
-      objectReference: {fileID: 0}
-    - target: {fileID: 2428103993349585011, guid: e0f9d6fb51f4397448521f532baf2233, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -4.43473
-      objectReference: {fileID: 0}
-    - target: {fileID: 2428103993349585011, guid: e0f9d6fb51f4397448521f532baf2233, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 2.27385
-      objectReference: {fileID: 0}
-    - target: {fileID: 2428103993349585011, guid: e0f9d6fb51f4397448521f532baf2233, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -9.25791
-      objectReference: {fileID: 0}
-    - target: {fileID: 2428103993349585011, guid: e0f9d6fb51f4397448521f532baf2233, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2428103993349585011, guid: e0f9d6fb51f4397448521f532baf2233, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2428103993349585011, guid: e0f9d6fb51f4397448521f532baf2233, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2428103993349585011, guid: e0f9d6fb51f4397448521f532baf2233, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2428103993349585011, guid: e0f9d6fb51f4397448521f532baf2233, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2428103993349585011, guid: e0f9d6fb51f4397448521f532baf2233, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2428103993349585011, guid: e0f9d6fb51f4397448521f532baf2233, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5226484594188587669, guid: e0f9d6fb51f4397448521f532baf2233, type: 3}
-      propertyPath: m_Name
-      value: LouveredLight_T8_2x36W
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: e0f9d6fb51f4397448521f532baf2233, type: 3}
 --- !u!1 &4500000001
 GameObject:
   m_ObjectHideFlags: 0
@@ -59457,7 +59381,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "หนูใช่ทนายเข้มใช่มั้ยลูก"
+  m_text: "\u0E2B\u0E19\u0E39\u0E43\u0E0A\u0E48\u0E17\u0E19\u0E32\u0E22\u0E40\u0E02\u0E49\u0E21\u0E43\u0E0A\u0E48\u0E21\u0E31\u0E49\u0E22\u0E25\u0E39\u0E01"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a4ac3c26b49d5964f8e00bf2d9b461df, type: 2}
   m_sharedMaterial: {fileID: -326173176899279970, guid: a4ac3c26b49d5964f8e00bf2d9b461df, type: 2}
@@ -59607,7 +59531,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "ช่วยลุงด้วยนะ ลูกสาวลุง..."
+  m_text: "\u0E0A\u0E48\u0E27\u0E22\u0E25\u0E38\u0E07\u0E14\u0E49\u0E27\u0E22\u0E19\u0E30
+    \u0E25\u0E39\u0E01\u0E2A\u0E32\u0E27\u0E25\u0E38\u0E07..."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a4ac3c26b49d5964f8e00bf2d9b461df, type: 2}
   m_sharedMaterial: {fileID: -326173176899279970, guid: a4ac3c26b49d5964f8e00bf2d9b461df, type: 2}
@@ -59757,7 +59682,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "โดนรถชนตาย"
+  m_text: "\u0E42\u0E14\u0E19\u0E23\u0E16\u0E0A\u0E19\u0E15\u0E32\u0E22"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a4ac3c26b49d5964f8e00bf2d9b461df, type: 2}
   m_sharedMaterial: {fileID: -326173176899279970, guid: a4ac3c26b49d5964f8e00bf2d9b461df, type: 2}
@@ -59907,7 +59832,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "เขาบอกว่าคู่กรณีเป็นลูก ส.ส."
+  m_text: "\u0E40\u0E02\u0E32\u0E1A\u0E2D\u0E01\u0E27\u0E48\u0E32\u0E04\u0E39\u0E48\u0E01\u0E23\u0E13\u0E35\u0E40\u0E1B\u0E47\u0E19\u0E25\u0E39\u0E01
+    \u0E2A.\u0E2A."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a4ac3c26b49d5964f8e00bf2d9b461df, type: 2}
   m_sharedMaterial: {fileID: -326173176899279970, guid: a4ac3c26b49d5964f8e00bf2d9b461df, type: 2}
@@ -60057,7 +59983,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "สุดท้ายเขาสรุปว่าเป็นแค่อุบัติเหตุ"
+  m_text: "\u0E2A\u0E38\u0E14\u0E17\u0E49\u0E32\u0E22\u0E40\u0E02\u0E32\u0E2A\u0E23\u0E38\u0E1B\u0E27\u0E48\u0E32\u0E40\u0E1B\u0E47\u0E19\u0E41\u0E04\u0E48\u0E2D\u0E38\u0E1A\u0E31\u0E15\u0E34\u0E40\u0E2B\u0E15\u0E38"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a4ac3c26b49d5964f8e00bf2d9b461df, type: 2}
   m_sharedMaterial: {fileID: -326173176899279970, guid: a4ac3c26b49d5964f8e00bf2d9b461df, type: 2}
@@ -60207,7 +60133,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "ลุงขอจ้างหนูนะ ช่วยลูกลุงหน่อยนะลูก"
+  m_text: "\u0E25\u0E38\u0E07\u0E02\u0E2D\u0E08\u0E49\u0E32\u0E07\u0E2B\u0E19\u0E39\u0E19\u0E30
+    \u0E0A\u0E48\u0E27\u0E22\u0E25\u0E39\u0E01\u0E25\u0E38\u0E07\u0E2B\u0E19\u0E48\u0E2D\u0E22\u0E19\u0E30\u0E25\u0E39\u0E01"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a4ac3c26b49d5964f8e00bf2d9b461df, type: 2}
   m_sharedMaterial: {fileID: -326173176899279970, guid: a4ac3c26b49d5964f8e00bf2d9b461df, type: 2}
@@ -60357,7 +60284,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "คดีนี้ผมทำให้ฟรี"
+  m_text: "\u0E04\u0E14\u0E35\u0E19\u0E35\u0E49\u0E1C\u0E21\u0E17\u0E33\u0E43\u0E2B\u0E49\u0E1F\u0E23\u0E35"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a4ac3c26b49d5964f8e00bf2d9b461df, type: 2}
   m_sharedMaterial: {fileID: -326173176899279970, guid: a4ac3c26b49d5964f8e00bf2d9b461df, type: 2}
@@ -60441,6 +60368,83 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b9a119f382d4ed48dae4d7102e821fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SecretsThatBreathe.ThaiTextDisplay
+--- !u!1001 &1356659115400679773
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1449961938}
+    m_Modifications:
+    - target: {fileID: 1756167036608789758, guid: e0f9d6fb51f4397448521f532baf2233, type: 3}
+      propertyPath: m_Intensity
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1756167036608789758, guid: e0f9d6fb51f4397448521f532baf2233, type: 3}
+      propertyPath: m_BoundingSphereOverride.w
+      value: 4.3712362e+24
+      objectReference: {fileID: 0}
+    - target: {fileID: 1756167036608789758, guid: e0f9d6fb51f4397448521f532baf2233, type: 3}
+      propertyPath: m_BoundingSphereOverride.x
+      value: 4.5452035e+30
+      objectReference: {fileID: 0}
+    - target: {fileID: 1756167036608789758, guid: e0f9d6fb51f4397448521f532baf2233, type: 3}
+      propertyPath: m_BoundingSphereOverride.y
+      value: 6.798895e-33
+      objectReference: {fileID: 0}
+    - target: {fileID: 1756167036608789758, guid: e0f9d6fb51f4397448521f532baf2233, type: 3}
+      propertyPath: m_BoundingSphereOverride.z
+      value: 1.4664299e-19
+      objectReference: {fileID: 0}
+    - target: {fileID: 2428103993349585011, guid: e0f9d6fb51f4397448521f532baf2233, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -4.43473
+      objectReference: {fileID: 0}
+    - target: {fileID: 2428103993349585011, guid: e0f9d6fb51f4397448521f532baf2233, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.27385
+      objectReference: {fileID: 0}
+    - target: {fileID: 2428103993349585011, guid: e0f9d6fb51f4397448521f532baf2233, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -9.25791
+      objectReference: {fileID: 0}
+    - target: {fileID: 2428103993349585011, guid: e0f9d6fb51f4397448521f532baf2233, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2428103993349585011, guid: e0f9d6fb51f4397448521f532baf2233, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2428103993349585011, guid: e0f9d6fb51f4397448521f532baf2233, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2428103993349585011, guid: e0f9d6fb51f4397448521f532baf2233, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2428103993349585011, guid: e0f9d6fb51f4397448521f532baf2233, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2428103993349585011, guid: e0f9d6fb51f4397448521f532baf2233, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2428103993349585011, guid: e0f9d6fb51f4397448521f532baf2233, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5226484594188587669, guid: e0f9d6fb51f4397448521f532baf2233, type: 3}
+      propertyPath: m_Name
+      value: LouveredLight_T8_2x36W
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e0f9d6fb51f4397448521f532baf2233, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

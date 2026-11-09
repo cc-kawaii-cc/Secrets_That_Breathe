@@ -126,6 +126,8 @@ namespace SecretsThatBreathe
             if (dialogueDelay > 0f) yield return new WaitForSeconds(dialogueDelay);
             yield return speech.Say(policeDialogue, presentation, snoreLines);
             HideDialogue();
+            if (holdingControl && player != null) player.MovementLocked = false;
+            holdingControl = false;
             yield return ShowThoughts();
             HideDialogue();
             Finish();
@@ -150,8 +152,8 @@ namespace SecretsThatBreathe
 
         private void Finish()
         {
+            if (holdingControl && player != null) player.MovementLocked = false;
             holdingControl = false;
-            if (player != null) player.MovementLocked = false;
             IsRunning = false;
             PoDialogueGate.Leave();
         }

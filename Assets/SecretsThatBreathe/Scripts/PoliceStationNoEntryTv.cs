@@ -110,6 +110,7 @@ namespace SecretsThatBreathe
         // Zoom
         private CinemachineCamera virtualCamera;
         private float baseFov, fov, targetFov, fovVelocity;
+        private FirstPersonFlashlight suspendedFlashlight;
 
         private void Awake()
         {
@@ -248,6 +249,12 @@ namespace SecretsThatBreathe
             holdingControl = true;
             player.MovementLocked = true;
             SetPrompt(false);
+            var flashlight = player.GetComponent<FirstPersonFlashlight>();
+            if (flashlight != null && flashlight.enabled)
+            {
+                suspendedFlashlight = flashlight;
+                flashlight.enabled = false;
+            }
             // 0. The text of the sign, to read.
             if (interactionZone == null)
             {
@@ -282,6 +289,7 @@ namespace SecretsThatBreathe
                    Mathf.Abs(pitch - targetPitch) > .05f ||
                    (virtualCamera != null && Mathf.Abs(fov - targetFov) > .02f)))
             { waited += Time.deltaTime; yield return null; }
+            StartCoroutine(ShowReturnObjective());
             // 5. Back in his own view: the last line.
             if (khemLinesAfterZoom != null && khemLinesAfterZoom.Length > 0)
             {
@@ -355,6 +363,7 @@ namespace SecretsThatBreathe
         private void Finish()
         {
             EndLook();
+            RestoreFlashlight();
             holdingControl = false;
             if (player != null) player.MovementLocked = false;
             IsRunning = false;
@@ -370,8 +379,6 @@ namespace SecretsThatBreathe
                 ApplySentenceStyle(canvas, line);
                 flowing = new FlowingDialogue(canvas, presentation);
                 yield return flowing.Play(line.text);
-                if (lines == khemLines && line.text.Contains("กลับไปดูที่เกิดเหตุ"))
-                    StartCoroutine(ShowReturnObjective());
             }
         }
 
@@ -451,6 +458,12 @@ namespace SecretsThatBreathe
             inputs = null;
         }
 
+        private void RestoreFlashlight()
+        {
+            if (suspendedFlashlight != null) suspendedFlashlight.enabled = true;
+            suspendedFlashlight = null;
+        }
+
         // When Play Mode stops, Unity destroys the Canvas objects before this component's OnDisable runs.
         private static bool Alive(DialogueCanvasView view) => view != null && view.IsValid && view.sentence != null;
 
@@ -469,6 +482,7 @@ namespace SecretsThatBreathe
             SetMessage(false);
             SetGoBack(false);
             EndLook();
+            RestoreFlashlight();
             if (holdingControl && player != null) player.MovementLocked = false;
             holdingControl = false;
             IsRunning = false;

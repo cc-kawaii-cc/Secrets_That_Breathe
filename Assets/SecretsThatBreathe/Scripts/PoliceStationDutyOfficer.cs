@@ -207,10 +207,15 @@ namespace SecretsThatBreathe
             yield return new WaitForSeconds(dialogueDelay);
             yield return SayAll(khemDialogue, khemAsksLines);
             yield return SayAll(officerDialogue, officerRepliesLines);
+            EndLook();
+            RestoreFlashlight();
+            if (holdingControl && player != null) player.MovementLocked = false;
+            holdingControl = false;
+            Coroutine zoomOut = zoomCamera != null ? StartCoroutine(ZoomTo(normalFov)) : null;
             if (showThoughtsInstantly) yield return ShowThoughts();
             else yield return SayAll(khemDialogue, khemThoughtLines);
             HideDialogue();
-            if (zoomCamera != null) yield return ZoomTo(normalFov);
+            if (zoomOut != null) yield return zoomOut;
             Finish();
             Completed = true;
             onFinished.Invoke();
@@ -221,8 +226,8 @@ namespace SecretsThatBreathe
             RestoreZoom();
             EndLook();
             RestoreFlashlight();
+            if (holdingControl && player != null) player.MovementLocked = false;
             holdingControl = false;
-            if (player != null) player.MovementLocked = false;
             IsRunning = false;
         }
 

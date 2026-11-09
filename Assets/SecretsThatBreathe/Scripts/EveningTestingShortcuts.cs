@@ -13,10 +13,6 @@ namespace SecretsThatBreathe
 
         private void Update()
         {
-            if (testSkipHint != null && testSkipHint.activeSelf != enableTestingShortcuts)
-                testSkipHint.SetActive(enableTestingShortcuts);
-            if (testSkipIntroHint != null && testSkipIntroHint.activeSelf != enableTestingShortcuts)
-                testSkipIntroHint.SetActive(enableTestingShortcuts);
             if (!enableTestingShortcuts || ride == null || Keyboard.current == null || !Application.isFocused) return;
             // Intro pauses time; allow the shortcut there, but respect a normal game pause.
             if (Time.timeScale <= 0f && !EveningDriveIntro.IsInputBlocked(gameObject.scene)) return;

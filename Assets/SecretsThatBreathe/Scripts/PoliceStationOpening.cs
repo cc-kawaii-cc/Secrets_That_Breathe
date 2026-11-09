@@ -62,6 +62,10 @@ namespace SecretsThatBreathe
         public FlowingDialogueSettings presentation = new FlowingDialogueSettings();
         [Tooltip("Saved text labels. Edit the wording in the Hierarchy.")]
         public TMP_Text[] manPassesLines;
+        [Tooltip("Instant white thoughts shown after the man passes.")]
+        public TMP_Text[] followUpThoughts;
+        [Min(0f)] public float followUpThoughtHoldSeconds = 3f;
+        [Min(0f)] public float followUpThoughtGapSeconds = 1f;
         public bool showPassThoughtInstantly;
         [Min(0f)] public float passThoughtHoldSeconds = 3f;
         [Min(0f)] public float dialogueDelay = .15f;
@@ -339,6 +343,20 @@ namespace SecretsThatBreathe
                 yield return flowing.Play(line.text);
             }
             HideDialogue();
+            if (followUpThoughts != null)
+            {
+                foreach (var line in followUpThoughts)
+                {
+                    if (line == null) continue;
+                    yield return new WaitForSeconds(followUpThoughtGapSeconds);
+                    visiblePassThought = line.transform.parent.gameObject;
+                    line.maxVisibleCharacters = int.MaxValue;
+                    visiblePassThought.SetActive(true);
+                    yield return new WaitForSeconds(followUpThoughtHoldSeconds);
+                    visiblePassThought.SetActive(false);
+                    visiblePassThought = null;
+                }
+            }
             speaking = false;
         }
 
