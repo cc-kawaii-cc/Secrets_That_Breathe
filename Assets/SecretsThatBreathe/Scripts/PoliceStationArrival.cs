@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using StarterAssets;
+using TMPro;
 using UnityEngine;
 
 namespace SecretsThatBreathe
@@ -17,6 +18,15 @@ namespace SecretsThatBreathe
         [Min(0f)] public float blackHoldSeconds = 2f;
         [Min(.05f)] public float revealSeconds = 1.5f;
         [Min(0f)] public float maximumStreamingWaitSeconds = 10f;
+
+        [Header("Optional arrival narration")]
+        public TMP_Text storyText;
+        public CanvasGroup storyGroup;
+        public AudioSource typingAudio;
+        [Min(.001f)] public float secondsPerCharacter = .06f;
+        [Min(0f)] public float storyHoldSeconds = 2f;
+        [Min(0f)] public float storyFadeSeconds = 1f;
+
         readonly List<Behaviour> suspended = new List<Behaviour>();
         bool wasMovementLocked, ownsControls;
 
@@ -32,6 +42,8 @@ namespace SecretsThatBreathe
             { Debug.LogError("Assign the station arrival screen, point and player.", this); enabled = false; return; }
             blackScreen.alpha = 1f;
             blackScreen.blocksRaycasts = true;
+            if (storyGroup != null) storyGroup.alpha = 0f;
+            if (storyText != null) storyText.maxVisibleCharacters = 0;
             wasMovementLocked = player.MovementLocked;
             player.MovementLocked = true;
             ownsControls = true;
@@ -57,6 +69,8 @@ namespace SecretsThatBreathe
             yield return null;
             yield return null;
             yield return new WaitForSecondsRealtime(blackHoldSeconds);
+            if (storyText != null && storyGroup != null)
+                yield return PlayNarration();
             float elapsed = 0f; int readyFrames = 0;
             while (readyFrames < 3 && elapsed < maximumStreamingWaitSeconds)
             {
@@ -72,6 +86,31 @@ namespace SecretsThatBreathe
             }
             blackScreen.alpha = 0f; blackScreen.blocksRaycasts = false;
             ReleaseControls();
+        }
+
+        IEnumerator PlayNarration()
+        {
+            storyGroup.alpha = 1f;
+            storyText.ForceMeshUpdate();
+            int characterCount = storyText.textInfo.characterCount;
+            if (characterCount > 0 && typingAudio != null && typingAudio.clip != null)
+                typingAudio.Play();
+            float elapsed = 0f;
+            while (storyText.maxVisibleCharacters < characterCount)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                storyText.maxVisibleCharacters = Mathf.Min(characterCount,
+                    Mathf.FloorToInt(elapsed / Mathf.Max(.001f, secondsPerCharacter)));
+                if (storyText.maxVisibleCharacters < characterCount) yield return null;
+            }
+            if (typingAudio != null) typingAudio.Stop();
+            yield return new WaitForSecondsRealtime(storyHoldSeconds);
+            for (elapsed = 0f; elapsed < storyFadeSeconds; elapsed += Time.unscaledDeltaTime)
+            {
+                storyGroup.alpha = 1f - Mathf.SmoothStep(0f, 1f, elapsed / storyFadeSeconds);
+                yield return null;
+            }
+            storyGroup.alpha = 0f;
         }
 
         void PlacePlayer()
@@ -124,6 +163,10 @@ namespace SecretsThatBreathe
             foreach (var control in suspended) if (control != null) control.enabled = true;
             suspended.Clear();
         }
-        void OnDisable() => ReleaseControls();
+        void OnDisable()
+        {
+            if (typingAudio != null) typingAudio.Stop();
+            ReleaseControls();
+        }
     }
 }
