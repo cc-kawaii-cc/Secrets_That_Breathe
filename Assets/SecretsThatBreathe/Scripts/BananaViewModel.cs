@@ -82,7 +82,7 @@ namespace SecretsThatBreathe
                 if (!keepGoing()) yield break;
                 yield return Tween(Mouth, Bite, .16f, EaseOutCubic, keepGoing);
                 SetFruitEnd(cuts[bite]);
-                Play(Munch(), .9f);
+                Play(BiteSound(), BiteVolume());
                 yield return Hold(Bite, .12f, false, keepGoing);
                 yield return Tween(Bite, Mouth, .2f, EaseInOut, keepGoing);
                 yield return Chew(Mouth, .5f, keepGoing);
@@ -419,6 +419,20 @@ namespace SecretsThatBreathe
         // ------------------------------------------------------------------ sound (generated, no audio files needed)
 
         private static AudioClip munch, peelSound;
+
+        // The bite sound: the clip in BananaSoundSettings (Resources, only its biteStart..biteEnd part) when one is set,
+        // otherwise the generated munch below.
+        private static AudioClip BiteSound()
+        {
+            var settings = BananaSoundSettings.Current;
+            return settings != null && settings.biteSound != null ? settings.BiteClip() : Munch();
+        }
+
+        private static float BiteVolume()
+        {
+            var settings = BananaSoundSettings.Current;
+            return settings != null && settings.biteSound != null ? settings.biteVolume : .9f;
+        }
 
         private static AudioClip Munch()
         {

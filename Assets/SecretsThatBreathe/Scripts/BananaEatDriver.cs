@@ -86,12 +86,13 @@ namespace SecretsThatBreathe
             return best;
         }
 
-        // Other scripted moments take priority: police encounter, document search, phone call, item inspection.
+        // Other scripted moments take priority: police encounter, document search, phone call, item inspection, skid mark photo.
         private static bool Busy(Scene scene)
             => EveningPoliceEncounter.BlocksFlashlightToggle(scene)
             || ItemInspectionInteraction.IsBusy(scene)
             || PhoneCallInteraction.IsBusy(scene)
-            || DocumentSearchSequence.BlocksRoomInteractions(scene);
+            || DocumentSearchSequence.BlocksRoomInteractions(scene)
+            || MidnightSkidPhoto.BlocksOtherPrompts(scene);   // midnight scene: the skid mark photo prompt / phone has priority
 
         // ------------------------------------------------------------------ prompt
 
@@ -297,7 +298,7 @@ namespace SecretsThatBreathe
             flat.Normalize();
             Vector3 spot = player.transform.position + flat * 2.4f;
             float groundY = player.transform.position.y;
-            if (Physics.Raycast(spot + Vector3.up * 3f, Vector3.down, out RaycastHit hit, 8f, ~0, QueryTriggerInteraction.Ignore)) groundY = hit.point.y;
+            groundY = GroundBelow(spot, groundY);
             spot.y = groundY;
             ghostSpot = spot;
 
@@ -429,6 +430,21 @@ namespace SecretsThatBreathe
             AudioClip clip = encounter != null && encounter.scareAudio != null ? encounter.scareAudio.clip : null;
             if (clip != null) source.PlayOneShot(clip, Mathf.Clamp(encounter.scareAudio.volume, .6f, 1f));
             else source.PlayOneShot(Sting(), .9f);
+        }
+
+        // The ground under a point: the nearest surface below it that is not part of a banana tree
+        // (the trees have MeshColliders, so a ray from above could otherwise stop on a leaf).
+        private static float GroundBelow(Vector3 spot, float fallback)
+        {
+            float best = float.MaxValue, height = fallback;
+            foreach (var hit in Physics.RaycastAll(spot + Vector3.up * 3f, Vector3.down, 8f, ~0, QueryTriggerInteraction.Ignore))
+            {
+                if (hit.collider.GetComponentInParent<BananaEatInteraction>() != null || BananaEatInteraction.IsBananaTreeName(hit.collider.transform.root.name)) continue;
+                if (hit.distance >= best) continue;
+                best = hit.distance;
+                height = hit.point.y;
+            }
+            return height;
         }
 
         private static AudioClip Sting()

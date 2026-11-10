@@ -58,6 +58,16 @@ namespace SecretsThatBreathe
             return true;
         }
 
+        // F3 in the midnight scene: arrive and get out straight away (the drive is skipped), so the debris checkpoint can start.
+        public bool ExitNowForTesting()
+        {
+            if (hasExited || exitInProgress) return true;
+            if (!SkipToExitForTesting()) return false;
+            if (exitLabel != null) exitLabel.gameObject.SetActive(false);
+            StartCoroutine(ExitCar());
+            return true;
+        }
+
         private bool PrepareCheckpointForTesting()
         {
             if (!Application.isPlaying || !initialized) return false;
