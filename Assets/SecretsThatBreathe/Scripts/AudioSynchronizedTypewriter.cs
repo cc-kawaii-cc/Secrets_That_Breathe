@@ -67,13 +67,13 @@ namespace SecretsThatBreathe
                 // If an unavailable source cannot start, continue reading rather than
                 // trapping the player in Intro. Losing focus simply pauses this check.
                 stoppedSeconds = !audio.isPlaying && Application.isFocused
-                    ? stoppedSeconds + Time.unscaledDeltaTime : 0f;
+                    ? stoppedSeconds + GameMenuController.GameplayUnscaledDeltaTime : 0f;
                 if (stoppedSeconds >= 1f) break;
                 yield return null;
             }
 
             if (revealed < ends.Count) yield return RevealUniform(label, count, fallbackInterval);
-            else yield return new WaitForSecondsRealtime(.06f); // Let the last key's short tail sound.
+            else yield return GameMenuController.WaitForGameplaySeconds(.06f); // Let the last key's short tail sound.
             if (audio != null)
             {
                 audio.Stop();
@@ -105,7 +105,7 @@ namespace SecretsThatBreathe
             float elapsed = 0f;
             while (label.maxVisibleCharacters < count)
             {
-                elapsed += Time.unscaledDeltaTime;
+                elapsed += GameMenuController.GameplayUnscaledDeltaTime;
                 label.maxVisibleCharacters = Mathf.Min(count, initial + Mathf.FloorToInt(elapsed / Mathf.Max(.001f, interval)));
                 yield return null;
             }

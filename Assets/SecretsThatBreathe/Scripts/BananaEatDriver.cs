@@ -19,6 +19,14 @@ namespace SecretsThatBreathe
 
         public static bool IsEating => instance != null && instance.eating;
 
+        internal static void ResetForTesting()
+        {
+            if (instance == null) return;
+            instance.StopAllCoroutines();
+            if (instance.eating) instance.Finish();
+            instance.ShowPrompt(null);
+        }
+
         public static BananaEatDriver Ensure()
         {
             if (instance != null) return instance;
@@ -72,16 +80,17 @@ namespace SecretsThatBreathe
             if (Busy(scene)) return null;
 
             Vector3 feet = player.transform.position;
+            Vector3 bodyCenter = body.bounds.center;
             BananaEatInteraction best = null;
             float bestDistance = float.MaxValue;
             foreach (var tree in BananaEatInteraction.All)
             {
                 if (tree == null || tree.gameObject.scene != scene || !tree.isActiveAndEnabled || tree.BananasLeft <= 0) continue;
                 Vector3 offset = tree.Center - feet;
-                if (Mathf.Abs(offset.y) > tree.heightTolerance) continue;
+                if (!tree.ContainsPlayer(feet, bodyCenter)) continue;
                 offset.y = 0f;
-                float distance = offset.magnitude;
-                if (distance <= tree.eatDistance && distance < bestDistance) { best = tree; bestDistance = distance; }
+                float distance = offset.sqrMagnitude;
+                if (distance < bestDistance) { best = tree; bestDistance = distance; }
             }
             return best;
         }
@@ -250,7 +259,8 @@ namespace SecretsThatBreathe
             eating = true;
             ShowPrompt(null);
             SuspendControls();
-            viewModel = BananaViewModel.Create(view, tree.IsRipe);
+            bool midnight = tree.gameObject.scene.name == "MainScene_2_MidNight";
+            viewModel = BananaViewModel.Create(view, tree.IsRipe, playEatingSounds: !midnight, useSceneLighting: midnight);
             Transform treeTransform = tree.transform;
             yield return viewModel.Run(() => view != null && player != null && body != null && body.enabled && treeTransform != null);
             bool completed = viewModel != null && viewModel.Completed;
@@ -322,7 +332,7 @@ namespace SecretsThatBreathe
             }
             else Debug.LogWarning("[Banana] Resources/PhiTaniGhost.prefab was not found, so Phi Tani cannot appear.", this);
 
-            PlaySting();
+            PlaySting(scene);
 
             // Turn the camera to her face.
             Vector3 face = spot + Vector3.up * 1.58f;
@@ -420,12 +430,22 @@ namespace SecretsThatBreathe
             SceneManager.LoadScene(scene.buildIndex >= 0 ? scene.buildIndex : 0);
         }
 
-        // The police encounter's jump-scare sound if this scene has one, otherwise a generated sting.
-        private void PlaySting()
+        private void PlaySting(Scene scene)
         {
             AudioSource source = ghost != null ? ghost.AddComponent<AudioSource>() : view != null ? view.gameObject.AddComponent<AudioSource>() : null;
             if (source == null) return;
             source.spatialBlend = 0f;
+
+            if (scene.name == "MainScene_2_MidNight")
+            {
+                var midnight = FindFirstObjectByType<MidnightGhostSequence>();
+                if (midnight != null && midnight.gameObject.scene == scene && midnight.phiTaniJumpScareSound != null)
+                {
+                    source.PlayOneShot(midnight.phiTaniJumpScareSound, .9f);
+                    return;
+                }
+            }
+
             var encounter = FindFirstObjectByType<EveningPoliceEncounter>();
             AudioClip clip = encounter != null && encounter.scareAudio != null ? encounter.scareAudio.clip : null;
             if (clip != null) source.PlayOneShot(clip, Mathf.Clamp(encounter.scareAudio.volume, .6f, 1f));

@@ -27,6 +27,7 @@ namespace SecretsThatBreathe
         private bool unlocked, transitioning, ownsPause, previousInspection;
         private float previousTimeScale;
         private readonly List<Behaviour> suspended = new List<Behaviour>();
+        private readonly Dictionary<AudioSource, float> ambientVolumes = new Dictionary<AudioSource, float>();
 
         private void Awake()
         {
@@ -90,14 +91,22 @@ namespace SecretsThatBreathe
 
         private IEnumerator Exit()
         {
+            ambientVolumes.Clear();
+            foreach (var source in FindObjectsByType<AudioSource>(FindObjectsSortMode.None))
+                if (source.gameObject.scene == gameObject.scene && source.isPlaying && source.loop)
+                    ambientVolumes[source] = source.volume;
             float start = fadeOverlay.alpha;
             float duration = Mathf.Max(.05f, fadeOutSeconds);
             for (float elapsed = 0f; elapsed < duration; elapsed += Time.unscaledDeltaTime)
             {
-                fadeOverlay.alpha = Mathf.Lerp(start, 1f, Mathf.SmoothStep(0f, 1f, elapsed / duration));
+                float progress = Mathf.SmoothStep(0f, 1f, elapsed / duration);
+                fadeOverlay.alpha = Mathf.Lerp(start, 1f, progress);
+                foreach (var entry in ambientVolumes)
+                    if (entry.Key != null) entry.Key.volume = entry.Value * (1f - progress);
                 yield return null;
             }
             fadeOverlay.alpha = 1f;
+            foreach (var entry in ambientVolumes) if (entry.Key != null) entry.Key.volume = 0f;
             // Render one fully black frame before scene loading begins.
             yield return null;
             Time.timeScale = previousTimeScale;
@@ -119,6 +128,8 @@ namespace SecretsThatBreathe
         private void RestoreControls()
         {
             if (!ownsPause) return;
+            foreach (var entry in ambientVolumes) if (entry.Key != null) entry.Key.volume = entry.Value;
+            ambientVolumes.Clear();
             ownsPause = false;
             Time.timeScale = previousTimeScale;
             if (player != null) player.ItemInspectionActive = previousInspection;

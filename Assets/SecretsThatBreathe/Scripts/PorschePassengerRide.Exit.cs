@@ -109,16 +109,19 @@ namespace SecretsThatBreathe
             enabled = false;
         }
 
-        private IEnumerator FadeExit(float target, float seconds)
+        private IEnumerator FadeExit(float target, float seconds, System.Action<float> onFade = null)
         {
             float from = exitBlack.alpha;
             for (float t = 0f; t < seconds;)
             {
                 t += Time.deltaTime;
-                exitBlack.alpha = Mathf.Lerp(from, target, Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / seconds)));
+                float progress = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / seconds));
+                exitBlack.alpha = Mathf.Lerp(from, target, progress);
+                onFade?.Invoke(progress);
                 yield return null;
             }
             exitBlack.alpha = target;
+            onFade?.Invoke(1f);
         }
 
         private bool TryFindExitPosition(out Vector3 position)

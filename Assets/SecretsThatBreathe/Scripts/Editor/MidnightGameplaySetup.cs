@@ -16,7 +16,7 @@ namespace SecretsThatBreathe.Editor
 {
     // MainScene_2_MidNight gameplay, set up one step at a time. Each step runs once by itself after the scripts compile;
     // menu: Tools > Midnight Scene. Nothing here runs at game time.
-    //   Step 1: what Khem thinks while driving back to the crash site (SeatingCanvas/DriveThought1, DriveThought2); no "arrived" line.
+    //   Step 1: what Khem thinks while driving back to the crash site (SeatingCanvas/DriveThought1–3).
     //   Step 3: close to the braking skid mark Khem thinks "นี่รอยรถนี่ ต้องถ่ายไว้"; then E -> he raises his phone sideways and
     //           photographs it (MidnightSkidPhoto). While its prompt is up, the banana "[E] กินกล้วย" prompt stays hidden.
     //   Step 4: after the photo a light rain slowly starts, the ground turns wet, and Khem thinks "ฝนตกแล้ว ต้องรีบแล้วสิ" (MidnightRain).
@@ -119,8 +119,9 @@ namespace SecretsThatBreathe.Editor
         // ---- step 1 -------------------------------------------------------------------------------------------------------------------
         static readonly string[] DriveLines =
         {
-            "แถวนี้ตอนมืดแล้ว น่ากลัวจัง",
-            "จะเจออะไรแปลกๆมั้ยเนี้ย",
+            "โห่ โคตรมืดเลยแถวนี้",
+            "มืดก็ไม่แปลกหรอกตอนนี้ตี 3 และ",
+            "เจอกุ้กกู๋แน่กู",
         };
         // The first drive line copied over from the evening scene. While it is still in the midnight scene, step 1 has not been done.
         const string EveningFirstLine = "สงสารลุง";
@@ -132,7 +133,6 @@ namespace SecretsThatBreathe.Editor
         const string ZoneName = "Skid Photo Interaction Zone";
         const string PhonePrefabPath = "Assets/SecretsThatBreathe/Props/Phone/Prefabs/Phone_Blank.prefab";
         const string FeedMaterialPath = "Assets/SecretsThatBreathe/Props/Phone/Materials/Screen_CameraFeed.mat";
-        const string RaiseSoundPath = "Assets/SecretsThatBreathe/Audio/Phone/Phone_PickUp.wav";
         const string ShutterSoundPath = "Assets/SecretsThatBreathe/Audio/Phone/Phone_CameraShutter.wav";
         const string PromptText = "[E] ถ่ายรูปรอยล้อ";
         const string ShutterText = "[E] ถ่ายรูป";
@@ -364,7 +364,7 @@ namespace SecretsThatBreathe.Editor
                 log.AppendLine(name + ": " + DriveLines[i]);
             }
             Undo.RecordObject(thoughts, "Midnight drive lines");
-            thoughts.drivingThoughts = labels;   // the third evening line is no longer said
+            thoughts.drivingThoughts = labels;
             EditorUtility.SetDirty(thoughts);
             log.AppendLine("Driving lines: " + labels.Length + ".");
         }
@@ -400,9 +400,7 @@ namespace SecretsThatBreathe.Editor
             var phonePrefab = AssetDatabase.LoadAssetAtPath<GameObject>(PhonePrefabPath);
             if (phonePrefab == null) throw new Exception("Phone_Blank.prefab was not found at " + PhonePrefabPath);
             var feedMaterial = FeedMaterial(log);
-            var raiseSound = AssetDatabase.LoadAssetAtPath<AudioClip>(RaiseSoundPath);
             var shutterSound = AssetDatabase.LoadAssetAtPath<AudioClip>(ShutterSoundPath);
-            if (raiseSound == null) log.AppendLine("WARNING: " + RaiseSoundPath + " not found (no sound when raising the phone).");
             if (shutterSound == null) log.AppendLine("WARNING: " + ShutterSoundPath + " not found (no shutter sound).");
 
             // keep settings tuned in the Inspector when rebuilding
@@ -437,7 +435,7 @@ namespace SecretsThatBreathe.Editor
             photo.savedLabel = saved;
             photo.phonePrefab = phonePrefab;
             photo.feedMaterial = feedMaterial;
-            if (raiseSound != null) photo.raiseSound = raiseSound;
+            photo.raiseSound = null;
             if (shutterSound != null) photo.shutterSound = shutterSound;
             EditorUtility.SetDirty(photo);
             EnsureThought(all, ui.transform, scene, photo, log);
@@ -655,8 +653,6 @@ namespace SecretsThatBreathe.Editor
             var pickupPrompt = Label(template, ui, scene, "PickupPrompt", PickupPromptText);
             var shock = ShockLines.Select((text, i) => ThoughtBox(all, ui, scene, "Shock" + (i + 1), text)).ToArray();
             var found = FoundLines.Select((text, i) => ThoughtBox(all, ui, scene, "Found" + (i + 1), text)).ToArray();
-            var pickupSound = Clip(GhostFx + "/Audio/Debris_PickUp.wav", log);
-            var stowSound = Clip(GhostFx + "/Audio/Debris_Stow.wav", log);
 
             string skidJson = EditorJsonUtility.ToJson(skidPhoto);
             var pickups = new List<MidnightDebrisPickup>();
@@ -681,6 +677,7 @@ namespace SecretsThatBreathe.Editor
                 photo.thought = null;
                 photo.prompt = photoPrompt;
                 photo.shutterHint = skidPhoto.shutterHint;
+                photo.leftClickShutterOnly = skidPhoto.leftClickShutterOnly;
                 photo.savedLabel = skidPhoto.savedLabel;
                 EditorUtility.SetDirty(photo);
 
@@ -692,8 +689,8 @@ namespace SecretsThatBreathe.Editor
                 pickup.interactionZone = zone;
                 pickup.viewCamera = skidPhoto.viewCamera;
                 pickup.prompt = pickupPrompt;
-                if (pickupSound != null) pickup.pickupSound = pickupSound;
-                if (stowSound != null) pickup.stowSound = stowSound;
+                pickup.pickupSound = null;
+                pickup.stowSound = null;
                 EditorUtility.SetDirty(pickup);
                 pickups.Add(pickup);
                 previous = pickup;
@@ -817,7 +814,8 @@ namespace SecretsThatBreathe.Editor
             var steamLogo = SteamRow(soon, log);
 
             AudioSource typing = null;
-            var typingSource = all.Select(t => t.GetComponent<AudioSource>()).FirstOrDefault(a => a != null && a.name == "DialogueTypingAudio" && a.clip != null);
+            var intro = all.Select(t => t.GetComponent<EveningDriveIntro>()).FirstOrDefault(i => i != null && i.typingAudio != null && i.typingAudio.clip != null);
+            var typingSource = intro != null ? intro.typingAudio : null;
             if (typingSource != null)
             {
                 typing = screen.gameObject.AddComponent<AudioSource>();
@@ -1134,7 +1132,7 @@ namespace SecretsThatBreathe.Editor
                 Undo.RecordObject(ending, "Ending sound");
                 ending.rain = rain;
                 EditorUtility.SetDirty(ending);
-                log.AppendLine("The rain sound fades out after E at the car (" + ending.soundFadeSeconds + " s, with the other looping sounds).");
+                log.AppendLine("Active sounds fade with the boarding screen, except for the car door.");
             }
             var art = ending.keyArt != null ? ending.keyArt.transform : null;
             if (art != null) FillScreen(art, log);

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using StarterAssets;
 using TMPro;
@@ -31,6 +31,8 @@ namespace SecretsThatBreathe
         [Min(0f)] public float availableDelay;
         [Tooltip("Like the CCTV Interaction Zone: the '[E]' prompt shows while Khem stands inside this trigger box (a child of the skid mark). Move / resize it in the Scene view.")]
         public BoxCollider interactionZone;
+        [Tooltip("Photo zone width (X) and depth (Y) in metres, centred on the Box Collider. Set an axis to 0 to use the collider's original size.")]
+        public Vector2 photoZoneSizeMetres;
         [Tooltip("1 = facing straight at the skid mark. Khem must face roughly towards it (along the floor).")]
         [Range(-1f, 1f)] public float facingDotMinimum = .3f;
         [Tooltip("Optional. Main camera; empty = Camera.main.")]
@@ -39,9 +41,15 @@ namespace SecretsThatBreathe
         [Header("Labels (saved in the scene)")]
         [Tooltip("Khem's thought when he first comes close (the box around it is shown and hidden).")]
         public TMP_Text thought;
+        public TMP_Text followUpThought;
+        public BoxCollider thoughtZone;
+        [Tooltip("Briefing zone width (X) and depth (Y) in metres. Set an axis to 0 to use the collider's original size.")]
+        public Vector2 briefingZoneSizeMetres;
+        public EveningDriveThoughts afterExitThoughts;
         [Min(0f)] public float thoughtSeconds = 3f;
         public TMP_Text prompt;
         public TMP_Text shutterHint;
+        public bool leftClickShutterOnly;
         public TMP_Text savedLabel;
 
         [Header("Phone held sideways")]
@@ -131,6 +139,7 @@ namespace SecretsThatBreathe
         private void Awake()
         {
             SetThought(false);
+            SetThoughtBox(followUpThought, false);
             if (requires == null)   // the first photo of a chain hides the (shared) labels once
             {
                 SetLabel(prompt, false);
@@ -150,10 +159,20 @@ namespace SecretsThatBreathe
 
         private void Update()
         {
+            if (GameMenuController.BlocksGameplayInput) return;
             if (holdingControl && player != null) player.MovementLocked = true;
             if (looking) StepLook();
             if (Completed || IsRunning || thinking) { ShowPrompt(false); return; }
             bool ready = CanInteract();
+            if (!thoughtDone && thoughtZone != null)
+            {
+                ShowPrompt(false);
+                if (Time.timeScale > 0f && player != null && player.isActiveAndEnabled && !player.MovementLocked
+                    && (afterExitThoughts == null || afterExitThoughts.AfterExitThoughtFinished)
+                    && IsInZone(player.transform.position + Vector3.up * .9f, thoughtZone, briefingZoneSizeMetres))
+                    StartCoroutine(Think());
+                return;
+            }
             if (ready && !thoughtDone) { ShowPrompt(false); StartCoroutine(Think()); return; }   // first time close: Khem notices the marks
             ShowPrompt(ready);
             if (ready && Application.isFocused && Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
@@ -169,6 +188,12 @@ namespace SecretsThatBreathe
                 yield return new WaitForSeconds(thoughtSeconds);
                 SetThought(false);
             }
+            if (followUpThought != null)
+            {
+                SetThoughtBox(followUpThought, true);
+                yield return new WaitForSeconds(thoughtSeconds);
+                SetThoughtBox(followUpThought, false);
+            }
             thinking = false;
             thoughtDone = true;
         }
@@ -181,7 +206,9 @@ namespace SecretsThatBreathe
             SetLabel(prompt, show);
         }
 
-        private void SetThought(bool show)
+        private void SetThought(bool show) => SetThoughtBox(thought, show);
+
+        private static void SetThoughtBox(TMP_Text thought, bool show)
         {
             if (thought == null) return;
             var box = thought.transform.parent != null ? thought.transform.parent.gameObject : thought.gameObject;
@@ -206,7 +233,7 @@ namespace SecretsThatBreathe
             if (!Available()) return false;
             if (!player.isActiveAndEnabled || player.MovementLocked) return false;
             if (EveningDriveIntro.IsInputBlocked(gameObject.scene)) return false;
-            if (!InteractionLook.IsPointInBox(player.transform.position + Vector3.up * .9f, interactionZone)) return false;
+            if (!IsInZone(player.transform.position + Vector3.up * .9f, interactionZone, photoZoneSizeMetres)) return false;
             var view = ViewCamera();
             if (view == null) return false;
             Vector3 toMark = AimPoint() - view.transform.position;
@@ -247,6 +274,7 @@ namespace SecretsThatBreathe
             feedInstance.mainTexture = photo;
             for (float t = 0f; t < raiseSeconds; t += Time.deltaTime) { raise = Smooth(t / raiseSeconds); yield return null; }
             raise = 1f;
+            PosePhone();
 
             // aim: wait for E or a click
             SetLabel(shutterHint, true);
@@ -254,7 +282,7 @@ namespace SecretsThatBreathe
             while (true)
             {
                 aimed += Time.deltaTime;
-                bool pressed = Application.isFocused && ((Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
+                bool pressed = !GameMenuController.BlocksGameplayInput && Application.isFocused && ((!leftClickShutterOnly && Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
                                                          || (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame));
                 if (pressed && aimed >= minimumAimSeconds) break;
                 yield return null;
@@ -545,12 +573,36 @@ namespace SecretsThatBreathe
 
         private void OnDrawGizmosSelected()
         {
-            if (interactionZone == null) return;
-            Gizmos.color = Color.cyan;
+            DrawZone(interactionZone, photoZoneSizeMetres, Color.cyan);
+            DrawZone(thoughtZone, briefingZoneSizeMetres, Color.yellow);
+        }
+
+        private static bool IsInZone(Vector3 point, BoxCollider zone, Vector2 sizeMetres)
+        {
+            return zone != null && zone.enabled && zone.gameObject.activeInHierarchy
+                && new Bounds(zone.center, GetZoneSize(zone, sizeMetres)).Contains(zone.transform.InverseTransformPoint(point));
+        }
+
+        private static Vector3 GetZoneSize(BoxCollider zone, Vector2 sizeMetres)
+        {
+            Vector3 size = zone.size;
+            if (sizeMetres.x > 0f)
+                size.x = sizeMetres.x / Mathf.Max(.0001f, zone.transform.TransformVector(Vector3.right).magnitude);
+            if (sizeMetres.y > 0f)
+                size.z = sizeMetres.y / Mathf.Max(.0001f, zone.transform.TransformVector(Vector3.forward).magnitude);
+            return size;
+        }
+
+        private static void DrawZone(BoxCollider zone, Vector2 sizeMetres, Color color)
+        {
+            if (zone == null) return;
+            Color previous = Gizmos.color;
             Matrix4x4 saved = Gizmos.matrix;
-            Gizmos.matrix = interactionZone.transform.localToWorldMatrix;
-            Gizmos.DrawWireCube(interactionZone.center, interactionZone.size);
+            Gizmos.color = color;
+            Gizmos.matrix = zone.transform.localToWorldMatrix;
+            Gizmos.DrawWireCube(zone.center, GetZoneSize(zone, sizeMetres));
             Gizmos.matrix = saved;
+            Gizmos.color = previous;
         }
 
         /// <summary>Testing (F3): this photo counts as taken; a photo in progress is put away.</summary>
@@ -572,6 +624,7 @@ namespace SecretsThatBreathe
             StopAllCoroutines();
             if (thinking) { thinking = false; thoughtDone = true; }
             SetThought(false);
+            SetThoughtBox(followUpThought, false);
             ShowPrompt(false);
             if (phone != null) phone.SetActive(false);
             if (phoneCamera != null) phoneCamera.enabled = false;

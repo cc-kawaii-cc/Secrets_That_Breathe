@@ -17,6 +17,8 @@ namespace SecretsThatBreathe
         public enum FruitColour { Auto, Ripe, Green }
 
         [Header("When the prompt appears")]
+        [Tooltip("Optional trigger box. Midnight only accepts interactions with a zone assigned.")]
+        public BoxCollider interactionZone;
         [Tooltip("How close the player must be to the trunk, in metres on the ground.")]
         [Min(.5f)] public float eatDistance = 2.4f;
         [Tooltip("Vertical tolerance, so the prompt does not show from a roof or a hole.")]
@@ -42,11 +44,31 @@ namespace SecretsThatBreathe
         public static bool CanEatAny => !Tricked && TotalEaten < MaxBananasInTotal;
         public static bool LimitReached => TotalEaten >= MaxBananasInTotal;
         public static void MarkTricked() => Tricked = true;
+        internal static void ResetProgressForTesting() { TotalEaten = 0; Tricked = false; }
 
         public int BananasLeft => CanEatAny ? Mathf.Max(0, bananasOnTree - eaten) : 0;
         public bool IsRipe => fruit == FruitColour.Ripe
-            || (fruit == FruitColour.Auto && name.IndexOf("Ripe", StringComparison.OrdinalIgnoreCase) >= 0);
+            || (fruit == FruitColour.Auto && (name.IndexOf("Ripe", StringComparison.OrdinalIgnoreCase) >= 0
+                || (interactionZone != null && transform.parent != null
+                    && transform.parent.name.IndexOf("Ripe", StringComparison.OrdinalIgnoreCase) >= 0)));
         public Vector3 Center => anchor != null ? anchor.position : transform.position;
+        public static bool RequiresZone(Scene scene) => scene.name == "MainScene_2_MidNight";
+
+        internal bool ContainsPlayer(Vector3 feet, Vector3 bodyCenter)
+        {
+            if (interactionZone == null)
+            {
+                if (RequiresZone(gameObject.scene)) return false;
+                Vector3 offset = Center - feet;
+                return Mathf.Abs(offset.y) <= heightTolerance
+                    && offset.x * offset.x + offset.z * offset.z <= eatDistance * eatDistance;
+            }
+
+            if (!interactionZone.enabled || !interactionZone.gameObject.activeInHierarchy) return false;
+            Vector3 local = interactionZone.transform.InverseTransformPoint(bodyCenter) - interactionZone.center;
+            Vector3 half = interactionZone.size * .5f;
+            return Mathf.Abs(local.x) <= half.x && Mathf.Abs(local.y) <= half.y && Mathf.Abs(local.z) <= half.z;
+        }
         public void TakeBanana() { eaten++; TotalEaten++; onEaten.Invoke(); }
         public void ResetBananas() => eaten = 0;
 
@@ -59,7 +81,7 @@ namespace SecretsThatBreathe
         public static bool IsBananaTreeName(string objectName) => TreeName.IsMatch(objectName);
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void ResetStatics() { all.Clear(); TotalEaten = 0; Tricked = false; }
+        private static void ResetStatics() { all.Clear(); ResetProgressForTesting(); }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void Install()
@@ -74,7 +96,7 @@ namespace SecretsThatBreathe
         // Adds the component to every banana tree in the scene that does not have it yet. Returns how many were added.
         public static int AttachToScene(Scene scene)
         {
-            if (!scene.isLoaded || scene.path == "Assets/MainScenes/From_PM/MainScene_2_Evening.unity") return 0;
+            if (!scene.isLoaded || RequiresZone(scene) || scene.path == "Assets/MainScenes/From_PM/MainScene_2_Evening.unity") return 0;
             int added = 0;
             foreach (GameObject root in scene.GetRootGameObjects()) added += Attach(root.transform);
             return added;
@@ -105,8 +127,15 @@ namespace SecretsThatBreathe
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = new Color(1f, .9f, .2f, .6f);
-            Vector3 centre = Center;
-            Gizmos.DrawWireSphere(centre, eatDistance);
+            if (interactionZone != null)
+            {
+                Matrix4x4 previous = Gizmos.matrix;
+                Gizmos.matrix = interactionZone.transform.localToWorldMatrix;
+                Gizmos.DrawWireCube(interactionZone.center, interactionZone.size);
+                Gizmos.matrix = previous;
+            }
+            else if (!RequiresZone(gameObject.scene))
+                Gizmos.DrawWireSphere(Center, eatDistance);
         }
     }
 }

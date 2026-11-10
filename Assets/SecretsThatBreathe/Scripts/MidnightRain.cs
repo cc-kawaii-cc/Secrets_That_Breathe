@@ -6,29 +6,26 @@ using UnityEngine.SceneManagement;
 
 namespace SecretsThatBreathe
 {
-    // MainScene_2_MidNight rain. It starts as a light drizzle when the car begins its first turn on the drive, slowly gets heavier,
-    // and becomes the heaviest once the skid mark photo is taken (then Khem thinks "ฝนตกแล้ว ต้องรีบแล้วสิ").
-    // Drops only land on the Terrain and on the car: everything else (trees, props, invisible walls) is passed through.
-    // Where a drop lands on the Terrain a small ripple and splash appear; on the car only a splash. The ground and props near the
+    // Midnight rain starts as a drizzle when the car reaches the configured road segment, then grows heavier.
+    // Taking the skid mark photo speeds up the buildup and cues Khem's thought.
+    // Terrain and roads receive ripples and splashes; the car receives only splashes. The ground and props near the
     // crash site slowly turn wet, the blood stains fade, the rain is heard. Right-click the component > Start Rain Now to test it.
     [DisallowMultipleComponent]
     [DefaultExecutionOrder(15100)]
     public sealed class MidnightRain : MonoBehaviour
     {
         [Header("When it starts and how heavy it gets")]
-        [Tooltip("The drive: the rain starts when this car begins its first turn.")]
+        [Tooltip("The car that triggers the rain when it reaches the start road segment.")]
         public PorschePassengerRide ride;
-        [Tooltip("Degrees the car must have turned from its starting heading.")]
-        [Range(.5f, 45f)] public float turnDegrees = 4f;
-        [Tooltip("After this photo (the skid mark) the rain becomes the heaviest.")]
+        [Tooltip("Rain starts when the moving car enters this road collider's footprint.")]
+        public Transform rainStartRoad;
+        [Tooltip("Taking this photo speeds up the buildup and shows Khem's thought.")]
         public MidnightSkidPhoto afterPhoto;
         [Tooltip("Drops per second at the heaviest rain, over the whole area around Khem.")]
         [Min(0f)] public float heaviestDropsPerSecond = 3600f;
         [Tooltip("How heavy it is when it starts (fraction of the heaviest).")]
         [Range(0f, 1f)] public float startAmount = .08f;
-        [Tooltip("How heavy it has become just before the skid mark photo.")]
-        [Range(0f, 1f)] public float beforePhotoAmount = .45f;
-        [Tooltip("Seconds from the first drops to the 'before photo' amount.")]
+        [Tooltip("Seconds from drizzle to the heaviest rain without the photo.")]
         [Min(1f)] public float buildUpSeconds = 120f;
         [Tooltip("Seconds to reach the heaviest rain after the photo.")]
         [Min(.1f)] public float heavyRampSeconds = 12f;
@@ -64,6 +61,8 @@ namespace SecretsThatBreathe
         [Header("What the drops land on")]
         [Tooltip("The car (drops stop on it, so it never rains inside). Empty = the drive car.")]
         public Transform car;
+        [Tooltip("Road root whose colliders receive rain ripples and splashes.")]
+        public Transform road;
 
         [Header("Wet ground and props")]
         [Tooltip("Centre of the area that gets wet (empty = the skid mark).")]
@@ -84,6 +83,9 @@ namespace SecretsThatBreathe
 
         [Header("Sound")]
         public AudioClip rainLoop;
+        [Tooltip("Rain volume when the first drizzle starts.")]
+        [Range(0f, 1f)] public float initialRainVolume = .02f;
+        [InspectorName("Maximum Rain Volume")]
         [Range(0f, 1f)] public float volume = .45f;
 
         public bool Started { get; private set; }
@@ -92,15 +94,15 @@ namespace SecretsThatBreathe
 
         private ParticleSystem drops, ripples, splashes;
         private AudioSource sound;
-        private float soundFadeStart = -1f, soundFadeSeconds = 1f;
+        private float soundGain = 1f;
         private float startTime;
         private float wetness;
         private float heavyStart = -1f, thoughtAt = -1f;
-        private bool headingKnown;
-        private Vector3 startHeading;
         private ParticleSystem.Particle[] buffer = new ParticleSystem.Particle[0];
         private Terrain[] terrains = new Terrain[0];
         private Collider[] carColliders = new Collider[0];
+        private BoxCollider rainStartCollider;
+        private readonly List<(Collider collider, Bounds bounds)> roadSurfaces = new List<(Collider, Bounds)>();
         private Bounds carLocalBounds;
         private bool carHasBounds;
         private readonly List<Material> fadingMaterials = new List<Material>();
@@ -117,28 +119,31 @@ namespace SecretsThatBreathe
         }
         private readonly List<WetMaterial> wetMaterials = new List<WetMaterial>();
 
-        private void Awake() => SetThought(false);
+        private void Awake()
+        {
+            if (rainStartRoad != null) rainStartCollider = rainStartRoad.GetComponent<BoxCollider>();
+            SetThought(false);
+        }
 
         private void Update()
         {
             bool photoDone = afterPhoto != null && afterPhoto.Completed && !afterPhoto.IsRunning;
             if (!Started)
             {
-                if (CarStartsTurning() || photoDone || (ride != null && ride.HasArrived)) StartRain();   // (testing shortcuts skip the drive)
+                if (CarReachedStartRoad() || photoDone || (ride != null && ride.HasArrived)) StartRain();   // Testing shortcuts can skip the drive.
                 else return;
             }
             if (photoDone && heavyStart < 0f) { heavyStart = Time.time; thoughtAt = Time.time + thoughtDelay; }
 
             float elapsed = Time.time - startTime;
-            float build = Mathf.Lerp(startAmount, beforePhotoAmount, Smooth(elapsed / buildUpSeconds)) * Smooth(elapsed / 4f);
+            float build = Mathf.Lerp(startAmount, 1f, Smooth(elapsed / buildUpSeconds));
             float heavy = heavyStart < 0f ? 0f : Smooth((Time.time - heavyStart) / heavyRampSeconds);
             Intensity = Mathf.Lerp(build, 1f, heavy);
             if (drops != null) { var emission = drops.emission; emission.rateOverTime = heaviestDropsPerSecond * Intensity; }
             if (sound != null)
             {
-                float fadeOut = soundFadeStart < 0f ? 1f : 1f - Smooth((Time.time - soundFadeStart) / soundFadeSeconds);
-                sound.volume = volume * Mathf.Lerp(.25f, 1f, Intensity) * Smooth(elapsed / 3f) * fadeOut;
-                if (fadeOut <= 0f && sound.isPlaying) sound.Stop();
+                float buildup = startAmount >= 1f ? 1f : Mathf.InverseLerp(startAmount, 1f, Intensity);
+                sound.volume = Mathf.Lerp(Mathf.Min(initialRainVolume, volume), volume, buildup) * soundGain;
             }
             float fade = Smooth(elapsed / fadeSeconds);
             if (fade > lastFade + .002f) { lastFade = fade; ApplyFade(fade); }
@@ -147,15 +152,12 @@ namespace SecretsThatBreathe
             if (!thoughtShown && thoughtAt > 0f && Time.time >= thoughtAt) { thoughtShown = true; StartCoroutine(Think()); }
         }
 
-        // The car has started its first turn: its heading has moved away from the heading it started the drive with.
-        private bool CarStartsTurning()
+        private bool CarReachedStartRoad()
         {
-            if (ride == null || !ride.IsMoving) return false;
-            Vector3 heading = ride.transform.forward;
-            heading.y = 0f;
-            if (heading.sqrMagnitude < .0001f) return false;
-            if (!headingKnown) { headingKnown = true; startHeading = heading.normalized; return false; }
-            return Vector3.Angle(startHeading, heading.normalized) >= turnDegrees;
+            if (ride == null || !ride.IsMoving || rainStartCollider == null) return false;
+            Vector3 offset = rainStartCollider.transform.InverseTransformPoint(ride.transform.position) - rainStartCollider.center;
+            Vector3 halfSize = rainStartCollider.size * .5f;
+            return Mathf.Abs(offset.x) <= halfSize.x && Mathf.Abs(offset.z) <= halfSize.z;
         }
 
         private void LateUpdate()
@@ -174,12 +176,10 @@ namespace SecretsThatBreathe
 
         private static float Smooth(float x) { x = Mathf.Clamp01(x); return x * x * (3f - 2f * x); }
 
-        /// <summary>The rain sound fades out over this many seconds and stops (the ending, once Khem gets into the car).</summary>
-        public void FadeOutSound(float seconds)
+        public void SetSoundGain(float gain)
         {
-            if (soundFadeStart >= 0f) return;
-            soundFadeStart = Time.time;
-            soundFadeSeconds = Mathf.Max(.01f, seconds);
+            soundGain = Mathf.Clamp01(gain);
+            if (sound != null && soundGain == 0f) sound.Stop();
         }
 
         /// <summary>The rain goes to the heaviest from now on (normally after the skid mark photo).</summary>
@@ -316,10 +316,15 @@ namespace SecretsThatBreathe
             splashes.Play(false);
         }
 
-        // ---- where drops land: only the Terrain and the car ---------------------------------------------------------------------------
+        // ---- where drops land: Terrain, road and car ---------------------------------------------------------------------------------
         private void CollectLandingSurfaces()
         {
             terrains = Terrain.activeTerrains;
+            roadSurfaces.Clear();
+            if (road != null)
+                foreach (var collider in road.GetComponentsInChildren<Collider>())
+                    if (collider.enabled && !collider.isTrigger)
+                        roadSurfaces.Add((collider, collider.bounds));
             if (car == null && ride != null) car = ride.transform;
             carHasBounds = false;
             if (car == null) return;
@@ -380,6 +385,25 @@ namespace SecretsThatBreathe
             return true;
         }
 
+        private bool RoadHeight(Vector3 position, float fall, out float height)
+        {
+            height = float.NegativeInfinity;
+            if (roadSurfaces.Count == 0) return false;
+            const float skin = .05f;
+            var ray = new Ray(position + Vector3.up * (fall + skin), Vector3.down);
+            foreach (var surface in roadSurfaces)
+            {
+                Bounds bounds = surface.bounds;
+                if (position.x < bounds.min.x || position.x > bounds.max.x ||
+                    position.z < bounds.min.z || position.z > bounds.max.z ||
+                    position.y > bounds.max.y || ray.origin.y < bounds.min.y) continue;
+                if (surface.collider != null && surface.collider.enabled &&
+                    surface.collider.Raycast(ray, out RaycastHit hit, fall + skin) && hit.point.y > height)
+                    height = hit.point.y;
+            }
+            return height > float.NegativeInfinity;
+        }
+
         private void LandDrops(Vector3 eye)
         {
             int count = drops.particleCount;
@@ -399,7 +423,16 @@ namespace SecretsThatBreathe
                 bool landed = false, onGround = false;
                 float height;
                 if (CarHit(position, fall, out height)) landed = true;
-                else if (TerrainHeight(position, out height) && position.y <= height) { landed = true; onGround = true; }
+                else
+                {
+                    onGround = TerrainHeight(position, out height) && position.y <= height;
+                    if (RoadHeight(position, fall, out float roadHeight) && (!onGround || roadHeight > height))
+                    {
+                        height = roadHeight;
+                        onGround = true;
+                    }
+                    landed = onGround;
+                }
                 if (!landed) continue;
                 particle.remainingLifetime = 0f;
                 buffer[i] = particle;

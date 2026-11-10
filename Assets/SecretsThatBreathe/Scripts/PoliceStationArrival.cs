@@ -71,7 +71,7 @@ namespace SecretsThatBreathe
             PlacePlayer();
             yield return null;
             yield return null;
-            yield return new WaitForSecondsRealtime(blackHoldSeconds);
+            yield return GameMenuController.WaitForGameplaySeconds(blackHoldSeconds);
             if (storyText != null && storyGroup != null)
                 yield return PlayNarration();
             float elapsed = 0f; int readyFrames = 0;
@@ -79,7 +79,7 @@ namespace SecretsThatBreathe
             {
                 readyFrames = Texture.streamingTexturePendingLoadCount == 0
                     && Texture.streamingTextureLoadingCount == 0 ? readyFrames + 1 : 0;
-                elapsed += Time.unscaledDeltaTime;
+                elapsed += GameMenuController.GameplayUnscaledDeltaTime;
                 yield return null;
             }
             var ambienceVolumes = new Dictionary<AudioSource, float>();
@@ -91,7 +91,7 @@ namespace SecretsThatBreathe
                     source.volume = 0f;
                     source.Play();
                 }
-            for (elapsed = 0f; elapsed < revealSeconds; elapsed += Time.unscaledDeltaTime)
+            for (elapsed = 0f; elapsed < revealSeconds; elapsed += GameMenuController.GameplayUnscaledDeltaTime)
             {
                 blackScreen.alpha = 1f - Mathf.SmoothStep(0f, 1f, elapsed / Mathf.Max(.05f, revealSeconds));
                 foreach (var ambience in ambienceVolumes)
@@ -114,14 +114,14 @@ namespace SecretsThatBreathe
             float elapsed = 0f;
             while (storyText.maxVisibleCharacters < characterCount)
             {
-                elapsed += Time.unscaledDeltaTime;
+                elapsed += GameMenuController.GameplayUnscaledDeltaTime;
                 storyText.maxVisibleCharacters = Mathf.Min(characterCount,
                     Mathf.FloorToInt(elapsed / Mathf.Max(.001f, secondsPerCharacter)));
                 if (storyText.maxVisibleCharacters < characterCount) yield return null;
             }
             if (typingAudio != null) typingAudio.Stop();
-            yield return new WaitForSecondsRealtime(storyHoldSeconds);
-            for (elapsed = 0f; elapsed < storyFadeSeconds; elapsed += Time.unscaledDeltaTime)
+            yield return GameMenuController.WaitForGameplaySeconds(storyHoldSeconds);
+            for (elapsed = 0f; elapsed < storyFadeSeconds; elapsed += GameMenuController.GameplayUnscaledDeltaTime)
             {
                 storyGroup.alpha = 1f - Mathf.SmoothStep(0f, 1f, elapsed / storyFadeSeconds);
                 yield return null;

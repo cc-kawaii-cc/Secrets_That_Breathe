@@ -1,15 +1,17 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using StarterAssets;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace SecretsThatBreathe
 {
     // MainScene_2_MidNight, the end: once Khem has said his last lines about the friend with the garage, the objective
     // "กลับไปที่รถ ..." appears. Close to the car, "[E] ขึ้นรถไปที่อู่" boards it (door, black screen). On the black screen the
-    // closing lines type in one after another, then fade, and the key art fades in with "Coming soon on Steam".
+    // closing lines fade in one by one, followed by the typed continuation and poster.
     // Every object this uses is saved in the scene: edit the wording of the labels in the Hierarchy
     // (SeatingCanvas/MidnightEndingUI and MidnightEndingCanvas).
     [DisallowMultipleComponent]
@@ -28,22 +30,20 @@ namespace SecretsThatBreathe
         public TMP_Text objective;
         [Tooltip("'[E] ...' label shown close to the car.")]
         public TMP_Text boardPrompt;
-        [Tooltip("How close (metres, along the floor) Khem must be to where he got out of the car.")]
-        [Min(.5f)] public float boardDistance = 2.4f;
-        [Tooltip("...or this close (metres, along the floor) to the car body, on any side.")]
-        [Min(.2f)] public float carBodyDistance = 1.6f;
+        [Tooltip("How close (metres, along the floor) Khem must be to the left-side exit point.")]
+        [Min(.5f)] public float boardDistance = 2f;
 
         [Header("Sound")]
         [Tooltip("The rain (its sound fades out once E is pressed at the car).")]
         public MidnightRain rain;
-        [Tooltip("Seconds for the rain and the other looping sounds of the scene to fade out after E at the car.")]
-        [Min(0f)] public float soundFadeSeconds = 2.5f;
 
         [Header("Ending screen")]
         [Tooltip("Black, full screen, above everything else.")]
         public CanvasGroup endingScreen;
         [Tooltip("Typed one after another on the black screen.")]
         public TMP_Text[] endingLines;
+        public TMP_Text continuedLine;
+        public Button menuButton, exitButton;
         [Tooltip("The key art (fades in after the lines).")]
         public CanvasGroup keyArt;
         [Tooltip("'Wishlist now on Steam' (fades in a moment after the key art).")]
@@ -58,15 +58,13 @@ namespace SecretsThatBreathe
         [Min(.05f)] public float textFadeSeconds = 1.2f;
         [Min(0f)] public float blackBeforeArt = .8f;
         [Min(.05f)] public float artFadeSeconds = 2f;
-        [Min(0f)] public float comingSoonDelay = .8f;
-        [Min(.05f)] public float comingSoonFadeSeconds = 1.2f;
+        [Min(0f)] public float posterButtonDelay = 1f;
 
         public bool ObjectiveShown { get; private set; }
         public bool Boarding { get; private set; }
         public bool Finished { get; private set; }
 
         private float objectiveAt = -1f;
-        private Renderer[] carRenderers;
         private bool promptShown = true, objectiveVisible = true;   // true so the first Set...(false) really hides them
 
         private void Awake()
@@ -78,6 +76,9 @@ namespace SecretsThatBreathe
             SetGroup(comingSoon, 0f);
             if (steamLogo != null) steamLogo.gameObject.SetActive(steamLogo.sprite != null);
             if (endingLines != null) foreach (var line in endingLines) if (line != null) line.maxVisibleCharacters = 0;
+            if (continuedLine != null) continuedLine.maxVisibleCharacters = 0;
+            if (menuButton != null) menuButton.gameObject.SetActive(false);
+            if (exitButton != null) exitButton.gameObject.SetActive(false);
         }
 
         private void Update()
@@ -103,21 +104,10 @@ namespace SecretsThatBreathe
             if (!player.isActiveAndEnabled || player.MovementLocked) return false;
             if (MidnightSkidPhoto.BlocksOtherPrompts(gameObject.scene)) return false;
             Vector3 feet = player.transform.position;
+            if (ride.transform.InverseTransformPoint(feet).x >= 0f) return false;
             Vector3 door = ride.exitPoint != null ? ride.exitPoint.position : ride.transform.TransformPoint(ride.exitLocalPosition);
             Vector3 delta = feet - door;
-            if (Mathf.Abs(delta.y) < 2f && new Vector2(delta.x, delta.z).sqrMagnitude <= boardDistance * boardDistance) return true;
-            // anywhere close to the car body
-            if (carRenderers == null) carRenderers = ride.GetComponentsInChildren<Renderer>();
-            bool any = false;
-            var body = new Bounds();
-            foreach (var renderer in carRenderers)
-            {
-                if (renderer == null || !renderer.enabled || renderer is ParticleSystemRenderer) continue;
-                if (!any) { body = renderer.bounds; any = true; } else body.Encapsulate(renderer.bounds);
-            }
-            if (!any || feet.y < body.min.y - 2f || feet.y > body.max.y + 1f) return false;
-            Vector3 closest = body.ClosestPoint(new Vector3(feet.x, body.center.y, feet.z));
-            return new Vector2(closest.x - feet.x, closest.z - feet.z).sqrMagnitude <= carBodyDistance * carBodyDistance;
+            return Mathf.Abs(delta.y) < 2f && new Vector2(delta.x, delta.z).sqrMagnitude <= boardDistance * boardDistance;
         }
 
         private IEnumerator Board()
@@ -125,57 +115,86 @@ namespace SecretsThatBreathe
             Boarding = true;
             SetPanel(boardPrompt, false, ref promptShown);
             SetPanel(objective, false, ref objectiveVisible);
-            StartCoroutine(FadeOutSounds());
-            yield return ride.BoardForSceneTransition();   // door, black screen, Khem back in his seat
+            yield return ride.BoardForSceneTransition(CreateSoundFade());
             if (ride.HasExited) { Boarding = false; SetPanel(objective, true, ref objectiveVisible); yield break; }   // could not board
+            if (endingScreen != null)
+            {
+                var canvas = endingScreen.GetComponentInParent<Canvas>(true);
+                if (canvas != null)
+                {
+                    canvas.gameObject.SetActive(true);
+                    if (canvas.GetComponent<GraphicRaycaster>() == null) canvas.gameObject.AddComponent<GraphicRaycaster>();
+                }
+            }
             SetGroup(endingScreen, 1f);
             yield return Ending();
         }
 
-        // The rain and every other looping sound in the scene fade out and stop (the car door sounds and the typing are kept).
-        private IEnumerator FadeOutSounds()
+        private System.Action<float> CreateSoundFade()
         {
-            if (rain != null) rain.FadeOutSound(soundFadeSeconds);
-            var sources = new List<AudioSource>();
-            var volumes = new List<float>();
+            var playing = new List<(AudioSource source, float volume)>();
             foreach (var source in FindObjectsByType<AudioSource>(FindObjectsSortMode.None))
             {
-                if (source == null || source.gameObject.scene != gameObject.scene || !source.isPlaying || !source.loop) continue;
-                if (source == typingAudio || (ride != null && source == ride.doorAudio)) continue;
-                if (rain != null && source.transform.IsChildOf(rain.transform)) continue;   // the rain fades itself
-                sources.Add(source);
-                volumes.Add(source.volume);
+                if (source.isPlaying && (rain == null || source.transform != rain.transform))
+                    playing.Add((source, source.volume));
             }
-            for (float t = 0f; t < soundFadeSeconds; t += Time.unscaledDeltaTime)
+            return progress =>
             {
-                float k = 1f - Mathf.SmoothStep(0f, 1f, t / soundFadeSeconds);
-                for (int i = 0; i < sources.Count; i++) if (sources[i] != null) sources[i].volume = volumes[i] * k;
-                yield return null;
-            }
-            foreach (var source in sources) if (source != null) source.Stop();
+                if (rain != null) rain.SetSoundGain(1f - progress);
+                foreach (var (source, volume) in playing)
+                {
+                    if (source == null || source == ride.doorAudio) continue;
+                    source.volume = volume * (1f - progress);
+                    if (progress >= 1f)
+                    {
+                        source.Stop();
+                        if (source == typingAudio) source.volume = volume;
+                    }
+                }
+            };
         }
 
         private IEnumerator Ending()
         {
-            yield return new WaitForSecondsRealtime(blackBeforeText);
+            yield return GameMenuController.WaitForGameplaySeconds(blackBeforeText);
             if (endingLines != null)
                 for (int i = 0; i < endingLines.Length; i++)
                 {
                     var line = endingLines[i];
                     if (line == null) continue;
-                    if (i > 0 && lineGap > 0f) yield return new WaitForSecondsRealtime(lineGap);
-                    yield return Type(line);
+                    if (i > 0 && lineGap > 0f) yield return GameMenuController.WaitForGameplaySeconds(lineGap);
+                    line.maxVisibleCharacters = int.MaxValue;
+                    yield return Fade(t => line.alpha = t, 1f);
                 }
-            yield return new WaitForSecondsRealtime(holdText);
+            yield return GameMenuController.WaitForGameplaySeconds(holdText);
 
-            // the lines fade, then the key art comes in
             yield return Fade(t => { if (endingLines != null) foreach (var line in endingLines) if (line != null) line.alpha = 1f - t; }, textFadeSeconds);
-            yield return new WaitForSecondsRealtime(blackBeforeArt);
+            if (continuedLine != null)
+            {
+                yield return GameMenuController.WaitForGameplaySeconds(1f);
+                yield return Type(continuedLine);
+                yield return GameMenuController.WaitForGameplaySeconds(1f);
+                yield return Fade(t => continuedLine.alpha = 1f - t, textFadeSeconds);
+            }
+            yield return GameMenuController.WaitForGameplaySeconds(blackBeforeArt);
             yield return Fade(t => SetGroup(keyArt, t), artFadeSeconds);
-            yield return new WaitForSecondsRealtime(comingSoonDelay);
-            yield return Fade(t => SetGroup(comingSoon, t), comingSoonFadeSeconds);
+            yield return GameMenuController.WaitForGameplaySeconds(posterButtonDelay);
             Finished = true;
+            if (endingScreen != null) endingScreen.interactable = true;
+            if (menuButton != null) menuButton.gameObject.SetActive(true);
+            if (exitButton != null) exitButton.gameObject.SetActive(true);
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
+
+        public void ReturnToMenu()
+        {
+            Time.timeScale = 1f;
+            AudioListener.pause = false;
+            SceneManager.LoadScene("MainMenu");
+        }
+
+        public void ExitGame() => Application.Quit();
 
         private IEnumerator Type(TMP_Text line)
         {
@@ -187,7 +206,7 @@ namespace SecretsThatBreathe
             float shown = 0f;
             while (line.maxVisibleCharacters < count)
             {
-                shown += Time.unscaledDeltaTime / secondsPerCharacter;
+                shown += GameMenuController.GameplayUnscaledDeltaTime / secondsPerCharacter;
                 line.maxVisibleCharacters = Mathf.Min(count, Mathf.FloorToInt(shown));
                 yield return null;
             }
@@ -197,7 +216,7 @@ namespace SecretsThatBreathe
 
         private static IEnumerator Fade(System.Action<float> apply, float seconds)
         {
-            for (float t = 0f; t < seconds; t += Time.unscaledDeltaTime) { apply(Mathf.SmoothStep(0f, 1f, t / seconds)); yield return null; }
+            for (float t = 0f; t < seconds; t += GameMenuController.GameplayUnscaledDeltaTime) { apply(Mathf.SmoothStep(0f, 1f, t / seconds)); yield return null; }
             apply(1f);
         }
 

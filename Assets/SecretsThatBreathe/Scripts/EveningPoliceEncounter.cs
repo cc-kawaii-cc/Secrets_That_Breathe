@@ -53,6 +53,9 @@ namespace SecretsThatBreathe
         [Header("Return to the car")]
         public string destinationScene = "Inside_Police_Station";
         public TMP_Text returnObjective, boardingPrompt;
+        public TMP_Text afterConversationThought;
+        [Min(0f)] public float afterConversationThoughtDelay = 2f;
+        [Min(0f)] public float afterConversationThoughtHold = 3f;
         [Min(0f)] public float returnObjectiveDelay = 1f;
         [Min(.1f)] public float boardingDistance = 2f;
         [Min(0f)] public float pushDistance = .4f;
@@ -100,13 +103,13 @@ namespace SecretsThatBreathe
             encounter.triggered = encounter.boarding = encounter.restoringCamera = false;
             encounter.IsRunning = encounter.Completed = encounter.ReadyToChangeScene = false;
             encounter.selected = -1; encounter.activeChoices = null; encounter.pushRoutine = null;
-            Panel(encounter.returnObjective, false); Panel(encounter.boardingPrompt, false);
+            Panel(encounter.returnObjective, false); Panel(encounter.boardingPrompt, false); Panel(encounter.afterConversationThought, false);
         }
 
         private void Awake()
         {
             current = this;
-            HideDialogue(); Panel(returnObjective, false); Panel(boardingPrompt, false);
+            HideDialogue(); Panel(returnObjective, false); Panel(boardingPrompt, false); Panel(afterConversationThought, false);
             foreach (var choices in new[] { firstChoices, secondChoices }) if (choices != null)
             {
                 choices.acceptButton.onClick.AddListener(ChooseFirst);
@@ -267,8 +270,17 @@ namespace SecretsThatBreathe
             HideDialogue();
             yield return ReturnToWalking();
             IsRunning = false;
-            yield return new WaitForSeconds(returnObjectiveDelay);
+            yield return ShowAfterConversationThought();
             Completed = true; Panel(returnObjective, true);
+        }
+
+        private IEnumerator ShowAfterConversationThought()
+        {
+            yield return new WaitForSeconds(afterConversationThoughtDelay);
+            Panel(afterConversationThought, true);
+            yield return new WaitForSeconds(afterConversationThoughtHold);
+            Panel(afterConversationThought, false);
+            yield return new WaitForSeconds(returnObjectiveDelay);
         }
 
         private IEnumerator OpeningWarning()

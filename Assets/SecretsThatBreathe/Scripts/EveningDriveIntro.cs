@@ -75,7 +75,7 @@ namespace SecretsThatBreathe
 
         private static void ActivateSavedCanvas(Scene scene, LoadSceneMode mode)
         {
-            if (scene.name != "MainScene_2_Evening") return;
+            if (scene.name != "MainScene_2_Evening" && scene.name != "MainScene_2_MidNight") return;
             foreach (var root in scene.GetRootGameObjects())
             {
                 var intro = root.GetComponentInChildren<EveningDriveIntro>(true);
@@ -150,7 +150,7 @@ namespace SecretsThatBreathe
                         warmingRide = null;
                     }
             }
-            yield return new WaitForSecondsRealtime(blackDelaySeconds);
+            yield return GameMenuController.WaitForGameplaySeconds(blackDelaySeconds);
             storyGroup.alpha = 1f;
             storyText.ForceMeshUpdate();
             int characters = storyText.textInfo.characterCount;
@@ -158,14 +158,14 @@ namespace SecretsThatBreathe
             if (characters > 0 && typingAudio != null && typingAudio.clip != null) typingAudio.Play();
             while (storyText.maxVisibleCharacters < characters)
             {
-                elapsed += Time.unscaledDeltaTime;
+                elapsed += GameMenuController.GameplayUnscaledDeltaTime;
                 storyText.maxVisibleCharacters = Mathf.Min(characters,
                     Mathf.FloorToInt(elapsed / Mathf.Max(.001f, secondsPerCharacter)));
                 if (storyText.maxVisibleCharacters >= characters && typingAudio != null) typingAudio.Stop();
                 yield return null;
             }
             if (typingAudio != null) typingAudio.Stop();
-            yield return new WaitForSecondsRealtime(completedTextHoldSeconds);
+            yield return GameMenuController.WaitForGameplaySeconds(completedTextHoldSeconds);
 
             // Let texture streaming settle, with a bounded wait so a stalled upload
             // cannot leave the player permanently on a black screen.
@@ -175,7 +175,7 @@ namespace SecretsThatBreathe
             {
                 readyFrames = Texture.streamingTexturePendingLoadCount == 0
                     && Texture.streamingTextureLoadingCount == 0 ? readyFrames + 1 : 0;
-                elapsed += Time.unscaledDeltaTime;
+                elapsed += GameMenuController.GameplayUnscaledDeltaTime;
                 yield return null;
             }
             yield return FadeStoryAndStartMovement();
@@ -193,7 +193,7 @@ namespace SecretsThatBreathe
             bool movementResumed = false;
             while (elapsed < textFadeOutSeconds)
             {
-                elapsed += Time.unscaledDeltaTime;
+                elapsed += GameMenuController.GameplayUnscaledDeltaTime;
                 float progress = Mathf.Clamp01(elapsed / textFadeOutSeconds);
                 storyGroup.alpha = 1f - Mathf.SmoothStep(0f, 1f, progress);
                 if (!movementResumed && storyGroup.alpha <= 1f - Mathf.Clamp01(movementStartTextFadeProgress))
@@ -215,7 +215,7 @@ namespace SecretsThatBreathe
             float elapsed = 0f;
             while (elapsed < seconds)
             {
-                elapsed += Time.unscaledDeltaTime;
+                elapsed += GameMenuController.GameplayUnscaledDeltaTime;
                 group.alpha = Mathf.Lerp(initial, target, Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(elapsed / seconds)));
                 yield return null;
             }

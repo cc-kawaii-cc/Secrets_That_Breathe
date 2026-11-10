@@ -30,7 +30,7 @@ namespace SecretsThatBreathe.Editor
         const string TvName = "Tv (2)";
         const string EndName = "end";
         const string LineA = "ก็ไม่เสียนี่หว่า ไอตำรวจพวกนี้เงินเดือนมันไม่พอกินกันรึไงวะ";
-        const string LineB = "งั้นกลับไปดูที่เกิดเหตุหน่อยดีกว่า นี่ก็ตี 3 แล้ว คงไม่มีใครอยู่แล้วมั้ง";
+        const string LineB = "งั้นกลับไปดูที่เกิดเหตุหน่อยดีกว่า นี่ก็จะตี 3 และ คงไม่มีใครอยู่แล้วมั้ง";
 
         static PoliceStationNoEntrySetup() => EditorApplication.update += Install;
 

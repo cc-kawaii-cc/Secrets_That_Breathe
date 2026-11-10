@@ -39,6 +39,8 @@ namespace SecretsThatBreathe
 
         private readonly Camera view;
         private readonly bool ripe;
+        private readonly bool playEatingSounds;
+        private readonly bool useSceneLighting;
         private readonly List<UnityEngine.Object> owned = new List<UnityEngine.Object>();
         private readonly Transform[] flaps = new Transform[FlapCount];
         private readonly Vector3[] hingeAxes = new Vector3[FlapCount];
@@ -52,12 +54,15 @@ namespace SecretsThatBreathe
         // True once the whole sequence has played to the end (false if it was stopped early).
         public bool Completed { get; private set; }
 
-        public static BananaViewModel Create(Camera view, bool ripe) => new BananaViewModel(view, ripe);
+        public static BananaViewModel Create(Camera view, bool ripe, bool playEatingSounds = true, bool useSceneLighting = false)
+            => new BananaViewModel(view, ripe, playEatingSounds, useSceneLighting);
 
-        private BananaViewModel(Camera view, bool ripe)
+        private BananaViewModel(Camera view, bool ripe, bool playEatingSounds, bool useSceneLighting)
         {
             this.view = view;
             this.ripe = ripe;
+            this.playEatingSounds = playEatingSounds;
+            this.useSceneLighting = useSceneLighting;
             Build();
         }
 
@@ -82,7 +87,7 @@ namespace SecretsThatBreathe
                 if (!keepGoing()) yield break;
                 yield return Tween(Mouth, Bite, .16f, EaseOutCubic, keepGoing);
                 SetFruitEnd(cuts[bite]);
-                Play(BiteSound(), BiteVolume());
+                if (playEatingSounds) Play(BiteSound(), BiteVolume());
                 yield return Hold(Bite, .12f, false, keepGoing);
                 yield return Tween(Bite, Mouth, .2f, EaseInOut, keepGoing);
                 yield return Chew(Mouth, .5f, keepGoing);
@@ -125,7 +130,7 @@ namespace SecretsThatBreathe
         private IEnumerator Peel(int index, Func<bool> keepGoing)
         {
             const float seconds = .5f;
-            Play(PeelSound(), .8f);
+            if (playEatingSounds) Play(PeelSound(), .8f);
             for (float t = 0f; t < seconds; t += Time.deltaTime)
             {
                 if (!keepGoing()) yield break;
@@ -251,10 +256,10 @@ namespace SecretsThatBreathe
             return part;
         }
 
-        private static void Configure(Renderer renderer)
+        private void Configure(Renderer renderer)
         {
             renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-            renderer.receiveShadows = false;
+            renderer.receiveShadows = useSceneLighting;
         }
 
         private Material Make(Color colour, float emission)
@@ -268,7 +273,8 @@ namespace SecretsThatBreathe
             if (material.HasProperty("_Smoothness")) material.SetFloat("_Smoothness", .25f);
             if (material.HasProperty("_Glossiness")) material.SetFloat("_Glossiness", .25f);
             if (material.HasProperty("_Metallic")) material.SetFloat("_Metallic", 0f);
-            if (emission > 0f && material.HasProperty("_EmissionColor"))
+            if (material.HasProperty("_ReceiveShadows")) material.SetFloat("_ReceiveShadows", useSceneLighting ? 1f : 0f);
+            if (!useSceneLighting && emission > 0f && material.HasProperty("_EmissionColor"))
             {
                 // A little self-lighting keeps the banana readable in a dark scene.
                 material.EnableKeyword("_EMISSION");

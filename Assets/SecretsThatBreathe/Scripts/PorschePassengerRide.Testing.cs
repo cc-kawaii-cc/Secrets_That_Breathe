@@ -58,7 +58,7 @@ namespace SecretsThatBreathe
             return true;
         }
 
-        // F3 in the midnight scene: arrive and get out straight away (the drive is skipped), so the debris checkpoint can start.
+        // F3 in Midnight: get out of the car so the post-photo checkpoint can start.
         public bool ExitNowForTesting()
         {
             if (hasExited || exitInProgress) return true;

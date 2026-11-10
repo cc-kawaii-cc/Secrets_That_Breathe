@@ -78,6 +78,10 @@ namespace SecretsThatBreathe
         [Tooltip("Seconds after the third thought disappears before showing the drawer objective.")]
         [Min(0f)] public float beforeDrawerObjectiveDelay = 1f;
         [Header("Search and approach")]
+        [Tooltip("Looping rummaging sound during the left drawer search; adjust its AudioSource volume in the scene.")]
+        public AudioSource drawerSearchAudio;
+        [Min(0.05f)] public float drawerSearchFadeSeconds = 0.6f;
+        private float drawerSearchOriginalVolume;
         [Min(0.1f)] public float searchDuration = 2.5f;
         [Min(0.1f)] public float approachDuration = 1.2f;
         public bool hideAuntUntilSearch = true;
@@ -381,6 +385,11 @@ namespace SecretsThatBreathe
 
         private IEnumerator SearchThenScare()
         {
+            if (drawerSearchAudio != null)
+            {
+                drawerSearchOriginalVolume = drawerSearchAudio.volume;
+                drawerSearchAudio.Play();
+            }
             searchMotionActive = true;
             searchShakeTime = 0f;
             searchShakeBlend = 0f;
@@ -412,10 +421,13 @@ namespace SecretsThatBreathe
             float duration = Mathf.Max(0.1f, approachDuration);
             for (float time = 0f; time < duration; time += Time.deltaTime)
             {
+                if (drawerSearchAudio != null)
+                    drawerSearchAudio.volume = drawerSearchOriginalVolume * Mathf.Clamp01((duration - time) / Mathf.Max(.05f, drawerSearchFadeSeconds));
                 float t = Mathf.SmoothStep(0f, 1f, time / duration);
                 auntObject.transform.SetPositionAndRotation(Vector3.Lerp(start, auntStandPoint.position, t), Quaternion.Slerp(startRotation, auntStandPoint.rotation, t));
                 yield return null;
             }
+            StopDrawerSearchAudio();
             auntObject.transform.SetPositionAndRotation(auntStandPoint.position, auntStandPoint.rotation);
             SetAuntWalking(false);
             RestoreNpcColliders();
@@ -712,6 +724,7 @@ namespace SecretsThatBreathe
         }
         public void CancelSequence()
         {
+            StopDrawerSearchAudio();
             if (exitObjectiveRoutine != null) { StopCoroutine(exitObjectiveRoutine); exitObjectiveRoutine = null; }
             if (sequence != null) { StopCoroutine(sequence); sequence = null; }
             if (auntExitRoutine != null) { StopCoroutine(auntExitRoutine); auntExitRoutine = null; }
@@ -732,6 +745,13 @@ namespace SecretsThatBreathe
             awaitingRelease = true;
         }
         private void OnDisable() { interact?.Disable(); advanceDialogue?.Disable(); CancelSequence(); }
+
+        private void StopDrawerSearchAudio()
+        {
+            if (drawerSearchAudio == null) return;
+            drawerSearchAudio.Stop();
+            if (drawerSearchOriginalVolume > 0f) drawerSearchAudio.volume = drawerSearchOriginalVolume;
+        }
         private void OnDestroy()
         {
             if (moneyChoiceUI != null)

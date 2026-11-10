@@ -51,6 +51,9 @@ namespace SecretsThatBreathe
         private bool ownsPause;
         private static LawyerRoomIntro owner;
 
+        internal static bool IsInputBlocked(Scene scene)
+            => owner != null && owner.ownsPause && owner.gameObject.scene == scene;
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void ResetOwner() => owner = null;
 
@@ -144,11 +147,11 @@ namespace SecretsThatBreathe
             yield return null;
             yield return null;
             yield return null;
-            yield return new WaitForSecondsRealtime(Mathf.Max(0f, firstTextDelaySeconds));
+            yield return GameMenuController.WaitForGameplaySeconds(Mathf.Max(0f, firstTextDelaySeconds));
             foreach (var paragraph in paragraphs)
             {
                 yield return Fade(paragraph, 1f, textFadeSeconds);
-                yield return new WaitForSecondsRealtime(paragraphHoldSeconds);
+                yield return GameMenuController.WaitForGameplaySeconds(paragraphHoldSeconds);
             }
 
             // Require streaming to stay idle across frames before accepting input.
@@ -167,7 +170,7 @@ namespace SecretsThatBreathe
             float elapsed = 0f;
             while (elapsed < fadeToBlackSeconds)
             {
-                elapsed += Time.unscaledDeltaTime;
+                elapsed += GameMenuController.GameplayUnscaledDeltaTime;
                 float alpha = 1f - Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(elapsed / fadeToBlackSeconds));
                 foreach (var paragraph in paragraphs) paragraph.alpha = alpha;
                 pressAnyKey.alpha = alpha;
@@ -176,7 +179,7 @@ namespace SecretsThatBreathe
             foreach (var paragraph in paragraphs) paragraph.alpha = 0f;
             pressAnyKey.alpha = 0f;
             yield return PlaySecondIntro();
-            yield return new WaitForSecondsRealtime(blackHoldSeconds);
+            yield return GameMenuController.WaitForGameplaySeconds(blackHoldSeconds);
             yield return RevealGame();
             ReleaseControls();
             // Loading can finish after the window's focus callback has already run.
@@ -212,7 +215,7 @@ namespace SecretsThatBreathe
             float duration = Mathf.Max(0f, revealGameSeconds);
             while (elapsed < duration)
             {
-                elapsed += Time.unscaledDeltaTime;
+                elapsed += GameMenuController.GameplayUnscaledDeltaTime;
                 float progress = Mathf.Clamp01(elapsed / duration);
                 // Visible picture and audio use the same linear 0-to-1 progress.
                 screen.alpha = 1f - progress;
@@ -245,7 +248,7 @@ namespace SecretsThatBreathe
                 secondIntroTypingAudio.Play();
             while (secondIntroText.maxVisibleCharacters < count)
             {
-                elapsed += Time.unscaledDeltaTime;
+                elapsed += GameMenuController.GameplayUnscaledDeltaTime;
                 secondIntroText.maxVisibleCharacters = Mathf.Min(count,
                     Mathf.FloorToInt(elapsed / Mathf.Max(.001f, secondIntroSecondsPerCharacter)));
                 if (secondIntroText.maxVisibleCharacters >= count && secondIntroTypingAudio != null)
@@ -253,7 +256,7 @@ namespace SecretsThatBreathe
                 yield return null;
             }
             if (secondIntroTypingAudio != null) secondIntroTypingAudio.Stop();
-            yield return new WaitForSecondsRealtime(secondIntroHoldSeconds);
+            yield return GameMenuController.WaitForGameplaySeconds(secondIntroHoldSeconds);
             yield return Fade(secondIntroGroup, 0f, secondIntroFadeOutSeconds);
         }
 
@@ -263,7 +266,7 @@ namespace SecretsThatBreathe
             float elapsed = 0f;
             while (elapsed < seconds)
             {
-                elapsed += Time.unscaledDeltaTime;
+                elapsed += GameMenuController.GameplayUnscaledDeltaTime;
                 group.alpha = Mathf.Lerp(initial, target, Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(elapsed / seconds)));
                 yield return null;
             }
@@ -280,6 +283,7 @@ namespace SecretsThatBreathe
 
         private static bool AnyButtonPressed()
         {
+            if (GameMenuController.BlocksGameplayInput) return false;
             foreach (var device in InputSystem.devices)
                 foreach (var control in device.allControls)
                     if (control is ButtonControl button && !button.synthetic && button.wasPressedThisFrame) return true;

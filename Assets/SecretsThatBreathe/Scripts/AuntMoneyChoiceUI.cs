@@ -50,7 +50,7 @@ namespace SecretsThatBreathe
             // StarterAssetsInputs re-locks the cursor when the window gains focus.
             // Apply the visible menu's cursor policy after focus callbacks, while
             // preserving the gameplay cursor state captured by ShowChoices.
-            if (cursorCaptured && Application.isFocused)
+            if (cursorCaptured && Application.isFocused && !GameMenuController.BlocksGameplayInput)
             {
                 ShowChoiceCursor();
                 if (restoreChoiceCursorPending && Mouse.current != null)

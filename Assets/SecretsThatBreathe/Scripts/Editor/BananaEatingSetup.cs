@@ -21,7 +21,8 @@ namespace SecretsThatBreathe
             if (!scene.IsValid() || !scene.isLoaded) return;
 
             int added = 0;
-            foreach (GameObject root in scene.GetRootGameObjects()) added += AddToTrees(root.transform);
+            if (!BananaEatInteraction.RequiresZone(scene))
+                foreach (GameObject root in scene.GetRootGameObjects()) added += AddToTrees(root.transform);
 
             // The prompt label goes under the scene's SeatingCanvas (never a new canvas), the same place it is created
             // from at runtime, so editing its text in the Hierarchy changes what the player sees.

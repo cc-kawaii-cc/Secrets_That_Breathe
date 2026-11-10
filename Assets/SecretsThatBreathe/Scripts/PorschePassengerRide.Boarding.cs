@@ -8,7 +8,7 @@ namespace SecretsThatBreathe
         private bool boardingForTransition;
         // Called by the saved encounter controller. Leave the screen black and the
         // walking controls suspended until the encounter loads its destination.
-        public IEnumerator BoardForSceneTransition()
+        public IEnumerator BoardForSceneTransition(System.Action<float> onFade = null)
         {
             if (!hasExited || boardingForTransition || !EnsureExitUI()) yield break;
             boardingForTransition = true;
@@ -16,7 +16,7 @@ namespace SecretsThatBreathe
             ClearWalkingInput(); SetRidingFlashlightState(false);
             foreach (var control in suspendedControls) if (control != null && control != this) control.enabled = false;
             if (openDoorClip != null) doorAudio.PlayOneShot(openDoorClip);
-            yield return FadeExit(1f, exitFadeOutSeconds);
+            yield return FadeExit(1f, exitFadeOutSeconds, onFade);
             foreach (var controller in characterControllers) if (controller != null) controller.enabled = false;
             hasExited = false; passengerDetached = false; IsMoving = false;
             UpdatePassengerPose();

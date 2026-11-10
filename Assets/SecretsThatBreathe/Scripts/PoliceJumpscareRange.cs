@@ -9,6 +9,10 @@ namespace SecretsThatBreathe
     {
         [Header("Adjust the range in world metres")]
         [Min(.1f)] public float triggerRadius = 3f;
+        [Tooltip("Total width of the detection sector in degrees.")]
+        [Range(1f, 360f)] public float triggerAngle = 360f;
+        [Tooltip("Rotate the sector horizontally relative to the police object's forward direction.")]
+        [Range(-180f, 180f)] public float directionOffsetDegrees;
         [Tooltip("Centre relative to the police object's feet.")]
         public Vector3 localCenter;
         [Tooltip("Ignore a player on a different floor or far above/below the police.")]
@@ -40,7 +44,9 @@ namespace SecretsThatBreathe
             Vector3 delta = player.transform.position - WorldCenter;
             if (Mathf.Abs(delta.y) > maximumHeightDifference) return;
             delta.y = 0f;
-            playerInRange = delta.sqrMagnitude <= triggerRadius * triggerRadius;
+            Vector3 forward = Quaternion.AngleAxis(directionOffsetDegrees, Vector3.up) * Vector3.ProjectOnPlane(transform.forward, Vector3.up).normalized;
+            playerInRange = delta.sqrMagnitude <= triggerRadius * triggerRadius &&
+                (delta.sqrMagnitude < .000001f || triggerAngle >= 360f || Vector3.Angle(forward, delta) <= triggerAngle * .5f);
         }
 
         private void OnDisable() => playerInRange = false;
@@ -50,12 +56,18 @@ namespace SecretsThatBreathe
             Gizmos.color = playerInRange ? Color.green : new Color(1f, .65f, .1f, 1f);
             Vector3 center = WorldCenter + Vector3.up * .04f;
             float radius = Mathf.Max(.1f, triggerRadius);
-            for (int i = 0; i < 64; i++)
+            Vector3 forward = Quaternion.AngleAxis(directionOffsetDegrees, Vector3.up) * Vector3.ProjectOnPlane(transform.forward, Vector3.up).normalized;
+            float angle = Mathf.Clamp(triggerAngle, 1f, 360f);
+            Vector3 first = center + Quaternion.AngleAxis(-angle * .5f, Vector3.up) * forward * radius;
+            Vector3 previous = first;
+            for (int i = 1; i <= 64; i++)
             {
-                float a = i * Mathf.PI * 2f / 64f, b = (i + 1) * Mathf.PI * 2f / 64f;
-                Gizmos.DrawLine(center + new Vector3(Mathf.Cos(a), 0f, Mathf.Sin(a)) * radius,
-                    center + new Vector3(Mathf.Cos(b), 0f, Mathf.Sin(b)) * radius);
+                Vector3 point = center + Quaternion.AngleAxis(Mathf.Lerp(-angle * .5f, angle * .5f, i / 64f), Vector3.up) * forward * radius;
+                Gizmos.DrawLine(previous, point);
+                previous = point;
             }
+            if (angle < 360f) { Gizmos.DrawLine(center, first); Gizmos.DrawLine(center, previous); }
+            Gizmos.DrawLine(center, center + forward * radius);
             Gizmos.DrawLine(center - Vector3.right * .15f, center + Vector3.right * .15f);
             Gizmos.DrawLine(center - Vector3.forward * .15f, center + Vector3.forward * .15f);
         }

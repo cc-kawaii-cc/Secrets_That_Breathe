@@ -1,9 +1,8 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using StarterAssets;
 using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.Serialization;
@@ -68,6 +67,9 @@ namespace SecretsThatBreathe
         [Tooltip("Turn her if the model does not face Khem.")]
         public float ghostYawOffset;
         public AudioClip jumpScareSound;
+        [Range(0f, 1f)] public float jumpScareVolume = 1f;
+        [Tooltip("Jump scare played by Phi Tani after eating bananas in Midnight.")]
+        public AudioClip phiTaniJumpScareSound;
         public AudioClip pushSound;
         [Min(0f)] public float pushDelay = .3f;
         [Min(0f)] public float pushDistance = 1.4f;
@@ -107,16 +109,16 @@ namespace SecretsThatBreathe
         [Min(0f)] public float foundLinesDelay = .5f;
 
         [Header("Testing")]
-        [Tooltip("F3 jumps straight to collecting the car debris: Khem gets out of the car if he is still in it, the photos count as taken, the rain is heavy, and he stands by the debris.")]
-        public bool f3SkipToDebris = true;
-        [Tooltip("How far from the debris Khem stands after F3 (metres).")]
+        [Tooltip("F3 skips the drive and evidence photos, then starts the ghost sequence.")]
+        [UnityEngine.Serialization.FormerlySerializedAs("f3SkipToDebris")]
+        public bool f3SkipAfterEvidencePhotos = true;
+        [Tooltip("How far from the last evidence photo Khem stands after F3 (metres).")]
         [Min(.5f)] public float skipStandDistance = 2.2f;
 
         public bool Running { get; private set; }
         public bool Finished { get; private set; }
 
         private bool started, holdingControl, skipping;
-        private Coroutine runRoutine;
         private float lookSmooth;
         private float shake;
         private Vector3 standPoint, shovedAside;
@@ -147,15 +149,13 @@ namespace SecretsThatBreathe
 
         private void Update()
         {
+            if (GameMenuController.BlocksGameplayInput) return;
             if (holdingControl && player != null) player.MovementLocked = true;
             if (looking) StepLook();
-            if (f3SkipToDebris && !skipping && !Finished && player != null && Application.isFocused
-                && Keyboard.current != null && Keyboard.current.f3Key.wasPressedThisFrame)
-            { StartCoroutine(SkipToDebris()); return; }
-            if (started || afterPhoto == null || player == null) return;
+            if (skipping || started || afterPhoto == null || player == null) return;
             if (!afterPhoto.Completed || afterPhoto.IsRunning) return;
             if (readyAt < 0f) readyAt = Time.time + startDelay;
-            if (Time.time >= readyAt) { started = true; runRoutine = StartCoroutine(Run()); }
+            if (Time.time >= readyAt) { started = true; StartCoroutine(Run()); }
         }
 
         private IEnumerator Run()
@@ -198,7 +198,13 @@ namespace SecretsThatBreathe
         }
 
         // ---- testing: F3 -------------------------------------------------------------------------------------------------------------------
-        private IEnumerator SkipToDebris()
+        internal void StartPostEvidenceCheckpoint()
+        {
+            if (!skipping && !started && afterPhoto != null && player != null)
+                StartCoroutine(SkipAfterEvidencePhotos());
+        }
+
+        private IEnumerator SkipAfterEvidencePhotos()
         {
             skipping = true;
             // out of the car first (the drive and the arrival are skipped)
@@ -208,10 +214,8 @@ namespace SecretsThatBreathe
                 if (!ride.ExitNowForTesting()) { Debug.LogWarning("[Midnight] F3: Khem could not get out of the car.", this); skipping = false; yield break; }
                 float until = Time.time + 15f;
                 while (!ride.HasExited && Time.time < until) yield return null;
+                if (!ride.HasExited) { skipping = false; yield break; }
             }
-            // stop whatever this sequence was doing
-            if (runRoutine != null) { StopCoroutine(runRoutine); runRoutine = null; }
-            StopSequence();
             started = true;
             // the rain is heavy (before the photos count, so the rain line is not said), every evidence photo counts as taken
             if (rain != null) rain.MakeHeavy();
@@ -221,13 +225,10 @@ namespace SecretsThatBreathe
                 if (photo.skidMark != null && IsDebris(photo.skidMark)) continue;
                 photo.MarkDoneForTesting();
             }
-            // the debris is there; Khem stands next to it
-            if (hiddenDebris != null) foreach (var piece in hiddenDebris) if (piece != null) piece.SetActive(true);
-            PlaceNearDebris(ride);
-            if (player != null) player.MovementLocked = false;
+            PlaceNearLastEvidence(ride);
             skipping = false;
-            Debug.Log("[Midnight] F3: skipped to collecting the car debris.", this);
-            yield return AfterDebris();
+            Debug.Log("[Midnight] F3: skipped to the ghost sequence after the evidence photos.", this);
+            yield return Run();
         }
 
         private bool IsDebris(Transform target)
@@ -237,33 +238,12 @@ namespace SecretsThatBreathe
             return false;
         }
 
-        // Puts away everything the sequence may have on screen and gives the controls back.
-        private void StopSequence()
-        {
-            SetLids(0f);
-            foreach (var volume in GetComponentsInChildren<Volume>(true))
-            { if (volume.sharedProfile != null) Destroy(volume.sharedProfile); Destroy(volume.gameObject); }
-            if (ghost != null) ghost.SetActive(false);
-            if (ghostCar != null) ghostCar.SetActive(false);
-            foreach (var lines in new[] { tiredLines, shockLines, foundLines })
-                if (lines != null) foreach (var line in lines) SetBox(line, false);
-            if (audioSource != null) audioSource.Stop();
-            shake = 0f;
-            lookSmooth = lookSmoothSeconds;
-            EndLook();
-            holdingControl = false;
-            if (player != null) player.MovementLocked = false;
-            Running = false;
-        }
-
-        // Khem a few steps from the debris, on the side he would have walked from, looking at it.
-        private void PlaceNearDebris(PorschePassengerRide ride)
+        private void PlaceNearLastEvidence(PorschePassengerRide ride)
         {
             if (player == null) return;
-            Vector3 centre;
-            if (!DebrisCentre(out centre)) centre = walkTarget != null ? walkTarget.position : player.transform.position;
-            Vector3 from = afterPhoto != null && afterPhoto.skidMark != null ? afterPhoto.skidMark.position : player.transform.position;
-            Vector3 direction = centre - from;
+            if (afterPhoto.skidMark == null || walkTarget == null) return;
+            Vector3 centre = afterPhoto.skidMark.position;
+            Vector3 direction = walkTarget.position - centre;
             direction.y = 0f;
             direction = direction.sqrMagnitude > .01f ? direction.normalized : Vector3.forward;
             Vector3 feet = centre - direction * skipStandDistance;
@@ -426,7 +406,7 @@ namespace SecretsThatBreathe
                 animator.Play(ghostClip, 0, Mathf.Clamp01(ghostClipStart / Mathf.Max(.01f, length)));
                 animator.Update(0f);
             }
-            Play(jumpScareSound, 1f);
+            Play(jumpScareSound, jumpScareVolume);
             float appeared = Time.time;
             // the view snaps to her face
             lookSmooth = .06f;
@@ -496,7 +476,7 @@ namespace SecretsThatBreathe
             float total = startDistance * 2f;
             yield return new WaitForSeconds(carDelay);
 
-            // the sound is loudest when the car passes the spot Khem stood on
+            // Align the loudest part of the clip with the car passing Khem.
             float reachSeconds = startDistance / carSpeed;
             float lead = carSoundPeak - reachSeconds;
             if (lead >= 0f) { Play(carSound, 1f); yield return new WaitForSeconds(lead); }
